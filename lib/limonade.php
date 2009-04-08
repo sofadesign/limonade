@@ -237,14 +237,18 @@ function run($env = null)
   if(is_null($env)) $env = env();
    
   # Configure
-  option('public_dir',      'public/');
-  option('views_dir',       'views/');
-  option('controllers_dir', 'controllers/');
-  option('libs_dir',        'lib/');
+  $root_dir = dirname(app_file());
+  option('root_dir',        $root_dir);
+  option('limonade_dir',    dirname(__FILE__).'/');
+  option('public_dir',      $root_dir.'/public/');
+  option('views_dir',       $root_dir.'/views/');
+  option('controllers_dir', $root_dir.'/controllers/');
+  option('libs_dir',        $root_dir.'/lib/');
   option('env',             ENV_PRODUCTION);
   option('encoding',        'utf-8');
 
   # loading libs
+  require_once_dir(option('libs_dir'));
   
   call_if_exists('configure');
   
@@ -286,7 +290,7 @@ function run($env = null)
   {
     function not_found($msg="")
     {
-      option('views_dir', dirname(__FILE__).'/limonade/views/');
+      option('views_dir', option('limonade_dir').'limonade/views/');
       $msg = h($msg);
       return html("<h1>Page not found:</h1><p>{$msg}</p>", "default_layout.php");
     }
@@ -453,10 +457,10 @@ function url_for($params = null)
   #TODO enhanced url_for (url rewriting or not...)
 
   $env = env();
-  $request_uri = $env['SERVER']['REQUEST_URI'];
+  $request_uri = rtrim($env['SERVER']['REQUEST_URI'], '?');
   $base_path   = $env['SERVER']['SCRIPT_NAME'];
 
-  if(strpos($request_uri, '?') !== FALSE) $base_path .= "?";
+  $base_path = ereg_replace('index\.php$', '?', $base_path);
 
   $paths = array();
   $params = func_get_args();
@@ -500,6 +504,21 @@ function call_if_exists($func)
 function define_unless_exists($name, $value)
 {
   if(!defined($anme)) define($name, $value);
+}
+
+/**
+ * Load php files with require_once in a given dir
+ *
+ * @param string $path Path in which are the file to load
+ * @param string $pattern a regexp pattern that filter files to load
+ * @return array paths of loaded files
+ */
+function require_once_dir($path, $pattern = "*.php")
+{
+  if($path[strlen($path) - 1] != "/") $path .= "/";
+  $filenames = glob($path.$pattern);
+  foreach($filenames as $filename) require_once $filename;
+  return $filenames;
 }
 
 /**
@@ -756,8 +775,12 @@ function request_methods()
  */
 function request_uri($env = null)
 {
-  #TODO test request_uri
-  if(is_null($env)) $env = env();
+  static $uri = null;
+  if(is_null($env))
+  {
+    if(!is_null($uri)) return $uri;
+    $env = env();
+  }
 
   if(array_key_exists('url', $env['GET']))
   {
@@ -790,10 +813,10 @@ function request_uri($env = null)
   	}
   	elseif(array_key_exists('REQUEST_URI', $env['SERVER']) && !empty($env['SERVER']['REQUEST_URI']))
   	{
-  	  $request_uri = $env['SERVER']['REQUEST_URI'];
+  	  $request_uri = rtrim($env['SERVER']['REQUEST_URI'], '?');
   	  $base_path = $env['SERVER']['SCRIPT_NAME'];
 
-  	  if(strpos($request_uri, '?') !== FALSE) $base_path .= "?";
+      if($request_uri."index.php" == $base_path) $request_uri .= "index.php";
   	  $uri = str_replace($base_path, '', $request_uri);
   	}
   	elseif($env['SERVER']['argc'] > 1 && trim($env['SERVER']['argv'][1], '/') != '')

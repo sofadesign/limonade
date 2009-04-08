@@ -49,7 +49,7 @@ tests("Router");
       assert_equal   ($r["names"][0], 0);
       
       preg_match($r["pattern"], "/test/foo////", $matches);
-      assert_equal(count($matches), 2);
+      assert_length_of($matches, 2);
       assert_equal($matches[1], "foo");
       
       $r = route_build("GET","/test/*/two", 'get_index');
@@ -65,7 +65,7 @@ tests("Router");
       assert_equal   ($r["names"][0], 0);
       
       preg_match($r["pattern"], "/test/foo/two/", $matches);
-      assert_equal(count($matches), 2);
+      assert_length_of($matches, 2);
       assert_equal($matches[1], "foo");
       
       /* testing single asterisk routes with params names */
@@ -85,7 +85,7 @@ tests("Router");
       assert_equal   ($r["names"][0], 0);
       
       preg_match($r["pattern"], "/test/foo", $matches);
-      assert_equal(count($matches), 2);
+      assert_length_of($matches, 2);
       assert_equal($matches[1], "foo");
       
       $r = route_build("GET","/test/**/two/", 'get_index');
@@ -100,7 +100,7 @@ tests("Router");
       assert_no_match($r["pattern"], "/test/truc/one/two/three");
       
       preg_match($r["pattern"], "/test/foo/bar/two", $matches);
-      assert_equal(count($matches), 2);
+      assert_length_of($matches, 2);
       assert_equal($matches[1], "foo/bar");
       
       /* testing named parameters routes */
@@ -144,19 +144,19 @@ tests("Router");
      assert_empty(route());
      
      $r = route("get", "/index", "my_func");
-     assert_equal(count($r), 1);
-     assert_equal(count($r[0]), 5);
+     assert_length_of($r, 1);
+     assert_length_of($r[0], 5);
      assert_equal($r[0]["method"], "GET");
      assert_equal($r[0]["pattern"], "#^/index(?:/*?)?$#i");
      assert_empty($r[0]["names"]);
      assert_equal($r[0]["function"], "my_func");
      
      $r = route("put", "/blog/:id", "my_update_func");
-     assert_equal(count($r), 2);
-     assert_equal(count($r[1]), 5);
+     assert_length_of($r, 2);
+     assert_length_of($r[1], 5);
      assert_equal($r[1]["method"], "PUT");
      assert_match($r[1]["pattern"], "/blog/102");
-     assert_equal(count($r[1]["names"]), 1);
+     assert_length_of($r[1]["names"], 1);
      assert_equal($r[1]["names"][0], "id");
      assert_equal($r[1]["function"], "my_update_func");
    }
@@ -170,7 +170,7 @@ tests("Router");
                route( "put",    "/update/:id", "my_update_func" );
      $routes = route( "delete", "/delete/:id", "my_delete_func" );
      
-     assert_equal(count($routes), 6);
+     assert_length_of($routes, 6);
      
      $r = route_find("GET", "/unkown");
      assert_false($r);
@@ -191,7 +191,7 @@ tests("Router");
      route( "get", "/index/*", "my_index_func2"  );
      $routes = route( "delete", "/delete/:id/:confirm", "my_delete_func2" );
      
-     assert_equal(count($routes), 8);
+     assert_length_of($routes, 8);
      $r = route_find("GET", "/index");
      assert_equal($r["function"], "my_index_func");
      

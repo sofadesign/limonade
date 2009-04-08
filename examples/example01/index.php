@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(dirname(__FILE__)).'/lib/limonade.php';
+require_once dirname(dirname(dirname(__FILE__))).'/lib/limonade.php';
 
 function configure()
 {

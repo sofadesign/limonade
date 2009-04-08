@@ -29,6 +29,12 @@ function assert_empty($value, $message = '<1> should be empty')
    return assert('empty($value); //'.$message);
 }
 
+function assert_not_empty($value, $message = '<1> should not be empty')
+{
+   tests_execute_before_assert();
+   return assert('!empty($value); //'.$message);
+}
+
 function assert_equal($expected, $value, $message = '<1> should be equal to <2>')
 {
    tests_execute_before_assert();

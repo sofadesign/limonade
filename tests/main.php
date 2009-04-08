@@ -35,22 +35,22 @@ tests("Main");
      assert_equal(params('first'), 6);
      assert_true(is_array(params()));
      assert_equal(params('first', 12), 12);
-     assert_equal(count(params()), 1);
+     assert_length_of(params(), 1);
      
      params('my_array', 1, 2, 3, 4);
      assert_true(is_array(params('my_array')));
-     assert_equal(count(params('my_array')), 4);
+     assert_length_of(params('my_array'), 4);
      
      assert_true(is_array(params()));
-     assert_equal(count(params()), 2);
+     assert_length_of(params(), 2);
      
      params(array('zero','one'));
-     assert_equal(count(params()), 4);
+     assert_length_of(params(), 4);
      assert_equal(params(0), 'zero');
      assert_equal(params(1), 'one');
      
      params(array(2 => 'two', 'first' => 'my one'));
-     assert_equal(count(params()), 5);
+     assert_length_of(params(), 5);
      assert_equal(params(2), 'two');
      assert_equal(params('first'), 'my one');
      
@@ -89,7 +89,7 @@ tests("Main");
    {
      assert_empty(call_if_exists("unknown_function"));
      assert_equal(call_if_exists("count", array(1,2,3)), 3);
-     assert_equal(count(call_if_exists("array_merge", array(1,2,3), array(4,5,6))), 6);
+     assert_length_of(call_if_exists("array_merge", array(1,2,3), array(4,5,6)), 6);
    }
    
    function test_main_define_unless_exists()
@@ -100,6 +100,32 @@ tests("Main");
      define_unless_exists('MY_SPECIAL_CONST', "an other value");
      assert_not_equal(MY_SPECIAL_CONST, "an other value");
      assert_equal(MY_SPECIAL_CONST, "special value");
+   }
+   
+   function test_main_require_once_dir()
+   {
+     $root = dirname(dirname(__FILE__));
+     
+     assert_empty(require_once_dir($root));
+     $files = require_once_dir($root, "*.mkd");
+     assert_length_of($files, 1);
+     assert_match('/README\.mkd$/', $files[0]);
+     
+     $lib = $root.'/lib';
+     $limonade = $lib.'/limonade';
+     
+     $files = require_once_dir($limonade);
+     assert_not_empty($files);
+     
+     $tests_lib = $root.'/tests/data/lib0';
+     $libs = array('a', 'b', 'c');
+     foreach($libs as $lib) assert_false(defined('TEST_LIB_'.strtoupper($lib)));
+
+     $files = require_once_dir($tests_lib);
+     assert_not_empty($files);
+     assert_length_of($files, 3);
+     
+     foreach($libs as $lib) assert_true(defined('TEST_LIB_'.strtoupper($lib)));
    }
    
    

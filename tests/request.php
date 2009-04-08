@@ -11,7 +11,7 @@ tests("Request");
    function test_request_methods()
    {
      $m = request_methods();
-     assert_equal(count($m), 4);
+     assert_length_of($m, 4);
    }
    
    function test_request_method_is_allowed()
