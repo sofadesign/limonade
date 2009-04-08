@@ -1,0 +1,19 @@
+<?php
+
+tests("Output");
+   tests_describe("Testing limonade output functions.");
+   
+   function tests_before_each_test_in_output()
+   {
+     env(null);
+   }
+   
+   function test_output_layout()
+   {
+     
+   }
+  
+   
+   
+endtests();
+?>
