@@ -7,6 +7,11 @@ function configure()
   option('env', ENV_DEVELOPMENT);
 }
 
+function before()
+{
+  layout('html_my_layout');
+}
+
 dispatch('/', 'hello_world');
   function hello_world()
   {
@@ -16,35 +21,43 @@ dispatch('/', 'hello_world');
 dispatch('/hello/:who', 'hello');
   function hello()
   {
-    $who = params('who');
-    if(empty($who)) $who = "everybody";
-    set('name', $who);
+    set_or_default('name', params('who'), "everybody");
     return html("Hello %s!");
   }
   
 dispatch('/welcome/:name', 'welcome');
   function welcome()
   {
-    $name = params('name');
-    if(empty($name)) $name = "everybody";
-    set('name', $name);
-    layout('html_my_layout');
+    set_or_default('name', params('name'), "everybody");    
     return html("html_welcome");
   }
 
+dispatch('/how_are_you/:name', 'how_are_you');
+  function how_are_you()
+  {
+    $name = params('name');
+    if(empty($name)) halt(NOT_FOUND, "Undefined name.");
+    return html("I hope you are fine, $name.");
+  }
 
 
 run();
 
-# --- Views
+# HTML Layouts and templates
 
 function html_my_layout($vars){ extract($vars);?> 
 <html>
 <head>
-	<title>HELLO !</title>
+	<title>Limonde first example</title>
 </head>
 <body>
+  <h1>Limonde first example</h1>
 	<?=$content?>
+	<hr>
+	<a href="<?=url_for('/')?>">Home</a> |
+	<a href="<?=url_for('/hello/', $name)?>">Hello</a> | 
+	<a href="<?=url_for('/welcome/', $name)?>">Welcome !</a> | 
+	<a href="<?=url_for('/how_are_you/', $name)?>">How are you ?</a>
 </body>
 </html>
 <?}

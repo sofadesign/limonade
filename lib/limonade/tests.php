@@ -1,5 +1,9 @@
 <?php
 
+# ============================================================================ #
+#    TESTS                                                                     #
+# ============================================================================ #
+
 require_once dirname(__FILE__)."/assertions.php";
 
 if(!defined('DS')) define("DS", DIRECTORY_SEPARATOR);
@@ -13,7 +17,7 @@ if(!array_key_exists("tests_errors", $GLOBALS["limonade"]))
 if(!array_key_exists("tests_current", $GLOBALS["limonade"]))
    $GLOBALS["limonade"]["tests_current"] = NULL;
 if(!array_key_exists("tests_all", $GLOBALS["limonade"]))
-  $GLOBALS["limonade"]["tests_all"] = NULL;
+   $GLOBALS["limonade"]["tests_all"] = NULL;
 
 ini_set("display_errors", true);
 error_reporting(E_ALL ^ (E_USER_WARNING | E_NOTICE | E_USER_NOTICE));

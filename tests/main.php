@@ -1,4 +1,5 @@
 <?php
+if(!defined('LIMONADE')){$h="HTTP/1.0 401 Unauthorized";header($h);die($h);}// Security check
 
 tests("Main");
    tests_describe("Testing limonade main functions.");
@@ -106,8 +107,11 @@ tests("Main");
    {
      $root = dirname(dirname(__FILE__));
      
+     ob_start();
      assert_empty(require_once_dir($root));
      $files = require_once_dir($root, "*.mkd");
+     ob_clean();
+     
      assert_length_of($files, 1);
      assert_match('/README\.mkd$/', $files[0]);
      
@@ -126,6 +130,11 @@ tests("Main");
      assert_length_of($files, 3);
      
      foreach($libs as $lib) assert_true(defined('TEST_LIB_'.strtoupper($lib)));
+   }
+   
+   function test_main_value_or_default()
+   {
+     # TODO test value_or_default
    }
    
    
