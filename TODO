@@ -1,5 +1,7 @@
 # TODO #
 
+- a README in english
+- more examples
 - http caching
 - file caching
 - x-sender headers for serving static files directly thru Apache and Lighttpd
