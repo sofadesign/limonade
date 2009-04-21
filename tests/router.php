@@ -115,7 +115,6 @@ tests("Router");
       /* testing regexp route */
       $r = route_build("GET","^/my/(\d+)/own/regexp", 'get_index');
       assert_match   ($r["pattern"], "/my/12/own/regexp");
-
       
       /* testing a complex route and parameters names*/
       $r = route_build("GET","/test/:my/*/complex/**/:route", 'get_index');
@@ -125,6 +124,12 @@ tests("Router");
       assert_equal   ($r["names"][1], 1);
       assert_equal   ($r["names"][2], "2");
       assert_equal   ($r["names"][3], "route");
+      
+      /* testing typical route used for static files */
+      $r = route_build("GET","/*.jpg/:size", 'get_index');
+      assert_match   ($r["pattern"], "/limonade.jpg");
+      assert_match   ($r["pattern"], "/limonade.jpg/");
+      assert_match   ($r["pattern"], "/limonade.jpg/thumb");
       
       /* testing a complex route and parameters names*/
       $path = "/test/:my/*/complex/**/:route";
@@ -168,9 +173,10 @@ tests("Router");
                route( "post",   "/create",     "my_create_func" );
                route( "get",    "/edit/:id",   "my_edit_func"   );
                route( "put",    "/update/:id", "my_update_func" );
-     $routes = route( "delete", "/delete/:id", "my_delete_func" );
+               route( "delete", "/delete/:id", "my_delete_func" );
+     $routes = route( "get",    "/*.jpg/:size","my_jpeg"        );
      
-     assert_length_of($routes, 6);
+     assert_length_of($routes, 7);
      
      $r = route_find("GET", "/unkown");
      assert_false($r);
@@ -188,10 +194,16 @@ tests("Router");
      assert_equal($r["function"], "my_edit_func");
      assert_equal($r["params"]["id"], 120);
      
+     $r = route_find("GET","/limonade.jpg/thumb", 'my_jpeg');
+     
+     assert_equal($r["function"], "my_jpeg");
+     assert_equal($r["params"][0], "limonade");
+     assert_equal($r["params"]["size"], "thumb");
+     
      route( "get", "/index/*", "my_index_func2"  );
      $routes = route( "delete", "/delete/:id/:confirm", "my_delete_func2" );
      
-     assert_length_of($routes, 8);
+     assert_length_of($routes, 9);
      $r = route_find("GET", "/index");
      assert_equal($r["function"], "my_index_func");
      

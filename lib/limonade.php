@@ -49,6 +49,7 @@
 
 ## CONSTANTS __________________________________________________________________
 define('LIMONADE',             '0.3');
+define('LIM_START_MICROTIME',  (float)substr(microtime(), 0, 10));
 define('E_LIM_HTTP',           32768);
 define('E_LIM_PHP',            65536);
 define('NOT_FOUND',            404);
@@ -540,7 +541,7 @@ function error_default_handler($errno, $errstr, $errfile, $errline)
   }
 
   return $http_error_code == NOT_FOUND ?
-            error_not_found_output($errstr) :
+            error_not_found_output($errno, $errstr, $errfile, $errline) :
             error_server_error_output($errno, $errstr, $errfile, $errline);                    
 }
 
@@ -550,19 +551,19 @@ function error_default_handler($errno, $errstr, $errfile, $errline)
  * @param string $msg 
  * @return string
  */
-function error_not_found_output($msg="")
+function error_not_found_output($errno, $errstr, $errfile, $errline)
 {
   if(!function_exists('not_found'))
   {
     # TODO not_found doesn't need to be redefined; change it into a error_show_not_found method.
-    function not_found($msg="")
+    function not_found($errno, $errstr, $errfile=null, $errline=null)
     {
       option('views_dir', option('limonade_dir').'limonade/views/');
       $msg = h($msg);
       return html("<h1>Page not found:</h1><p>{$msg}</p>", error_layout());
     }
   }
-  return not_found($msg);
+  return not_found($errno, $errstr, $errfile, $errline);
 }
 
 /**
@@ -574,7 +575,7 @@ function error_not_found_output($msg="")
  * @param string $errline 
  * @return string
  */
-function error_server_error_output($errno, $msg, $errfile, $errline)
+function error_server_error_output($errno, $errstr, $errfile, $errline)
 {
   if(!function_exists('server_error'))
   {
@@ -586,7 +587,7 @@ function error_server_error_output($errno, $msg, $errfile, $errline)
     	return html('error.html.php', error_layout(), $args);
     }
   }
-  return server_error($errno, $msg, $errfile, $errline);
+  return server_error($errno, $errstr, $errfile, $errline);
 }
 
 /**
@@ -968,9 +969,10 @@ function route_build($method, $path_or_array, $func, $agent_regexp = null)
       $names = array();
    }
    
-   $single_asterisk_subpattern = "(?:/([^\/]*))?";
-   $double_asterisk_subpattern = "(?:/(.*))?";
-   $optionnal_slash_subpattern = "(?:/*?)";
+   $single_asterisk_subpattern   = "(?:/([^\/]*))?";
+   $double_asterisk_subpattern   = "(?:/(.*))?";
+   $optionnal_slash_subpattern   = "(?:/*?)";
+   $no_slash_asterisk_subpattern = "(?:([^\/]*))?";
    
    if($path[0] == "^")
    {
@@ -985,6 +987,7 @@ function route_build($method, $path_or_array, $func, $agent_regexp = null)
    {
      $parsed = array();
      $elts = explode('/', $path);
+     
      $parameters_count = 0;
      
      foreach($elts as $elt)
@@ -1010,10 +1013,21 @@ function route_build($method, $path_or_array, $func, $agent_regexp = null)
            $parsed[] = $single_asterisk_subpattern;
            $name = $matches[1];
          };
-
+       
+       elseif(strpos($elt, '*') !== false):
+         $sub_elts = explode('*', $elt);
+         $parsed_sub = array();
+         foreach($sub_elts as $sub_elt)
+         {
+           $parsed_sub[] = preg_quote($sub_elt, "#");
+           $name = $parameters_count;
+         }
+         // 
+         $parsed[] = "/".implode($no_slash_asterisk_subpattern, $parsed_sub);
+       
        else:
          $parsed[] = "/".preg_quote($elt, "#");
-       
+         
        endif;
        
        /* set parameters names */ 

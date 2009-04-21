@@ -73,10 +73,17 @@ error(HTTP_FORBIDDEN, 'my_not_found_error_handler'); /* HTTP 403 Forbiden */
   }
 
 /* just change the not found error output */   
-function not_found($msg)
+function not_found($errno, $errstr, $errfile, $errline)
 {
-  return "<p>".$msg."</p><p>I'm not here...</p>";
+  return "<p>".$errstr."</p><p>I'm not here...</p>";
 }
+
+/* just change the server error output */
+// function server_error($errno, $errstr, $errfile, $errline)
+// {
+//   return   "<h2>Internal server error</h2><p>[".error_type($errno)."] $errstr ".
+//            "(in <strong>$errfile</strong> line <strong>$errline</strong>)</p>";
+// }
   
 // error(E_LIM_HTTP, 'my_other_http_status_handler'); // only http errors
 //   function my_other_http_status_handler($errno, $errstr, $errfile, $errline)
@@ -91,7 +98,7 @@ function not_found($msg)
 // 
 //   }
 // 
-// error(E_LIM_PHP, 'default_error_handler'); // all other php errors
+// error(E_LIM_PHP, 'error_default_handler'); // all other php errors
 
 
 run();

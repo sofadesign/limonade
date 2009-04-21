@@ -38,6 +38,7 @@ dispatch('/how_are_you/:name', 'how_are_you');
     if(empty($name)) halt(NOT_FOUND, "Undefined name.");
     return html("I hope you are fine, $name.");
   }
+  
 dispatch('/images/:name/:size', 'image_show');
   function image_show()
   {
@@ -49,6 +50,26 @@ dispatch('/images/:name/:size', 'image_show');
     if(!file_exists($filename)) halt(NOT_FOUND, "$filename doesn't exists");
     render_file($filename);
   }
+
+dispatch('/*.jpg/:size', 'image_show_jpeg_only');
+  function image_show_jpeg_only()
+  {
+    $ext = file_extension(params(0));
+    $filename = option('public_dir').params(0);
+    if(params('size') == 'thumb') $filename .= ".thb";
+    $filename .= '.jpg';
+  
+    if(!file_exists($filename)) halt(NOT_FOUND, "$filename doesn't exists");
+    render_file($filename);
+  }
+
+function after($output)
+{
+  $time = number_format( (float)substr(microtime(), 0, 10) - LIM_START_MICROTIME, 6);
+  $output .= "<!-- page rendered in $time sec., on ".date(DATE_RFC822)."-->";
+  return $output;
+}
+
 
 run();
 
@@ -76,7 +97,7 @@ function html_welcome($vars){ extract($vars);?>
 <p><a href="<?=url_for('/how_are_you/', $name)?>">How are you <?=$name?>?</a></p>
 <hr>
 <p><a href="<?=url_for('/images/soda_glass.jpg')?>">
-   <img src="<?=url_for('/images/soda_glass.jpg/thumb')?>"></a></p>
+   <img src="<?=url_for('/soda_glass.jpg/thumb')?>"></a></p>
 <?}
 
 

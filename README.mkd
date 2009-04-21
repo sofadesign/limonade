@@ -227,14 +227,168 @@ Comme la fonction [`json_encode`](http://php.net/manual/function.json-encode.php
 
 ### Servir des fichiers ###
 
-[TODO]
+La fonction `render_file` permet de rendre un fichier directement dans le tampon de sortie. 
+    
+    render_file(option('public_dir').'foo.jpg');
+
+Une en-tête HTTP précise le `Content-type` adéquat en fonction de l'exetnsion du fichier et l'encodage défini dans les options (utf8 par défaut) pour les fichiers textes.
+
+La sortie est temporisée afin de prendre en charge aisément des fichiers de grande taille.
 
 ### Captures ###
 
-content-for...
+[TODO] `content_for($name); endcontent();`
+
+## Avant et après la requête ##
+
+Vous pouvez définir une fonction `before` qui sera executée avant chaque requête. Cela s'avère très utile pour définir un layout par défaut ou des variables à passer aux templates
+
+    function before()
+    {
+        layout('default_layout.php');
+        set('site_title', 'My Website');
+    }
+
+Un filtre de sortie `after` est également disponible. Il est exécuté après chaque requête et permet d'appliquer une transformation à la sortie (sauf pour les sorties `render_file` qui sont envoyées directement au tampon de sortie).
+
+    function after($output){
+        $config = array('indent' => TRUE,
+    	                'output-xhtml' => TRUE,
+    	                'wrap' => 200);
+
+    	$tidy = tidy_parse_string($output, $config, option('encoding'));
+    	return $tidy->cleanRepair();
+    }
+
+## Configuration ##
+
+Vous pouvez définir une fonction `configure` qui sera exécutée au début de l'application (au début de l'exécution de `run()`).
+Vous pouvez notamment y définir les différentes options, une connexion à une base de donnée...
+
+    function configure()
+    {
+        $env = $_SERVER['HTTP_HOST'] == "localhost" ? ENV_DEVELOPMENT : ENV_PRODUCTION;
+        option('env', $env);
+        if(option('env') > ENV_PRODUCTION)
+    	{
+    		options('dsn', 'sqlite:db/development.db'));
+    	}
+    	else
+    	{
+    	    options('dsn', 'sqlite:db/production.db'));
+    	}
+        $GLOBALS['my_db_connexion'] = new PDO(option('dsn'));
+    }
+    
 
 
+### Options ###
 
+La fonction `option` permet de définir et d'accéder aux options de l'application
+
+    option('env', ENV_PRODUCTION);
+    option('env'); // return ENV_PRODUCTION value
+    
+Si le nom de l'option n'est pas précisé, retourne un tableau de toutes les options définies.
+
+Vous pouvez l'utiliser pour gérer les options propres à Limonade mais aussi des options personnalisées pour votre application.
+
+Les options utilisées par Limonade ont par défaut les valeurs suivantes:
+
+    option('root_dir',        $root_dir); // le dossier qui contient le fichier de lancement de l'application
+    option('limonade_dir',    dirname(__FILE__).'/'); // dossier contenant le fichier prinicipal limonade.php.
+    option('public_dir',      option('root_dir').'/public/');
+    option('views_dir',       option('root_dir').'/views/');
+    option('controllers_dir', option('root_dir').'/controllers/');
+    option('lib_dir',         option('root_dir').'/lib/');
+    option('env',             ENV_PRODUCTION);
+    option('debug',           true);
+    option('encoding',        'utf-8');
+    option('x-sendfile',      0); // 0: disabled, 
+                                // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
+                                // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
+
+## Gestion des erreurs ##
+
+### Halt ###
+
+Vous pouvez interrompre l'execution de l'application avec la fonction `halt`
+Les erreurs seront prises en charge par les gestionnaires d'erreur par défaut de Limonade ou par ceux que vous aurez définis.
+
+    halt(NOT_FOUND);
+    halt("En error occured in my app...");
+
+### Not Found ###
+
+Par défaut, renvoie sur le gestionnaire d'erreur `not_found($msg)` et envoie un _404 NOT FOUND_ dans les en-têtes HTTP. 
+
+    halt(NOT_FOUND);
+    halt(NOT_FOUND, "This product doesn't exists.");
+    
+Pour définir un nouvel affichage de ce erreurs, il suffit de déclarer une fonction not_found
+
+    function not_found($errno, $errstr, $errfile=null, $errline=null)
+    {
+        set('errno', $errno);
+        set('errstr', $errstr);
+        set('errfile', $errfile);
+        set('errline', $errline);
+        return html("show_not_found_errors.html.php");
+    }
+    
+### Server Error ###
+
+Par défaut, renvoie sur le gestionnaire d'erreur `server_error($msg)` et envoie un _500 INTERNAL SERVER ERROR_ dans les en-têtes HTTP.
+
+    halt();
+    halt('Breaking bad!');
+    halt(SERVER_ERROR, "Not good...");
+    trigger_error("Wrong parameter", E_USER_ERROR);
+    
+Les erreurs php sont également capturées et envoyées à ce gestionnaire d'erreur.
+
+Pour définir un nouvel affichage de ce erreurs, il suffit de déclarer une fonction server_error
+
+    function server_error($errno, $errstr, $errfile=null, $errline=null)
+    {
+        $args = compact('errno', 'errstr', 'errfile', 'errline');	
+        return html("show_server_errors.html.php", error_layout(), $args);
+    }
+
+### Error layout ###
+
+Permet de définir et d'accéder à un layout dédié à l'affichage d'erreurs
+
+    error_layout('error_layout.php');
+    error_layout(); // return 'error_layout.php'
+
+### Capture des erreurs ###
+
+En plus de la personnalisation de l'affichage des erreurs courantes `NOT_FOUND` et `SERVER_ERROR`, limonade permet de rediriger de manière précise les erreurs vers vos propres fonctions.
+
+    error(E_USER_WARNING, 'my_notices')
+        function my_notices($errno, $errstr, $errfile, $errline)
+        {
+            // storing php warnings in a log file
+            // ...
+            status(SERVER_ERROR);
+            return html('<h1>Server Error</h1>');
+        }
+        
+La constante `E_LIM_HTTP` désigne toutes les erreurs HTTP
+
+    error(E_LIM_HTTP, 'my_http_errors')
+        function my_http_errors($errno, $errstr, $errfile, $errline)
+        {
+            status($errno);
+            return html('<h1>'.http_response_status_code($errno).'</h1>');
+        }
+    
+La constante `E_LIM_PHP` désigne toutes les erreurs PHP (renvoyé par PHP ou via `trigger_error`).
+
+## Testing ##
+
+[TODO]
 
 
 
