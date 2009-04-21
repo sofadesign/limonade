@@ -392,8 +392,8 @@ La constante `E_LIM_PHP` désigne toutes les erreurs PHP (renvoyé par PHP ou vi
 
 ## Liens ##
 
-* [http://limonade.lighthouseapp.com/projects/29612-limonade/overview](Bug report)
-* [http://groups.google.fr/group/limonade](Support / Discussions)
+* [Bug report](http://limonade.lighthouseapp.com/projects/29612-limonade/overview)
+* [Support / Discussions](http://groups.google.fr/group/limonade)
 
 
 
