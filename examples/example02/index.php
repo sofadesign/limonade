@@ -13,6 +13,7 @@ function configure()
 function before()
 {
   layout('html_my_layout'); # setting default html layout
+  error_layout('html_my_layout');
 }
 
 dispatch('/', 'hello_world');
@@ -45,7 +46,7 @@ dispatch('/welcome/:name', 'welcome');
       break;
       
       case "bob":
-      halt(401, "no, go away!", array(1,2,3));
+      halt(HTTP_UNAUTHORIZED, "no, go away!", array(1,2,3));
       break;
       
       default:
@@ -64,14 +65,20 @@ dispatch('/how_are_you/:name', 'how_are_you');
     return html("I hope you are fine, $name.");
   }
 
-error(NOT_FOUND, 'my_not_found_error_handler');
-  function my_not_found_error_handler($errno, $errstr, $errfile, $errline)
+error(HTTP_FORBIDDEN, 'my_not_found_error_handler'); /* HTTP 403 Forbiden */
+  function my_forbiden_error_handler($errno, $errstr, $errfile, $errline)
   {
-    status(NOT_FOUND);
-    return html("I'm not here ($errstr): in $errfile line $errline");
+    status(HTTP_FORBIDDEN);
+    return html("<p>$errstr</p><p>Unauthorized access !!!</p>");
   }
+
+/* just change the not found error output */   
+function not_found($msg)
+{
+  return "<p>".$msg."</p><p>I'm not here...</p>";
+}
   
-// error(HTTP_STATUS_CODES, 'my_other_http_status_handler');
+// error(E_LIM_HTTP, 'my_other_http_status_handler'); // only http errors
 //   function my_other_http_status_handler($errno, $errstr, $errfile, $errline)
 //   {
 //     status($errno);
@@ -84,7 +91,7 @@ error(NOT_FOUND, 'my_not_found_error_handler');
 // 
 //   }
 // 
-// error(PHP_ERRORS, 'default_error_handler');
+// error(E_LIM_PHP, 'default_error_handler'); // all other php errors
 
 
 run();

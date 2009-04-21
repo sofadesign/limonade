@@ -1,5 +1,4 @@
 <?php
-
 require_once dirname(dirname(dirname(__FILE__))).'/lib/limonade.php';
 
 function configure()
@@ -39,7 +38,17 @@ dispatch('/how_are_you/:name', 'how_are_you');
     if(empty($name)) halt(NOT_FOUND, "Undefined name.");
     return html("I hope you are fine, $name.");
   }
-
+dispatch('/images/:name/:size', 'image_show');
+  function image_show()
+  {
+    $ext = file_extension(params('name'));
+    $filename = option('public_dir').basename(params('name'), ".$ext");
+    if(params('size') == 'thumb') $filename .= ".thb";
+    $filename .= '.jpg';
+    
+    if(!file_exists($filename)) halt(NOT_FOUND, "$filename doesn't exists");
+    render_file($filename);
+  }
 
 run();
 
@@ -65,6 +74,9 @@ function html_my_layout($vars){ extract($vars);?>
 function html_welcome($vars){ extract($vars);?> 
 <h3>Hello <?=$name?>!</h3>
 <p><a href="<?=url_for('/how_are_you/', $name)?>">How are you <?=$name?>?</a></p>
+<hr>
+<p><a href="<?=url_for('/images/soda_glass.jpg')?>">
+   <img src="<?=url_for('/images/soda_glass.jpg/thumb')?>"></a></p>
 <?}
 
 

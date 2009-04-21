@@ -109,11 +109,11 @@ tests("Main");
      
      ob_start();
      assert_empty(require_once_dir($root));
-     $files = require_once_dir($root, "*.mkd");
+     $files = require_once_dir($root, "AUTHORS");
      ob_clean();
      
      assert_length_of($files, 1);
-     assert_match('/README\.mkd$/', $files[0]);
+     assert_match('/AUTHORS$/', $files[0]);
      
      $lib = $root.'/lib';
      $limonade = $lib.'/limonade';

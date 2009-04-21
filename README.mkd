@@ -118,7 +118,7 @@ Les fonctions appelées par les routes peuvent être écrites n'importe où avan
     /                   # site root
      - index.php        # file with routes declarations and run()
      + controllers/
-         - blog.php     # functions for blog blog_index(), blog_show(),
+         - blog.php     # functions for blog: blog_index(), blog_show(),
                         #  blog_post()...
          - comments.php # comments_for_a_post(), comment_add()...
 
@@ -129,21 +129,105 @@ L'emplacement de ce dossier est modifiable grâce à l'option `controllers_dir`
 
 ## Vues et templates ##
 
-dossier, option
 
-set, variables dans les vues
+Les fichiers templates sont stockés par défaut dans le dossier `views/`.  
+L'emplacement de ce dossier est modifiable grâce à l'option `views_dir`
 
-layout
+    option('views_dir', dirname(__FILE__).'/other/dir/for/views');
+
+Pour passer des variables au templates, on utilise la fonction `set()`
+
+    set('name', 'John Doe');
+    render('index.html.php');
+    
+On peut également passer des variables directement au template:
+
+    render('index.html.php', null, array('name' => 'John Doe' ));
+    
+La méthode `set_or_default` permet de passer une variable, et si elle est vide, une valeur par défaut. Elle se révèle particulièrement utile pour l'assignation de paramètres optionnels extrait de l'url avec la fonction `params()`.
+
+    dispatch('/hello/:name', 'hello');
+        function  hello()
+        {
+            # matching /hello/
+            set_or_default('name', params('name'),'John');
+            return render('Hello %s!'); // returns 'Hello John!' because params('name') was empty. Else it would have return params('name') value.
+        }
+    
+    
+    
+    
+
+### Layouts ###
+
+
+Les templates peuvent être rendus à l'intérieur d'un autre template appelé layout.
+
+Ce layout est spécifié par la fonction `layout`
+
+    layout('default_layout.php');
+    
+ou directement via la fonction de rendu des templates
+
+    render('index.html.php', 'default_layout.php');
+    
+Si la valeur du layout est `null`, le template sera rendu sans layout
+
+    render('index.html.php', null);
+
+### Chaînes formatées et templates en ligne ###
+
+Les chaînes formatées à la manière de [`sprintf`](http://php.net/manual/function.sprintf.php) sont autorisées:
+
+    set('num', 5);
+    set('tree');
+    render('There are %d monkeys in the %s') // returns 'There are 5 monkeys in the tree'
+    
+Il est également possible de faire appel à une fonction pour template. On peut ainsi inclure les templates dans un même fichier afin de produire, par exemple, une application dans un fichier unique.
+
+
+    function html_message($vars){ extract($vars);?>
+        <h1>Title: <?=h($title)?></h1>
+        <p>Message:<br>
+           <?=h($msg)?></p>
+    <?}
+    
+    set('title', 'Hello!');
+    set('msg', 'There are 100 monkeys in the Chennai and bangalore');
+    render('html_message');
 
 ### Templates HTML ###
 
-### Templates JSON ###
+La fonction `html` permet de rendre un template de la même manière que `render`. Une en-tête HTTP précise le `Content-type` adéquat (`text/html`) et l'encodage défini dans les options (utf8 par défaut).
+
+    html('my_template.html.php');
+
 
 ### Templates XML ###
 
+La fonction `xml` permet de rendre un template de la même manière que `render`. Une en-tête HTTP précise le `Content-type` adéquat (`text/xml`) et l'encodage défini dans les options (utf8 par défaut).
+
+### Templates CSS ###
+
+La fonction `css` permet de rendre un template de la même manière que `render`. Une en-tête HTTP précise le `Content-type` adéquat (`text/css`) et l'encodage défini dans les options (utf8 par défaut).
+
+    css('screen.css.php');
+
 ### Templates TXT ###
 
+La fonction `txt` permet de rendre un template de la même manière que `render`. Une en-tête HTTP précise le `Content-type` adéquat (`text/plain`) et l'encodage défini dans les options (utf8 par défaut).
+
+    txt('index.txt.php');
+    
+### Templates JSON ###
+
+Comme la fonction [`json_encode`](http://php.net/manual/function.json-encode.php), retourne la réprésentation json d'une valeur. Une en-tête HTTP précise le `Content-type` adéquat et l'encodage défini dans les options (utf8 par défaut).
+
+    json($my_data);
+
 ### Servir des fichiers ###
+
+[TODO]
 
 ### Captures ###
 

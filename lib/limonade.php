@@ -48,14 +48,14 @@
 
 
 ## CONSTANTS __________________________________________________________________
-define('LIMONADE', '0.3');
-define('PHP_ERRORS', 'PHP crispy errors');
-define('HTTP_STATUS_CODES', 'fancy HTTP reponse status');
-define('NOT_FOUND', 404);
-define('SERVER_ERROR', 500);
-define('ENV_PRODUCTION', 10);
-define('ENV_DEVELOPMENT', 100);
-define('X-SENDFILE', 10);
+define('LIMONADE',             '0.3');
+define('E_LIM_HTTP',           32768);
+define('E_LIM_PHP',            65536);
+define('NOT_FOUND',            404);
+define('SERVER_ERROR',         500);
+define('ENV_PRODUCTION',       10);
+define('ENV_DEVELOPMENT',      100);
+define('X-SENDFILE',           10);
 define('X-LIGHTTPD-SEND-FILE', 20);
 
 
@@ -239,6 +239,12 @@ function set_or_default($name, $value, $default)
   return set($name, value_or_default($value, $default));
 }
 
+/**
+ * Running application
+ *
+ * @param string $env 
+ * @return void
+ */
 function run($env = null)
 {
   if(is_null($env)) $env = env();
@@ -246,7 +252,7 @@ function run($env = null)
   # 0. Set default configuration
   $root_dir = dirname(app_file());
   option('root_dir',        $root_dir);
-  option('limonade_dir',    dirname(dirname(__FILE__)).'/');
+  option('limonade_dir',    dirname(__FILE__).'/');
   option('public_dir',      $root_dir.'/public/');
   option('views_dir',       $root_dir.'/views/');
   option('controllers_dir', $root_dir.'/controllers/');
@@ -260,7 +266,7 @@ function run($env = null)
   
   # 1. Set error handling
   ini_set('display_errors', 1);
-  set_error_handler('error_handler', E_ALL ^ E_NOTICE);
+  set_error_handler('error_handler_dispatcher', E_ALL ^ E_NOTICE);
   
   # 2. Loading libs
   require_once_dir(option('lib_dir'));
@@ -269,15 +275,6 @@ function run($env = null)
   call_if_exists('configure');
   
   # 4. Set some default methods  
-  if(!function_exists('not_found'))
-  {
-    function not_found($msg="")
-    {
-      option('views_dir', option('limonade_dir').'limonade/views/');
-      $msg = h($msg);
-      return html("<h1>Page not found:</h1><p>{$msg}</p>", "default_layout.php");
-    }
-  }
   if(!function_exists('after'))
   {
     function after($output)
@@ -456,6 +453,7 @@ function halt($errno = SERVER_ERROR, $msg = '', $debug_args = null)
   $error = array_shift($args);
 
   # switch $errno and $msg args
+  # TODO cleanup / refactoring
   if(is_string($errno))
   {
    $msg = $errno;
@@ -468,41 +466,15 @@ function halt($errno = SERVER_ERROR, $msg = '', $debug_args = null)
   if(empty($msg)) $msg = "";
   if(!empty($args)) $debug_args = $args;
   set('_lim_err_debug_args', $debug_args);
-  if(http_response_status_is_valid($errno))
-  {
-     $back_trace = debug_backtrace();
-     while($trace = array_shift($back_trace))
-     {
-       if($trace['function'] == 'halt')
-       {
-         $errfile = $trace['file'];
-         $errline = $trace['line'];
-         break;
-       }
-     }
-     if(!error_call_matching_handler($errno, $msg, $errfile, $errline))
-     {
-       status($errno);
-       switch($errno)
-       {
-         case NOT_FOUND:
-         $o = not_found($msg);
-         break;
-       
-         default:
-         $o = server_error($errno, $msg);
-         break;
-       }
-       echo $o;
-       exit;  
-     }
-     
-  }
-  else trigger_error($msg, $errno);
+
+  error_handler_dispatcher($errno, $msg, $errfile, $errline);
+
 }
 
 /**
  * Internal error handler dispatcher
+ * Find and call matching error handler and exit
+ * If no match found, call default error handler
  *
  * @param integer $errno 
  * @param string $errstr 
@@ -510,7 +482,7 @@ function halt($errno = SERVER_ERROR, $msg = '', $debug_args = null)
  * @param string $errline 
  * @return void
  */
-function error_handler($errno, $errstr, $errfile, $errline)
+function error_handler_dispatcher($errno, $errstr, $errfile, $errline)
 {
   $back_trace = debug_backtrace();
   while($trace = array_shift($back_trace))
@@ -521,26 +493,8 @@ function error_handler($errno, $errstr, $errfile, $errline)
       $errline = $trace['line'];
       break;
     }
-  }
+  }  
   
-  if(!error_call_matching_handler($errno, $errstr, $errfile, $errline))
-  {
-    error_default_handler($errno, $errstr, $errfile, $errline);  
-  }
-}
-
-/**
- * Find and call matching error handler and exit
- * Return false if no match found
- *
- * @param integer $errno 
- * @param string $errstr 
- * @param string $errfile 
- * @param string $errline 
- * @return mixed 
- */
-function error_call_matching_handler($errno, $errstr, $errfile, $errline)
-{
   $handlers = error();
   $is_http_err = http_response_status_is_valid($errno);
   foreach($handlers as $handler)
@@ -548,15 +502,17 @@ function error_call_matching_handler($errno, $errstr, $errfile, $errline)
     $e = is_array($handler['errno']) ? $handler['errno'] : array($handler['errno']);
     while($ee = array_shift($e))
     {
-      if($ee == PHP_ERRORS || $errno == $ee || ($ee == HTTP_STATUS_CODES && $is_http_err))
+      if($ee == $errno || $ee == E_LIM_PHP || ($ee == E_LIM_HTTP && $is_http_err))
       {
         echo call_if_exists($handler['function'], $errno, $errstr, $errfile, $errline);
         exit;
       }
     }
   }
-  return false;
+  echo error_default_handler($errno, $errstr, $errfile, $errline);
+  exit;
 }
+
 
 /**
  * Défault error handler
@@ -569,20 +525,83 @@ function error_call_matching_handler($errno, $errstr, $errfile, $errline)
  */
 function error_default_handler($errno, $errstr, $errfile, $errline)
 {
-  status(500);
+  $is_http_err = http_response_status_is_valid($errno);
+  $http_error_code = $is_http_err ? $errno : SERVER_ERROR;
+    
+  status($http_error_code);
+  
   if(($errno == E_USER_NOTICE || $errno == E_NOTICE) && option('debug'))
   {
     $o  = "<p>[".error_type($errno)."] ";
 	  $o .= "$errstr in <strong>$errfile</strong> line <strong>$errline</strong>: ";
 	  $o .= "</p>";
 	  error_notice($o);
+	  return;
   }
-  else
-  {
-    echo server_error($errno, $errstr, $errfile, $errline);
-    exit;
-  }
+
+  return $http_error_code == NOT_FOUND ?
+            error_not_found_output($errstr) :
+            error_server_error_output($errno, $errstr, $errfile, $errline);                    
 }
+
+/**
+ * Returns not found error output
+ *
+ * @param string $msg 
+ * @return string
+ */
+function error_not_found_output($msg="")
+{
+  if(!function_exists('not_found'))
+  {
+    # TODO not_found doesn't need to be redefined; change it into a error_show_not_found method.
+    function not_found($msg="")
+    {
+      option('views_dir', option('limonade_dir').'limonade/views/');
+      $msg = h($msg);
+      return html("<h1>Page not found:</h1><p>{$msg}</p>", error_layout());
+    }
+  }
+  return not_found($msg);
+}
+
+/**
+ * Returns server error output
+ *
+ * @param integer $errno 
+ * @param string $errstr 
+ * @param string $errfile 
+ * @param string $errline 
+ * @return string
+ */
+function error_server_error_output($errno, $msg, $errfile, $errline)
+{
+  if(!function_exists('server_error'))
+  {
+    function server_error($errno, $errstr, $errfile=null, $errline=null)
+    {
+      $is_http_error = http_response_status_is_valid($errno);
+      $args = compact('errno', 'errstr', 'errfile', 'errline', 'is_http_error');	
+    	option('views_dir', option('limonade_dir').'limonade/views/');
+    	return html('error.html.php', error_layout(), $args);
+    }
+  }
+  return server_error($errno, $msg, $errfile, $errline);
+}
+
+/**
+ * Set and returns error output layout
+ *
+ * @param string $layout 
+ * @return void
+ */
+function error_layout($layout = false)
+{
+  static $o_layout = 'default_layout.php';
+  if($layout !== false) $o_layout = $layout;
+  return $o_layout;
+}
+
 
 /**
  * Set a notice if provided and return all stored notices
@@ -600,49 +619,7 @@ function error_notice($str = null)
   return $notices;
 }
 
-/**
- * Default server error output
- *
- * @param integer $errno 
- * @param string $errstr 
- * @param string $errfile 
- * @param string $errline 
- * @return string
- */
-function server_error($errno, $errstr, $errfile=null, $errline=null)
-{
-  $is_http_error = http_response_status_is_valid($errno);
-  $o  = "<h1>";
-  $o .= $is_http_error ? http_response_status($errno) : "Internal Server Error";
-  $o .= "</h1>";
-  
-  if($is_http_error)
-  {
-    $o .= "<p>".h($errstr)."</p>";
-  }
 
-	if(option('env') > ENV_PRODUCTION && option('debug'))
-	{
-    if(!$is_http_error)
-    {
-      $o .= "<p>[".error_type($errno)."] ";
-  	  $o .= "$errstr in <strong>$errfile</strong> line <strong>$errline</strong>";
-  	  $o .= "</p>";
-    }
-    
-	  if($debug_args = set('_lim_err_debug_args'))
-	  {
-	    $o .= "<p><strong>Debug arguments</strong></p>";
-		  $o .= "<pre><code>".h(print_r($debug_args, true))."</code></pre>";
-	  }
-	  $o .= "<p><strong>Debug Trace</strong></p>";
-	  $o .= "<pre><code>".h(print_r(debug_backtrace(), true))."</code></pre>";
-	  $o .= "<p><strong>Limonade options</strong></p>";
-	  $o .= "<pre><code>".h(print_r(option(), true))."</code></pre>";
-	}
-	option('views_dir', option('limonade_dir').'limonade/views/');
-	return html($o, 'default_layout.php');
-}
 
 /**
  * return error code name for a given code num, or return all errors names
@@ -668,6 +645,18 @@ function error_type($num = null)
               E_RECOVERABLE_ERROR  => 'RECOVERABLE ERROR'
               );
   return is_null($num) ? $types : $types[$num];
+}
+
+/**
+ * Returns http response status for a given error number
+ *
+ * @param string $errno 
+ * @return integer
+ */
+function error_http_status($errno)
+{
+  $code = http_response_status_is_valid($errno) ? $errno : SERVER_ERROR;
+  return http_response_status($code);
 }
 
 
@@ -792,10 +781,11 @@ function request_uri($env = null)
   {
     $uri = $env['GET']['u'];
   }
-  else if (count($env['GET']) == 1 && trim(key($env['GET']), '/') != '')
-	{
-		$uri = key($env['GET']);
-	}
+  // bug: dot are converted to _... so we can't use it...
+  // else if (count($env['GET']) == 1 && trim(key($env['GET']), '/') != '')
+  // {
+  //  $uri = key($env['GET']);
+  // }
 	else
 	{
     $app_file = app_file();
@@ -1020,7 +1010,7 @@ function route_build($method, $path_or_array, $func, $agent_regexp = null)
            $parsed[] = $single_asterisk_subpattern;
            $name = $matches[1];
          };
-       
+
        else:
          $parsed[] = "/".preg_quote($elt, "#");
        
@@ -1064,6 +1054,13 @@ function route_find($method, $path)
        if(count($matches) > 1)
        {
          array_shift($matches);
+         $n_matches = count($matches);
+         $n_names = count($route["names"]);
+         if( $n_matches < $n_names )
+         {
+           $a = array_fill(0, $n_names - $n_matches, null);
+           $matches = array_merge($matches, $a);
+         }
          $params = array_combine(array_values($route["names"]), $matches);
        }
        $route["params"] = $params;
@@ -1104,16 +1101,17 @@ function layout($function_or_file = null)
 
 function xml($data)
 {
-   # TODO testing xml output function
-   header('Content-Type: text/xml; charset='.strtolower(option('encoding')));
-   return array_to_xml($data);
+  header('Content-Type: text/xml; charset='.strtolower(option('encoding')));
+  $args = func_get_args();
+  return call_user_func_array('render', $args);
 }
 
-function json($data, $json_option = 0)
+function css($content_or_func, $layout = '', $locals = array())
 {
-   # TODO testing json output function
-   header('Content-Type: application/x-javascript; charset='.strtolower(option('encoding')));
-   return json_encode($data, $json_option);
+   # TODO testing css output function
+   header('Content-Type: text/css; charset='.strtolower(option('encoding')));
+   $args = func_get_args();
+   return call_user_func_array('render', $args);
 }
 
 function txt($content_or_func, $layout = '', $locals = array())
@@ -1124,9 +1122,16 @@ function txt($content_or_func, $layout = '', $locals = array())
    return call_user_func_array('render', $args);
 }
 
-function render_file($filename)
+function json($data, $json_option = 0)
 {
-  # TODO implements render_file
+   # TODO testing json output function
+   header('Content-Type: application/x-javascript; charset='.strtolower(option('encoding')));
+   return json_encode($data, $json_option);
+}
+
+function render_file($filename, $return = false)
+{
+  # TODO implements X-SENDFILE headers
   // if($x-sendfile = option('x-sendfile'))
   // {
   //    // add a X-Sendfile header for apache and Lighttpd >= 1.5
@@ -1137,6 +1142,15 @@ function render_file($filename)
   // {
   //   
   // }
+  if(file_exists($filename))
+  {
+    $content_type = mime_type(file_extension($filename));
+    $header = 'Content-type: '.$content_type;
+    if(file_is_text($filename)) $header .= 'charset='.strtolower(option('encoding'));
+    header($header);
+    return file_read($filename, $return);
+  }
+  else halt(NOT_FOUND, "unknown filename $filename");
 }
 
 function render($content_or_func, $layout = '', $locals = array())
@@ -1320,6 +1334,60 @@ function array_to_xml($data, $rootNodeName = 'data', &$xml=null)
 
 ## HTTP utils  _________________________________________________________________
 
+define( 'HTTP_CONTINUE',                      100 );
+define( 'HTTP_SWITCHING_PROTOCOLS',           101 );
+define( 'HTTP_PROCESSING',                    102 );
+define( 'HTTP_OK',                            200 );
+define( 'HTTP_CREATED',                       201 );
+define( 'HTTP_ACCEPTED',                      202 );
+define( 'HTTP_NON_AUTHORITATIVE',             203 );
+define( 'HTTP_NO_CONTENT',                    204 );
+define( 'HTTP_RESET_CONTENT',                 205 );
+define( 'HTTP_PARTIAL_CONTENT',               206 );
+define( 'HTTP_MULTI_STATUS',                  207 );
+                                              
+define( 'HTTP_MULTIPLE_CHOICES',              300 );
+define( 'HTTP_MOVED_PERMANENTLY',             301 );
+define( 'HTTP_MOVED_TEMPORARILY',             302 );
+define( 'HTTP_SEE_OTHER',                     303 );
+define( 'HTTP_NOT_MODIFIED',                  304 );
+define( 'HTTP_USE_PROXY',                     305 );
+define( 'HTTP_TEMPORARY_REDIRECT',            307 );
+
+define( 'HTTP_BAD_REQUEST',                   400 );
+define( 'HTTP_UNAUTHORIZED',                  401 );
+define( 'HTTP_PAYMENT_REQUIRED',              402 );
+define( 'HTTP_FORBIDDEN',                     403 );
+define( 'HTTP_NOT_FOUND',                     404 );
+define( 'HTTP_METHOD_NOT_ALLOWED',            405 );
+define( 'HTTP_NOT_ACCEPTABLE',                406 );
+define( 'HTTP_PROXY_AUTHENTICATION_REQUIRED', 407 );
+define( 'HTTP_REQUEST_TIME_OUT',              408 );
+define( 'HTTP_CONFLICT',                      409 );
+define( 'HTTP_GONE',                          410 );
+define( 'HTTP_LENGTH_REQUIRED',               411 );
+define( 'HTTP_PRECONDITION_FAILED',           412 );
+define( 'HTTP_REQUEST_ENTITY_TOO_LARGE',      413 );
+define( 'HTTP_REQUEST_URI_TOO_LARGE',         414 );
+define( 'HTTP_UNSUPPORTED_MEDIA_TYPE',        415 );
+define( 'HTTP_RANGE_NOT_SATISFIABLE',         416 );
+define( 'HTTP_EXPECTATION_FAILED',            417 );
+define( 'HTTP_UNPROCESSABLE_ENTITY',          422 );
+define( 'HTTP_LOCKED',                        423 );
+define( 'HTTP_FAILED_DEPENDENCY',             424 );
+define( 'HTTP_UPGRADE_REQUIRED',              426 );
+
+define( 'HTTP_INTERNAL_SERVER_ERROR',         500 );
+define( 'HTTP_NOT_IMPLEMENTED',               501 );
+define( 'HTTP_BAD_GATEWAY',                   502 );
+define( 'HTTP_SERVICE_UNAVAILABLE',           503 );
+define( 'HTTP_GATEWAY_TIME_OUT',              504 );
+define( 'HTTP_VERSION_NOT_SUPPORTED',         505 );
+define( 'HTTP_VARIANT_ALSO_VARIES',           506 );
+define( 'HTTP_INSUFFICIENT_STORAGE',          507 );
+define( 'HTTP_NOT_EXTENDED',                  510 );
+
+
 function status($code = 500)
 {
 	$str = http_response_status_code($code);
@@ -1402,14 +1470,15 @@ function http_response_status_code($num)
 ## FILE utils  _________________________________________________________________
 
 /**
- * Returns all mime types in an associative array, with extensions as keys
+ * Returns mime type for a given extension or if no extension is provided,
+ * all mime types in an associative array, with extensions as keys. 
  * (extracted from Orbit source http://orbit.luaforge.net/)
  *
  * @return array
  */
-function mime_types()
+function mime_type($ext = null)
 {
-  return array(
+  $types = array(
     'ai'      => 'application/postscript',
     'aif'     => 'audio/x-aiff',
     'aifc'    => 'audio/x-aiff',
@@ -1567,7 +1636,24 @@ function mime_types()
     'xyz'     => 'chemical/x-xyz',
     'zip'     => 'application/zip'
   );
+  return is_null($ext) ? $types : $types[strtolower($ext)];
 }
+
+if(!function_exists('mime_content_type')) {
+  function mime_content_type($filename)
+  {
+    $ext = strtolower(array_pop(explode('.', $filename)));
+    if($mime = mime_type($ext)) return $mime;
+    elseif (function_exists('finfo_open')) {
+        $finfo = finfo_open(FILEINFO_MIME);
+        $mime = finfo_file($finfo, $filename);
+        finfo_close($finfo);
+        return $mime;
+    }
+    else return 'application/octet-stream';
+  }
+}
+
 
 /**
  * Read and output file content and return filesize in bytes or status after 
@@ -1579,9 +1665,8 @@ function mime_types()
  * @param string $retbytes 
  * @return void
  */
-function file_read_chunked($filename = null, $retbytes = true)
+function file_read_chunked($filename, $retbytes = true)
 {
-	if(is_null($filename)) $filename = $this->filename;
   $chunksize = 1*(1024*1024); // how many bytes per chunk
   $buffer    = '';
   $cnt       = 0;
@@ -1631,11 +1716,11 @@ function file_is_binary($filename)
  *				
  **/
 
-function file_read($filename = null, $output = false)
+function file_read($filename, $return = false)
 {
-	if(is_null($filename)) return null;
-	if($output) return file_read_chunked($filename);
-	return file_get_contents($filename);
+	if(!file_exists($filename)) trigger_error("$filename doesn't exists", E_USER_ERROR);
+	if($return) return file_get_contents($filename);
+	return file_read_chunked($filename);
 }
 
 function file_list_dir($dir)
