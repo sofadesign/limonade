@@ -1,0 +1,401 @@
+# Limonade
+
+Limonade est un micro framework PHP qui permet le prototypage et le développement rapide d'applications web.
+
+Prenant son inspiration de frameworks tels que [Sinatra](http://www.sinatrarb.com/) ou [Camping](http://github.com/why/camping/tree/master) en Ruby, ou encore  [Orbit](http://orbit.luaforge.net/) en Lua, il se veut simple, léger et d'un usage extrêmement souple.
+
+Limonade met en oeuvre un ensemble de fonctions complémentaires à l'API de base de PHP, en cohérence avec celle-ci, tout en se reposant au maximum sur ses fonctions natives. 
+
+Les fonctions mises à disposition par Limonade sont assimilables extrêmement rapidement, et fournissent tout ce qu'on est en droit d'attendre d'un framework moderne ( MVC, REST, ...).
+
+
+    require_once 'lib/limonade.php'
+    dispatch('/', 'hello');
+        function hello()
+        {
+            return 'Hello world!';
+        }
+    run();
+    
+## Routes ##
+
+Dans Limonade, les routes associent une méthode HTTP et un masque de recherche à une fonction.
+
+    dispatch('/', 'my_get_function');
+    # identique à dispatch_get('my_get_function');
+        function my_get_function()
+        {
+            // Show something
+        }
+    
+    dispatch_post('/', 'my_post_function'); 
+        function my_post_function()
+        {
+            // Create something
+        }
+        
+    dispatch_update('/', 'my_update_function'); 
+        function my_update_function()
+        {
+            // Update something
+        }
+        
+    dispatch_delete('/', 'my_delete_function'); 
+        function my_delete_function()
+        {
+            // Delete something
+        }
+        
+Les routes sont testées dans l'ordre dans lequel elle sont déclarées. Le chemin auquel les routes sont comparées peut être passé de plusieurs manière via l'url:
+
+    http://localhost/my_app/?u=/my/path
+    http://localhost/my_app/?uri=/my/path
+    http://localhost/my_app/index.php?/my/path
+    http://localhost/my_app/index.php/my/path
+    http://localhost/my_app/?/my/path
+    
+*[TODO]: url rewriting*
+
+Les masque peuvent contenir des paramètres nommés, dont la valeur seront ensuite accessible via la fonction `params()`
+
+    dispatch('/hello/:name', 'hello');
+        function  hello()
+        {
+            $name = params('name');
+            return 'Hello $name';
+        }
+
+Les masques peuvent également contenir des caractères joker. Les valeur correspondante seront accessibles via des index qui suivent leur ordre dans le masque.
+
+    dispatch('/writing/*/to/*', 'my_letter');
+        function my_letter()
+        {
+            # Matches /writing/an_email/to/joe
+            $type = params(0); # "an_email"
+            $name = params(1); # "joe"
+            # ...
+        }
+        
+    dispatch('/files/*.*', 'share_files');
+        function share_files()
+        {
+            # matches /files/readme.txt
+            $ext = params(1);
+            $filename = params(0).".".$ext;
+            # ...
+        }
+        
+Contrairement au caractère joker simple `*`, le double caractère joker `**` permet de spécifier une chaîne de caractères qui peut comporter un `/`
+
+    dispatch('/files/**', 'share_files')
+        function share_files()
+        {
+            # Matches /files/my/own/file.txt
+            $filename = params(0); # my/own/file.txt
+        }
+
+Le masque peut également être une expression régulière s'il commence par `^`
+
+    dispatch('^/my/own/(\d+)/regexp', 'my_func');
+        function my_func()
+        {
+            # matches /my/own/12/regexp
+            $num = params(0);
+        }
+        
+On peut également nommer les paramètres joker et les captures d'expression régulière en passant un tableau contenant les noms désirés.
+
+    dispatch(array('/say/*/to/**', array("what", "name")), 'my_func');
+        function my_func()
+        {
+            # Matches /say/hello/to/joe
+            $what = params('what');
+            $name = params('name');
+        }
+    
+Les fonctions appelées par les routes peuvent être écrites n'importe où avant l'éxécution de la fonction `run()`. Elles peuvent également être regroupées dans des fichiers controlleurs rangés dans un dossier `controllers/`.
+
+    /                   # site root
+     - index.php        # file with routes declarations and run()
+     + controllers/
+         - blog.php     # functions for blog: blog_index(), blog_show(),
+                        #  blog_post()...
+         - comments.php # comments_for_a_post(), comment_add()...
+
+L'emplacement de ce dossier est modifiable grâce à l'option `controllers_dir`
+
+    option('controllers_dir', dirname(__FILE__).'/other/dir/for/controllers');
+
+
+## Vues et templates ##
+
+
+Les fichiers templates sont stockés par défaut dans le dossier `views/`.  
+L'emplacement de ce dossier est modifiable grâce à l'option `views_dir`
+
+    option('views_dir', dirname(__FILE__).'/other/dir/for/views');
+
+Pour passer des variables au templates, on utilise la fonction `set()`
+
+    set('name', 'John Doe');
+    render('index.html.php');
+    
+On peut également passer des variables directement au template:
+
+    render('index.html.php', null, array('name' => 'John Doe' ));
+    
+La méthode `set_or_default` permet de passer une variable, et si elle est vide, une valeur par défaut. Elle se révèle particulièrement utile pour l'assignation de paramètres optionnels extrait de l'url avec la fonction `params()`.
+
+    dispatch('/hello/:name', 'hello');
+        function  hello()
+        {
+            # matching /hello/
+            set_or_default('name', params('name'),'John');
+            return render('Hello %s!'); // returns 'Hello John!' because params('name') was empty. Else it would have return params('name') value.
+        }
+    
+    
+    
+    
+
+### Layouts ###
+
+
+Les templates peuvent être rendus à l'intérieur d'un autre template appelé layout.
+
+Ce layout est spécifié par la fonction `layout`
+
+    layout('default_layout.php');
+    
+ou directement via la fonction de rendu des templates
+
+    render('index.html.php', 'default_layout.php');
+    
+Si la valeur du layout est `null`, le template sera rendu sans layout
+
+    render('index.html.php', null);
+
+### Chaînes formatées et templates en ligne ###
+
+Les chaînes formatées à la manière de [`sprintf`](http://php.net/manual/function.sprintf.php) sont autorisées:
+
+    set('num', 5);
+    set('tree');
+    render('There are %d monkeys in the %s') // returns 'There are 5 monkeys in the tree'
+    
+Il est également possible de faire appel à une fonction pour template. On peut ainsi inclure les templates dans un même fichier afin de produire, par exemple, une application dans un fichier unique.
+
+
+    function html_message($vars){ extract($vars);?>
+        <h1>Title: <?=h($title)?></h1>
+        <p>Message:<br>
+           <?=h($msg)?></p>
+    <?}
+    
+    set('title', 'Hello!');
+    set('msg', 'There are 100 monkeys in the Chennai and bangalore');
+    render('html_message');
+
+### Templates HTML ###
+
+La fonction `html` permet de rendre un template de la même manière que `render`. Une en-tête HTTP précise le `Content-type` adéquat (`text/html`) et l'encodage défini dans les options (utf8 par défaut).
+
+    html('my_template.html.php');
+
+
+### Templates XML ###
+
+La fonction `xml` permet de rendre un template de la même manière que `render`. Une en-tête HTTP précise le `Content-type` adéquat (`text/xml`) et l'encodage défini dans les options (utf8 par défaut).
+
+### Templates CSS ###
+
+La fonction `css` permet de rendre un template de la même manière que `render`. Une en-tête HTTP précise le `Content-type` adéquat (`text/css`) et l'encodage défini dans les options (utf8 par défaut).
+
+    css('screen.css.php');
+
+### Templates TXT ###
+
+La fonction `txt` permet de rendre un template de la même manière que `render`. Une en-tête HTTP précise le `Content-type` adéquat (`text/plain`) et l'encodage défini dans les options (utf8 par défaut).
+
+    txt('index.txt.php');
+    
+### Templates JSON ###
+
+Comme la fonction [`json_encode`](http://php.net/manual/function.json-encode.php), retourne la réprésentation json d'une valeur. Une en-tête HTTP précise le `Content-type` adéquat et l'encodage défini dans les options (utf8 par défaut).
+
+    json($my_data);
+
+### Servir des fichiers ###
+
+La fonction `render_file` permet de rendre un fichier directement dans le tampon de sortie. 
+    
+    render_file(option('public_dir').'foo.jpg');
+
+Une en-tête HTTP précise le `Content-type` adéquat en fonction de l'exetnsion du fichier et l'encodage défini dans les options (utf8 par défaut) pour les fichiers textes.
+
+La sortie est temporisée afin de prendre en charge aisément des fichiers de grande taille.
+
+### Captures ###
+
+[TODO] `content_for($name); endcontent();`
+
+## Avant et après la requête ##
+
+Vous pouvez définir une fonction `before` qui sera executée avant chaque requête. Cela s'avère très utile pour définir un layout par défaut ou des variables à passer aux templates
+
+    function before()
+    {
+        layout('default_layout.php');
+        set('site_title', 'My Website');
+    }
+
+Un filtre de sortie `after` est également disponible. Il est exécuté après chaque requête et permet d'appliquer une transformation à la sortie (sauf pour les sorties `render_file` qui sont envoyées directement au tampon de sortie).
+
+    function after($output){
+        $config = array('indent' => TRUE,
+    	                'output-xhtml' => TRUE,
+    	                'wrap' => 200);
+
+    	$tidy = tidy_parse_string($output, $config, option('encoding'));
+    	return $tidy->cleanRepair();
+    }
+
+## Configuration ##
+
+Vous pouvez définir une fonction `configure` qui sera exécutée au début de l'application (au début de l'exécution de `run()`).
+Vous pouvez notamment y définir les différentes options, une connexion à une base de donnée...
+
+    function configure()
+    {
+        $env = $_SERVER['HTTP_HOST'] == "localhost" ? ENV_DEVELOPMENT : ENV_PRODUCTION;
+        option('env', $env);
+        if(option('env') > ENV_PRODUCTION)
+    	{
+    		options('dsn', 'sqlite:db/development.db'));
+    	}
+    	else
+    	{
+    	    options('dsn', 'sqlite:db/production.db'));
+    	}
+        $GLOBALS['my_db_connexion'] = new PDO(option('dsn'));
+    }
+    
+
+
+### Options ###
+
+La fonction `option` permet de définir et d'accéder aux options de l'application
+
+    option('env', ENV_PRODUCTION);
+    option('env'); // return ENV_PRODUCTION value
+    
+Si le nom de l'option n'est pas précisé, retourne un tableau de toutes les options définies.
+
+Vous pouvez l'utiliser pour gérer les options propres à Limonade mais aussi des options personnalisées pour votre application.
+
+Les options utilisées par Limonade ont par défaut les valeurs suivantes:
+
+    option('root_dir',        $root_dir); // le dossier qui contient le fichier de lancement de l'application
+    option('limonade_dir',    dirname(__FILE__).'/'); // dossier contenant le fichier prinicipal limonade.php.
+    option('public_dir',      option('root_dir').'/public/');
+    option('views_dir',       option('root_dir').'/views/');
+    option('controllers_dir', option('root_dir').'/controllers/');
+    option('lib_dir',         option('root_dir').'/lib/');
+    option('env',             ENV_PRODUCTION);
+    option('debug',           true);
+    option('encoding',        'utf-8');
+    option('x-sendfile',      0); // 0: disabled, 
+                                // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
+                                // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
+
+## Gestion des erreurs ##
+
+### Halt ###
+
+Vous pouvez interrompre l'execution de l'application avec la fonction `halt`
+Les erreurs seront prises en charge par les gestionnaires d'erreur par défaut de Limonade ou par ceux que vous aurez définis.
+
+    halt(NOT_FOUND);
+    halt("En error occured in my app...");
+
+### Not Found ###
+
+Par défaut, renvoie sur le gestionnaire d'erreur `not_found($msg)` et envoie un _404 NOT FOUND_ dans les en-têtes HTTP. 
+
+    halt(NOT_FOUND);
+    halt(NOT_FOUND, "This product doesn't exists.");
+    
+Pour définir un nouvel affichage de ce erreurs, il suffit de déclarer une fonction not_found
+
+    function not_found($errno, $errstr, $errfile=null, $errline=null)
+    {
+        set('errno', $errno);
+        set('errstr', $errstr);
+        set('errfile', $errfile);
+        set('errline', $errline);
+        return html("show_not_found_errors.html.php");
+    }
+    
+### Server Error ###
+
+Par défaut, renvoie sur le gestionnaire d'erreur `server_error($msg)` et envoie un _500 INTERNAL SERVER ERROR_ dans les en-têtes HTTP.
+
+    halt();
+    halt('Breaking bad!');
+    halt(SERVER_ERROR, "Not good...");
+    trigger_error("Wrong parameter", E_USER_ERROR);
+    
+Les erreurs php sont également capturées et envoyées à ce gestionnaire d'erreur.
+
+Pour définir un nouvel affichage de ce erreurs, il suffit de déclarer une fonction server_error
+
+    function server_error($errno, $errstr, $errfile=null, $errline=null)
+    {
+        $args = compact('errno', 'errstr', 'errfile', 'errline');	
+        return html("show_server_errors.html.php", error_layout(), $args);
+    }
+
+### Error layout ###
+
+Permet de définir et d'accéder à un layout dédié à l'affichage d'erreurs
+
+    error_layout('error_layout.php');
+    error_layout(); // return 'error_layout.php'
+
+### Capture des erreurs ###
+
+En plus de la personnalisation de l'affichage des erreurs courantes `NOT_FOUND` et `SERVER_ERROR`, limonade permet de rediriger de manière précise les erreurs vers vos propres fonctions.
+
+    error(E_USER_WARNING, 'my_notices')
+        function my_notices($errno, $errstr, $errfile, $errline)
+        {
+            // storing php warnings in a log file
+            // ...
+            status(SERVER_ERROR);
+            return html('<h1>Server Error</h1>');
+        }
+        
+La constante `E_LIM_HTTP` désigne toutes les erreurs HTTP
+
+    error(E_LIM_HTTP, 'my_http_errors')
+        function my_http_errors($errno, $errstr, $errfile, $errline)
+        {
+            status($errno);
+            return html('<h1>'.http_response_status_code($errno).'</h1>');
+        }
+    
+La constante `E_LIM_PHP` désigne toutes les erreurs PHP (renvoyé par PHP ou via `trigger_error`).
+
+## Testing ##
+
+[TODO]
+
+## Liens ##
+
+* [Bug report](http://sofadesign.lighthouseapp.com/projects/29612-limonade/overview)
+* [Support / Discussions](http://groups.google.fr/group/limonade)
+
+
+
+
+
