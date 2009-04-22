@@ -19,7 +19,7 @@ Les fonctions mises à disposition par Limonade sont assimilables extrêmement r
     
 ## Routes ##
 
-Dans Limonade, les routes associent une méthode HTTP et un masque de recherche à une fonction.
+Dans Limonade, les routes associent une méthode HTTP et un masque de recherche d'URL à une fonction.
 
     dispatch('/', 'my_get_function');
     # identique à dispatch_get('my_get_function');
@@ -192,6 +192,7 @@ Il est également possible de faire appel à une fonction pour template. On peut
            <?=h($msg)?></p>
     <?}
     
+    // in a request handling function
     set('title', 'Hello!');
     set('msg', 'There are 100 monkeys in the Chennai and bangalore');
     render('html_message');
@@ -221,7 +222,7 @@ La fonction `txt` permet de rendre un template de la même manière que `render`
     
 ### Templates JSON ###
 
-Comme la fonction [`json_encode`](http://php.net/manual/function.json-encode.php), retourne la réprésentation json d'une valeur. Une en-tête HTTP précise le `Content-type` adéquat et l'encodage défini dans les options (utf8 par défaut).
+Comme la fonction [`json_encode`](http://php.net/manual/function.json-encode.php), retourne la réprésentation json d'une valeur. Une en-tête HTTP précise le `Content-type` adéquat (`application/x-javascript`) et l'encodage défini dans les options (utf8 par défaut).
 
     json($my_data);
 
@@ -231,7 +232,7 @@ La fonction `render_file` permet de rendre un fichier directement dans le tampon
     
     render_file(option('public_dir').'foo.jpg');
 
-Une en-tête HTTP précise le `Content-type` adéquat en fonction de l'exetnsion du fichier et l'encodage défini dans les options (utf8 par défaut) pour les fichiers textes.
+Une en-tête HTTP précise le `Content-type` adéquat en fonction de l'extension du fichier et l'encodage défini dans les options (utf8 par défaut) pour les fichiers textes.
 
 La sortie est temporisée afin de prendre en charge aisément des fichiers de grande taille.
 
@@ -280,9 +281,9 @@ Vous pouvez notamment y définir les différentes options, une connexion à une 
         $GLOBALS['my_db_connexion'] = new PDO(option('dsn'));
     }
     
+L'ensemble des fichiers PHP contenus dans le dossier défini par `option('lib_dir')` (`lib/` par défaut) sont chargés avec [`require_once`](http://php.net/manual/function.require-once.php) juste avant l'exécution de la méthode `configure`. Vous pouvez ainsi placer vos propres fonction et bibliothèques dans ce dossier afin qu'ils soit chargés et disponibles au démarrage de l'application.
 
-
-### Options ###
+## Options ##
 
 La fonction `option` permet de définir et d'accéder aux options de l'application
 
@@ -320,12 +321,12 @@ Les erreurs seront prises en charge par les gestionnaires d'erreur par défaut d
 
 ### Not Found ###
 
-Par défaut, renvoie sur le gestionnaire d'erreur `not_found($msg)` et envoie un _404 NOT FOUND_ dans les en-têtes HTTP. 
+Par défaut, renvoie sur le gestionnaire d'erreur `not_found` et envoie un _`404 NOT FOUND`_ dans les en-têtes HTTP. 
 
     halt(NOT_FOUND);
     halt(NOT_FOUND, "This product doesn't exists.");
     
-Pour définir un nouvel affichage de ce erreurs, il suffit de déclarer une fonction not_found
+Pour définir un nouvel affichage de ce erreurs, il suffit de déclarer une fonction `not_found`
 
     function not_found($errno, $errstr, $errfile=null, $errline=null)
     {
@@ -338,7 +339,7 @@ Pour définir un nouvel affichage de ce erreurs, il suffit de déclarer une fonc
     
 ### Server Error ###
 
-Par défaut, renvoie sur le gestionnaire d'erreur `server_error($msg)` et envoie un _500 INTERNAL SERVER ERROR_ dans les en-têtes HTTP.
+Par défaut, renvoie sur le gestionnaire d'erreur `server_error` et envoie un _`500 INTERNAL SERVER ERROR`_ dans les en-têtes HTTP.
 
     halt();
     halt('Breaking bad!');
@@ -347,7 +348,7 @@ Par défaut, renvoie sur le gestionnaire d'erreur `server_error($msg)` et envoie
     
 Les erreurs php sont également capturées et envoyées à ce gestionnaire d'erreur.
 
-Pour définir un nouvel affichage de ce erreurs, il suffit de déclarer une fonction server_error
+Pour définir un nouvel affichage de ce erreurs, il suffit de déclarer une fonction `server_error`
 
     function server_error($errno, $errstr, $errfile=null, $errline=null)
     {
@@ -384,7 +385,7 @@ La constante `E_LIM_HTTP` désigne toutes les erreurs HTTP
             return html('<h1>'.http_response_status_code($errno).'</h1>');
         }
     
-La constante `E_LIM_PHP` désigne toutes les erreurs PHP (renvoyé par PHP ou via `trigger_error`).
+La constante `E_LIM_PHP` désigne toutes les erreurs PHP (renvoyé par PHP ou via [`trigger_error`](http://php.net/manual/function.trigger-error.php)).
 
 ## Testing ##
 
@@ -394,6 +395,7 @@ La constante `E_LIM_PHP` désigne toutes les erreurs PHP (renvoyé par PHP ou vi
 
 * [Bug report](http://sofadesign.lighthouseapp.com/projects/29612-limonade/overview)
 * [Support / Discussions](http://groups.google.fr/group/limonade)
+
 
 
 
