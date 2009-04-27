@@ -1,5 +1,8 @@
 <?php
-                                                                              
+/**
+ * @package limonade
+ */
+                                                                      
 # ============================================================================ #
 #                                                                              # 
 #    L I M O N A D E                                                           # 
@@ -10,7 +13,7 @@
 #    For more informations: <http://github/sofadesign/limonade>                #
 #                                                                              #
 #                                                                              #
-#   -----------------------------------------------------------------------    #                                                                              #
+#   -----------------------------------------------------------------------    #
 #    Copyright (c) 2009 Fabrice Luraine                                        #
 #                                                                              #
 #    Permission is hereby granted, free of charge, to any person               #
@@ -35,6 +38,9 @@
 #    OTHER DEALINGS IN THE SOFTWARE.                                           #
 # ============================================================================ # 
 
+/**
+ * --
+ */
 
 
 
@@ -45,7 +51,6 @@
 # ============================================================================ #
 #    0. PREPARE                                                                #
 # ============================================================================ #
-
 
 ## CONSTANTS __________________________________________________________________
 define('LIMONADE',             '0.3');
@@ -113,7 +118,7 @@ ini_set('display_errors', 0);
 # ============================================================================ #
 #    1. BASE                                                                   #
 # ============================================================================ #
-
+ 
 ## ABSTRACTS ___________________________________________________________________
 
 # function configure(){}
@@ -233,7 +238,7 @@ function set($name = null, $values = null)
  * @param string $name 
  * @param string $value 
  * @param string $default 
- * @return void
+ * @return mixed setted value
  */
 function set_or_default($name, $value, $default)
 {
@@ -418,13 +423,13 @@ function app_file()
 # ============================================================================ #
 #    2. ERROR                                                                  #
 # ============================================================================ #
-
+ 
 /**
  * Associate a function with error code(s) and return all associations
  *
  * @param string $errno 
  * @param string $function 
- * @return void
+ * @return array
  */
 function error($errno = null, $function = null)
 {
@@ -443,7 +448,7 @@ function error($errno = null, $function = null)
  * $errno and $msg arguments can be passsed in any order
  * If no arguments are passed, default $errno is SERVER_ERROR (500)
  *
- * @param integer,string $errno Error number or message string
+ * @param int,string $errno Error number or message string
  * @param string,string $msg Message string or error number
  * @param mixed $debug_args extra data provided for debugging
  * @return void
@@ -477,7 +482,7 @@ function halt($errno = SERVER_ERROR, $msg = '', $debug_args = null)
  * Find and call matching error handler and exit
  * If no match found, call default error handler
  *
- * @param integer $errno 
+ * @param int $errno 
  * @param string $errstr 
  * @param string $errfile 
  * @param string $errline 
@@ -516,13 +521,13 @@ function error_handler_dispatcher($errno, $errstr, $errfile, $errline)
 
 
 /**
- * Défault error handler
+ * Default error handler
  *
  * @param string $errno 
  * @param string $errstr 
  * @param string $errfile 
  * @param string $errline 
- * @return void
+ * @return string error output
  */
 function error_default_handler($errno, $errstr, $errfile, $errline)
 {
@@ -569,7 +574,7 @@ function error_not_found_output($errno, $errstr, $errfile, $errline)
 /**
  * Returns server error output
  *
- * @param integer $errno 
+ * @param int $errno 
  * @param string $errstr 
  * @param string $errfile 
  * @param string $errline 
@@ -594,7 +599,7 @@ function error_server_error_output($errno, $errstr, $errfile, $errline)
  * Set and returns error output layout
  *
  * @param string $layout 
- * @return void
+ * @return string
  */
 function error_layout($layout = false)
 {
@@ -652,7 +657,7 @@ function error_type($num = null)
  * Returns http response status for a given error number
  *
  * @param string $errno 
- * @return integer
+ * @return int
  */
 function error_http_status($errno)
 {
@@ -671,12 +676,12 @@ function error_http_status($errno)
 # ============================================================================ #
 #    3. REQUEST                                                                #
 # ============================================================================ #
-
+ 
 /**
  * Returns current request method for a given environment or current one
  *
  * @param string $env 
- * @return void
+ * @return string
  */
 function request_method($env = null)
 {
@@ -696,7 +701,7 @@ function request_method($env = null)
  * Checks if a request method or current one is allowed
  *
  * @param string $m 
- * @return boolean
+ * @return bool
  */
 function request_method_is_allowed($m = null)
 {
@@ -708,7 +713,7 @@ function request_method_is_allowed($m = null)
  * Checks if request method is GET
  *
  * @param string $env 
- * @return bolean
+ * @return bool
  */
 function request_is_get($env = null)
 {
@@ -719,7 +724,7 @@ function request_is_get($env = null)
  * Checks if request method is POST
  *
  * @param string $env 
- * @return bolean
+ * @return bool
  */
 function request_is_post($env = null)
 {
@@ -730,7 +735,7 @@ function request_is_post($env = null)
  * Checks if request method is PUT
  *
  * @param string $env 
- * @return bolean
+ * @return bool
  */
 function request_is_put($env = null)
 {
@@ -741,7 +746,7 @@ function request_is_put($env = null)
  * Checks if request method is DELETE
  *
  * @param string $env 
- * @return bolean
+ * @return bool
  */
 function request_is_delete($env = null)
 {
@@ -834,7 +839,7 @@ function request_uri($env = null)
 # ============================================================================ #
 #    4. ROUTER                                                                 #
 # ============================================================================ #
-
+ 
 /**
  * an alias of dispatch_get
  *
@@ -1048,13 +1053,13 @@ function route_build($method, $path_or_array, $func, $agent_regexp = null)
 }
 
 /**
- * Find a route and returns it
- * If not found, returns false
+ * Find a route and returns it.
+ * If not found, returns false.
  * Routes are checked from first added to last added.
  *
  * @param string $method 
  * @param string $path 
- * @return void
+ * @return array,false
  */
 function route_find($method, $path)
 {
@@ -1092,81 +1097,19 @@ function route_find($method, $path)
 #    OUTPUT AND RENDERING                                                      #
 # ============================================================================ #
 
-function html($content_or_func, $layout = '', $locals = array())
-{
-   # TODO complete headers in output methods if needed  http://en.wikipedia.org/wiki/List_of_HTTP_headers
-   header('Content-Type: text/html; charset='.strtolower(option('encoding')));
-   $args = func_get_args();
-   return call_user_func_array('render', $args);
-}
-
 /**
- * Set and return current layout
+ * Returns a string to output
+ * 
+ * It might use a a template file or function, a formatted string (like sprintf).
+ * It could be embraced by a layout or not.
+ * Local vars can be passed in addition to variables made available with the <code>set</code> function.
+ * 
  *
- * @param string $function_or_file 
- * @return void
+ * @param string $content_or_func 
+ * @param string $layout 
+ * @param string $locals 
+ * @return string
  */
-function layout($function_or_file = null)
-{
-	static $layout = null;
-	if(func_num_args() > 0) $layout = $function_or_file;
-	return $layout;
-}
-
-function xml($data)
-{
-  header('Content-Type: text/xml; charset='.strtolower(option('encoding')));
-  $args = func_get_args();
-  return call_user_func_array('render', $args);
-}
-
-function css($content_or_func, $layout = '', $locals = array())
-{
-   # TODO testing css output function
-   header('Content-Type: text/css; charset='.strtolower(option('encoding')));
-   $args = func_get_args();
-   return call_user_func_array('render', $args);
-}
-
-function txt($content_or_func, $layout = '', $locals = array())
-{
-   # TODO testing txt output function
-   header('Content-Type: text/plain; charset='.strtolower(option('encoding')));
-   $args = func_get_args();
-   return call_user_func_array('render', $args);
-}
-
-function json($data, $json_option = 0)
-{
-   # TODO testing json output function
-   header('Content-Type: application/x-javascript; charset='.strtolower(option('encoding')));
-   return json_encode($data, $json_option);
-}
-
-function render_file($filename, $return = false)
-{
-  # TODO implements X-SENDFILE headers
-  // if($x-sendfile = option('x-sendfile'))
-  // {
-  //    // add a X-Sendfile header for apache and Lighttpd >= 1.5
-  //    if($x-sendfile > X-SENDFILE) // add a X-LIGHTTPD-send-file header 
-  //   
-  // }
-  // else
-  // {
-  //   
-  // }
-  if(file_exists($filename))
-  {
-    $content_type = mime_type(file_extension($filename));
-    $header = 'Content-type: '.$content_type;
-    if(file_is_text($filename)) $header .= 'charset='.strtolower(option('encoding'));
-    header($header);
-    return file_read($filename, $return);
-  }
-  else halt(NOT_FOUND, "unknown filename $filename");
-}
-
 function render($content_or_func, $layout = '', $locals = array())
 {
 	$args = func_get_args();
@@ -1198,6 +1141,129 @@ function render($content_or_func, $layout = '', $locals = array())
 	return render($layout, null, array('content' => $content));
 }
 
+/**
+ * Returns html output with proper http headers
+ *
+ * @param string $content_or_func 
+ * @param string $layout 
+ * @param string $locals 
+ * @return string
+ */ 
+function html($content_or_func, $layout = '', $locals = array())
+{
+   # TODO complete headers in output methods if needed  http://en.wikipedia.org/wiki/List_of_HTTP_headers
+   header('Content-Type: text/html; charset='.strtolower(option('encoding')));
+   $args = func_get_args();
+   return call_user_func_array('render', $args);
+}
+
+/**
+ * Set and return current layout
+ *
+ * @param string $function_or_file 
+ * @return string
+ */
+function layout($function_or_file = null)
+{
+	static $layout = null;
+	if(func_num_args() > 0) $layout = $function_or_file;
+	return $layout;
+}
+
+/**
+ * Returns xml output with proper http headers
+ *
+ * @param string $content_or_func 
+ * @param string $layout 
+ * @param string $locals 
+ * @return string
+ */
+function xml($data)
+{
+  header('Content-Type: text/xml; charset='.strtolower(option('encoding')));
+  $args = func_get_args();
+  return call_user_func_array('render', $args);
+}
+
+/**
+ * Returns css output with proper http headers
+ *
+ * @param string $content_or_func 
+ * @param string $layout 
+ * @param string $locals 
+ * @return string
+ */
+function css($content_or_func, $layout = '', $locals = array())
+{
+   # TODO testing css output function
+   header('Content-Type: text/css; charset='.strtolower(option('encoding')));
+   $args = func_get_args();
+   return call_user_func_array('render', $args);
+}
+
+/**
+ * Returns txt output with proper http headers
+ *
+ * @param string $content_or_func 
+ * @param string $layout 
+ * @param string $locals 
+ * @return string
+ */
+function txt($content_or_func, $layout = '', $locals = array())
+{
+   # TODO testing txt output function
+   header('Content-Type: text/plain; charset='.strtolower(option('encoding')));
+   $args = func_get_args();
+   return call_user_func_array('render', $args);
+}
+
+/**
+ * Returns json representation of data with proper http headers
+ *
+ * @param string $data 
+ * @param int $json_option
+ * @return string
+ */
+function json($data, $json_option = 0)
+{
+   # TODO testing json output function
+   header('Content-Type: application/x-javascript; charset='.strtolower(option('encoding')));
+   return json_encode($data, $json_option);
+}
+
+/**
+ * undocumented function
+ *
+ * @param string $filename 
+ * @param string $return 
+ * @return mixed number of bytes delivered or file output if $return = true
+ */
+function render_file($filename, $return = false)
+{
+  # TODO implements X-SENDFILE headers
+  // if($x-sendfile = option('x-sendfile'))
+  // {
+  //    // add a X-Sendfile header for apache and Lighttpd >= 1.5
+  //    if($x-sendfile > X-SENDFILE) // add a X-LIGHTTPD-send-file header 
+  //   
+  // }
+  // else
+  // {
+  //   
+  // }
+  if(file_exists($filename))
+  {
+    $content_type = mime_type(file_extension($filename));
+    $header = 'Content-type: '.$content_type;
+    if(file_is_text($filename)) $header .= 'charset='.strtolower(option('encoding'));
+    header($header);
+    return file_read($filename, $return);
+  }
+  else halt(NOT_FOUND, "unknown filename $filename");
+}
+
+
+
 
 
 
@@ -1210,6 +1276,12 @@ function render($content_or_func, $layout = '', $locals = array())
 #    5. HELPERS                                                                #
 # ============================================================================ #
 
+/**
+ * Returns an url composed of params joined with /
+ *
+ * @param string $params 
+ * @return string
+ */ 
 function url_for($params = null)
 {
   $env = env();
@@ -1249,7 +1321,7 @@ function h($str, $quote_style = ENT_NOQUOTES, $charset = null)
 # ============================================================================ #
 #    6. UTILS                                                                  #
 # ============================================================================ #
-
+ 
 /**
  * Calls a function if exists
  *
@@ -1265,6 +1337,13 @@ function call_if_exists($func)
   return;
 }
 
+/**
+ * Define a constant unless it already exists
+ *
+ * @param string $name 
+ * @param string $value 
+ * @return void
+ */
 function define_unless_exists($name, $value)
 {
   if(!defined($anme)) define($name, $value);
@@ -1275,7 +1354,7 @@ function define_unless_exists($name, $value)
  *
  * @param string $value 
  * @param string $default default value returned if $value is empty
- * @return void
+ * @return mixed
  */
 function value_or_default($value, $default)
 {
@@ -1348,6 +1427,9 @@ function array_to_xml($data, $rootNodeName = 'data', &$xml=null)
 
 ## HTTP utils  _________________________________________________________________
 
+/**
+ * Constants: HTTP status codes
+ */
 define( 'HTTP_CONTINUE',                      100 );
 define( 'HTTP_SWITCHING_PROTOCOLS',           101 );
 define( 'HTTP_PROCESSING',                    102 );
@@ -1401,13 +1483,25 @@ define( 'HTTP_VARIANT_ALSO_VARIES',           506 );
 define( 'HTTP_INSUFFICIENT_STORAGE',          507 );
 define( 'HTTP_NOT_EXTENDED',                  510 );
 
-
+/**
+ * Output proper HTTP header for a given HTTP code
+ *
+ * @param string $code 
+ * @return void
+ */
 function status($code = 500)
 {
 	$str = http_response_status_code($code);
 	header($str);
 }
 
+/**
+ * Returns HTTP response status for a given code.
+ * If no code provided, return an array of all status
+ *
+ * @param string $num 
+ * @return string,array
+ */
 function http_response_status($num = null)
 {
   $status =  array(
@@ -1470,12 +1564,24 @@ function http_response_status($num = null)
   return is_null($num) ? $status : $status[$num];
 }
 
+/**
+ * Checks if an HTTP response code is valid
+ *
+ * @param string $num 
+ * @return bool
+ */
 function http_response_status_is_valid($num)
 {
   $r = http_response_status($num);
   return !empty($r);
 }
 
+/**
+ * Returns an HTTP response status string for a given code
+ *
+ * @param string $num 
+ * @return string
+ */
 function http_response_status_code($num)
 {
   if($str = http_response_status($num)) return "HTTP/1.1 $num $str";
@@ -1488,7 +1594,8 @@ function http_response_status_code($num)
  * all mime types in an associative array, with extensions as keys. 
  * (extracted from Orbit source http://orbit.luaforge.net/)
  *
- * @return array
+ * @param string $ext
+ * @return string, array
  */
 function mime_type($ext = null)
 {
@@ -1654,6 +1761,12 @@ function mime_type($ext = null)
 }
 
 if(!function_exists('mime_content_type')) {
+  /**
+   * Detect MIME Content-type for a file
+   *
+   * @param string $filename Path to the tested file.
+   * @return string
+   */
   function mime_content_type($filename)
   {
     $ext = strtolower(array_pop(explode('.', $filename)));
@@ -1677,7 +1790,7 @@ if(!function_exists('mime_content_type')) {
  *
  * @param string $filename 
  * @param string $retbytes 
- * @return void
+ * @return bool, int
  */
 function file_read_chunked($filename, $retbytes = true)
 {
@@ -1703,7 +1816,12 @@ function file_read_chunked($filename, $retbytes = true)
   return $status;
 }
 
-
+/**
+ * Returns file extension or false if none
+ *
+ * @param string $filename 
+ * @return string, false
+ */
 function file_extension($filename)
 {
 	$pos = strrpos($filename, '.');
@@ -1711,12 +1829,24 @@ function file_extension($filename)
 	return false;
 }
 
+/**
+ * Checks if $filename is a text file
+ *
+ * @param string $filename 
+ * @return bool
+ */
 function file_is_text($filename)
 {
 	if($mime = mime_content_type($filename)) return substr($mime,0,5) == "text/";
 	return null;
 }
 
+/**
+ * Checks if $filename is a binary file
+ *
+ * @param string $filename 
+ * @return void
+ */
 function file_is_binary($filename)
 {
 	$is_text = file_is_text($filename);
@@ -1724,9 +1854,9 @@ function file_is_binary($filename)
 }
 
 /**
- * file_read: return or output file content
+ * Return or output file content
  *
- * @return 	mixed null if no filename provided or filesize
+ * @return 	string, int
  *				
  **/
 
@@ -1737,6 +1867,12 @@ function file_read($filename, $return = false)
 	return file_read_chunked($filename);
 }
 
+/**
+ * Returns an array of files contained in a directory
+ *
+ * @param string $dir 
+ * @return array
+ */
 function file_list_dir($dir)
 {
 	$files = array(); 
