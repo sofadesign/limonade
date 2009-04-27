@@ -400,9 +400,10 @@ La constante `E_LIM_PHP` désigne toutes les erreurs PHP (renvoyé par PHP ou vi
 
 [TODO]
 
-## Liens ##
+## More ##
 
-* [Bug report](http://sofadesign.lighthouseapp.com/projects/29612-limonade/overview)
+* [Limonade web site](http://sofa-design.net/limonade/)
+* [Issue tracking / release planning](http://sofadesign.lighthouseapp.com/projects/29612-limonade/overview)
 * [Support / Discussions](http://groups.google.fr/group/limonade)
 
 

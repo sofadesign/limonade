@@ -1,11 +1,22 @@
 <?php
-
+/**
+ * @package tests
+ */
+ 
 # ============================================================================ #
 #    TESTS                                                                     #
 # ============================================================================ #
 
+/**
+ * load assertions
+ */
 require_once dirname(__FILE__)."/assertions.php";
 
+
+ 
+/**
+ * Constants and globals
+ */
 if(!defined('DS')) define("DS", DIRECTORY_SEPARATOR);
 
 if(!array_key_exists("limonade", $GLOBALS))
@@ -116,7 +127,8 @@ function tests_describe($msg = NULL)
 }
 
 /**
- * Display and ending the current tests suite
+ * Displays and ending the current tests suite
+ * 
  * @return void
  */
 function endtests()
@@ -150,6 +162,7 @@ function endtests()
 /**
  * Returns all user test functions
  *
+ * @access private
  * @return void
  */
 function tests_all_func()
@@ -226,7 +239,8 @@ function test_inc_assertions()
 
 /**
  * Error handler 
- *
+ * 
+ * @access private
  * @return boolean true
  */
 function test_error_handler($errno, $errstr, $errfile, $errline)
@@ -239,7 +253,8 @@ function test_error_handler($errno, $errstr, $errfile, $errline)
 
 /**
  * Assert callback
- *
+ * 
+ * @access private
  * @param string $script 
  * @param string $line 
  * @param string $message 

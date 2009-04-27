@@ -1,9 +1,19 @@
 <?php
-
+/**
+ * @package tests
+ * @subpackage assertions
+ */
 # ============================================================================ #
 #    ASSERTIONS                                                                #
 # ============================================================================ #
 
+/**
+ * assert_true
+ *
+ * @param string $value 
+ * @param string $message 
+ * @return boolean
+ */
 function assert_true($value, $message = '<1> should be TRUE')
 {
    tests_execute_before_assert();

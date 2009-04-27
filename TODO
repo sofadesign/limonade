@@ -1,6 +1,7 @@
 # TODO #
 
-- a README in english
+- designing default limonade views
+- public API dcoumentation file
 - more examples
 - http caching
 - file caching

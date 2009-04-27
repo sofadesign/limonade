@@ -125,6 +125,7 @@ ini_set('display_errors', 0);
 # function before(){}
 # function after(){}
 # function not_found(){}
+# function server_error(){}
 # function route_missing(){}
 
 
@@ -1151,7 +1152,6 @@ function render($content_or_func, $layout = '', $locals = array())
  */ 
 function html($content_or_func, $layout = '', $locals = array())
 {
-   # TODO complete headers in output methods if needed  http://en.wikipedia.org/wiki/List_of_HTTP_headers
    header('Content-Type: text/html; charset='.strtolower(option('encoding')));
    $args = func_get_args();
    return call_user_func_array('render', $args);
@@ -1195,7 +1195,6 @@ function xml($data)
  */
 function css($content_or_func, $layout = '', $locals = array())
 {
-   # TODO testing css output function
    header('Content-Type: text/css; charset='.strtolower(option('encoding')));
    $args = func_get_args();
    return call_user_func_array('render', $args);
@@ -1211,7 +1210,6 @@ function css($content_or_func, $layout = '', $locals = array())
  */
 function txt($content_or_func, $layout = '', $locals = array())
 {
-   # TODO testing txt output function
    header('Content-Type: text/plain; charset='.strtolower(option('encoding')));
    $args = func_get_args();
    return call_user_func_array('render', $args);
@@ -1226,7 +1224,6 @@ function txt($content_or_func, $layout = '', $locals = array())
  */
 function json($data, $json_option = 0)
 {
-   # TODO testing json output function
    header('Content-Type: application/x-javascript; charset='.strtolower(option('encoding')));
    return json_encode($data, $json_option);
 }
@@ -1304,6 +1301,15 @@ function url_for($params = null)
   return rtrim($base_path."/".implode('/', $paths), '/');
 }
 
+/**
+ * An alias if htmlspecialchars.
+ * If no $charset is provided, uses option('encoding') value
+ *
+ * @param string $str 
+ * @param string $quote_style 
+ * @param string $charset 
+ * @return void
+ */
 function h($str, $quote_style = ENT_NOQUOTES, $charset = null)
 {
 	if(is_null($charset)) $charset = strtoupper(option('encoding'));
