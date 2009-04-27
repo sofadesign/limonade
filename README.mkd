@@ -17,6 +17,15 @@ Limonade is easy to learn and provides everything that you can expect from a mod
             return 'Hello world!';
         }
     run();
+
+## About this document ##
+
+This document provides a quick but comprehensive guide of Limonade features.
+
+For more informations, you can see [examples](http://github.com/sofadesign/limonade/tree/3327478bba6a82e3a52dcd738fcf0616950e58b6/examples) and of course, the [source code](http://github.com/sofadesign/limonade/blob/3327478bba6a82e3a52dcd738fcf0616950e58b6/lib/limonade.php) which is still the best documentation.
+
+A [discussion group](http://groups.google.fr/group/limonade) is also available for more exchanges.
+
     
 ## Routes ##
 

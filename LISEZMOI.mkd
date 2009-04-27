@@ -16,6 +16,15 @@ Les fonctions mises à disposition par Limonade sont assimilables extrêmement r
             return 'Hello world!';
         }
     run();
+
+## A propos de ce document ##
+
+Ce document fournit un aperçu rapide mais complet des fonctionnalités  de Limonade.
+
+Pour plus d'informations, vous pouvez également consulter les [exemples](http://github.com/sofadesign/limonade/tree/3327478bba6a82e3a52dcd738fcf0616950e58b6/examples) et bien sûr le [code source](http://github.com/sofadesign/limonade/blob/3327478bba6a82e3a52dcd738fcf0616950e58b6/lib/limonade.php) de Limonade, qui reste encore sa meilleure documentation.
+
+Un [groupe de discussion](http://groups.google.fr/group/limonade) est également à disposition pour plus d'échanges.
+
     
 ## Routes ##
 
