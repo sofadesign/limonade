@@ -12,6 +12,7 @@
  * It will be called when app is launched (at the begining og the run function).
  * You can define options inside it, a connection to a database ...
  *
+ * @abstract this function might be redefined by user
  * @return void 
  */
 function configure()
@@ -22,8 +23,9 @@ function configure()
 /**
  * Called before each request.
  * This is very useful to define a default layout or passing common variables
- * to the templates
+ * to the templates.
  *
+ * @abstract this function might be redefined by user
  * @return void 
  */
 function before()
@@ -35,8 +37,9 @@ function before()
  * An `after` output filter
  * 
  * Called after each request and can apply a transformation to the output
- * (except for `render_file` outputs  which are sent directly to the output buffer)
+ * (except for `render_file` outputs  which are sent directly to the output buffer).
  *
+ * @abstract this function might be redefined by user
  * @param string $output 
  * @return string 
  */
@@ -50,6 +53,7 @@ function after($output)
 /**
  * Not found error output
  *
+ * @abstract this function might be redefined by user
  * @param string $errno 
  * @param string $errstr 
  * @param string $errfile 
@@ -64,6 +68,7 @@ function not_found($errno, $errstr, $errfile=null, $errline=null)
 /**
  * Server error output
  *
+ * @abstract this function might be redefined by user
  * @param string $errno 
  * @param string $errstr 
  * @param string $errfile 
@@ -77,7 +82,9 @@ function server_error($errno, $errstr, $errfile=null, $errline=null)
  
 /**
  * Called when a route is not found.
- *
+ * 
+ * 
+ * @abstract this function might be redefined by user
  * @param string $request_method 
  * @param string $request_uri 
  * @return void 
