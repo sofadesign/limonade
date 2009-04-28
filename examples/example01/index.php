@@ -31,13 +31,29 @@ dispatch('/welcome/:name', 'welcome');
     return html("html_welcome");
   }
 
+dispatch('/are_you_ok/:name', 'are_you_ok');
+  function are_you_ok($name = null)
+  {
+    if(is_null($name))
+    {
+      $name = params('name');
+      if(empty($name)) halt(NOT_FOUND, "Undefined name.");
+
+    }
+    return html("Are you ok $name ?");
+  }
+    
 dispatch('/how_are_you/:name', 'how_are_you');
   function how_are_you()
   {
     $name = params('name');
     if(empty($name)) halt(NOT_FOUND, "Undefined name.");
+    # you can call an other controller function if you want
+    if(strlen($name) < 4) return are_you_ok($name);
     return html("I hope you are fine, $name.");
   }
+  
+
   
 dispatch('/images/:name/:size', 'image_show');
   function image_show()
