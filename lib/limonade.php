@@ -1,18 +1,20 @@
 <?php
-/**
- * @package limonade
- */
-                                                                      
+                                                                  
 # ============================================================================ #
-#                                                                              # 
-#    L I M O N A D E                                                           # 
-#                                                                              # 
-#    a PHP micro framework                                                     #
-#                                                                              # 
-#   -----------------------------------------------------------------------    # 
-#    For more informations: <http://github/sofadesign/limonade>                #
-#                                                                              #
-#                                                                              #
+
+/**
+ *  L I M O N A D E
+ * 
+ *  a PHP micro framework.
+ * 
+ *  For more informations: {@link http://github/sofadesign/limonade}
+ *  
+ *  @author Fabrice Luraine
+ *  @copyright Copyright (c) 2009 Fabrice Luraine
+ *  @license http://opensource.org/licenses/mit-license.php The MIT License
+ *  @package limonade
+ */
+
 #   -----------------------------------------------------------------------    #
 #    Copyright (c) 2009 Fabrice Luraine                                        #
 #                                                                              #
@@ -38,9 +40,6 @@
 #    OTHER DEALINGS IN THE SOFTWARE.                                           #
 # ============================================================================ # 
 
-/**
- * --
- */
 
 
 
@@ -68,6 +67,11 @@ define('X-LIGHTTPD-SEND-FILE', 20);
 ## SETTING BASIC SECURITY _____________________________________________________
 
 # A. Unsets all global variables set from a superglobal array
+
+/**
+ * @access private
+ * @return void
+ */
 function unregister_globals()
 {
   $args = func_get_args();
@@ -83,6 +87,12 @@ if(ini_get('register_globals'))
 }
 
 # B. removing magic quotes
+
+/**
+ * @access private
+ * @param string $array 
+ * @return array
+ */
 function remove_magic_quotes($array)
 {
   foreach ($array as $k => $v)
@@ -278,10 +288,7 @@ function run($env = null)
   # 2. Loading libs
   require_once_dir(option('lib_dir'));
   
-  # 3. Set user configuration
-  call_if_exists('configure');
-  
-  # 4. Set some default methods  
+  # 3. Set some default methods if needed
   if(!function_exists('after'))
   {
     function after($output)
@@ -296,6 +303,9 @@ function run($env = null)
       halt(NOT_FOUND, "($request_method) $request_uri");
     }
   }
+  
+  # 4. Set user configuration
+  call_if_exists('configure');
   
   # 5. Check request
   if($rm = request_method())
@@ -337,12 +347,6 @@ function run($env = null)
   else halt(SERVER_ERROR, "Unknown request method <code>$rm</code>");
   
 }
-
-function session()
-{
-  # TODO a session helper for setting and returning session data
-}
-
 
 /**
  * Returns limonade environment variables:
@@ -483,6 +487,7 @@ function halt($errno = SERVER_ERROR, $msg = '', $debug_args = null)
  * Find and call matching error handler and exit
  * If no match found, call default error handler
  *
+ * @access private
  * @param int $errno 
  * @param string $errstr 
  * @param string $errfile 
@@ -554,6 +559,7 @@ function error_default_handler($errno, $errstr, $errfile, $errline)
 /**
  * Returns not found error output
  *
+ * @access private
  * @param string $msg 
  * @return string
  */
@@ -561,7 +567,15 @@ function error_not_found_output($errno, $errstr, $errfile, $errline)
 {
   if(!function_exists('not_found'))
   {
-    # TODO not_found doesn't need to be redefined; change it into a error_show_not_found method.
+    /**
+     * Default not found error output
+     *
+     * @param string $errno 
+     * @param string $errstr 
+     * @param string $errfile 
+     * @param string $errline 
+     * @return string
+     */
     function not_found($errno, $errstr, $errfile=null, $errline=null)
     {
       option('views_dir', option('limonade_dir').'limonade/views/');
@@ -575,6 +589,7 @@ function error_not_found_output($errno, $errstr, $errfile, $errline)
 /**
  * Returns server error output
  *
+ * @access private
  * @param int $errno 
  * @param string $errstr 
  * @param string $errfile 
@@ -585,6 +600,15 @@ function error_server_error_output($errno, $errstr, $errfile, $errline)
 {
   if(!function_exists('server_error'))
   {
+    /**
+     * Default server error output
+     *
+     * @param string $errno 
+     * @param string $errstr 
+     * @param string $errfile 
+     * @param string $errline 
+     * @return string
+     */
     function server_error($errno, $errstr, $errfile=null, $errline=null)
     {
       $is_http_error = http_response_status_is_valid($errno);
@@ -909,7 +933,7 @@ function dispatch_delete($path_or_array, $function, $agent_regexp = null)
  * Delete all routes if null is passed as a unique argument
  * Return all routes
  * 
- *
+ * @access private
  * @param string $method 
  * @param string $path_or_array 
  * @param string $func 
@@ -941,7 +965,8 @@ function route()
 
 /**
  * An alias of route(null): reset all routes
- *
+ * 
+ * @access private
  * @return void
  */
 function route_reset()
@@ -952,6 +977,7 @@ function route_reset()
 /**
  * Build a route and return it
  *
+ * @access private
  * @param string $method 
  * @param string $path_or_array 
  * @param string $func 
@@ -1058,6 +1084,7 @@ function route_build($method, $path_or_array, $func, $agent_regexp = null)
  * If not found, returns false.
  * Routes are checked from first added to last added.
  *
+ * @access private
  * @param string $method 
  * @param string $path 
  * @return array,false
