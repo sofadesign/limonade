@@ -52,6 +52,9 @@
 # ============================================================================ #
 
 ## CONSTANTS __________________________________________________________________
+/**
+ * Limonade version
+ */
 define('LIMONADE',             '0.3');
 define('LIM_START_MICROTIME',  (float)substr(microtime(), 0, 10));
 define('E_LIM_HTTP',           32768);
@@ -1460,9 +1463,9 @@ function array_to_xml($data, $rootNodeName = 'data', &$xml=null)
 
 ## HTTP utils  _________________________________________________________________
 
-/**
- * Constants: HTTP status codes
- */
+
+### Constants: HTTP status codes
+
 define( 'HTTP_CONTINUE',                      100 );
 define( 'HTTP_SWITCHING_PROTOCOLS',           101 );
 define( 'HTTP_PROCESSING',                    102 );

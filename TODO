@@ -1,10 +1,16 @@
 # TODO #
 
 - designing default limonade views
-- public API dcoumentation file
 - more examples
 - http caching
 - file caching
+- a session helper
+- redirect method
 - x-sender headers for serving static files directly thru Apache and Lighttpd
 
 - more unit testing
+
+- public API documentation:
+    - tests: tag private functions
+    - tests: describe in docblock header abstract definitions
+    - add links in header/welcome page(blank.tpl): project web site (clic on logo?), README, github
