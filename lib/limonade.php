@@ -1131,10 +1131,10 @@ function route_find($method, $path)
 /**
  * Returns a string to output
  * 
- * It might use a a template file or function, a formatted string (like sprintf).
+ * It might use a a template file or function, a formatted string (like {@link sprintf()}).
  * It could be embraced by a layout or not.
- * Local vars can be passed in addition to variables made available with the <code>set</code> function.
- * 
+ * Local vars can be passed in addition to variables made available with the {@link set()}
+ * function.
  *
  * @param string $content_or_func 
  * @param string $layout 
@@ -1332,7 +1332,7 @@ function url_for($params = null)
 }
 
 /**
- * An alias if htmlspecialchars.
+ * An alias of {@link htmlspecialchars()}.
  * If no $charset is provided, uses option('encoding') value
  *
  * @param string $str 
@@ -1388,11 +1388,24 @@ function define_unless_exists($name, $value)
 /**
  * Return a default value if provided value is empty
  *
- * @param string $value 
- * @param string $default default value returned if $value is empty
+ * @param mixed $value 
+ * @param mixed $default default value returned if $value is empty
  * @return mixed
  */
 function value_or_default($value, $default)
+{
+  return empty($value) ? $default : $value;
+}
+
+/**
+ * An alias of {@link value_or_default()}
+ *
+ * 
+ * @param mixed $value 
+ * @param mixed $default 
+ * @return mixed
+ */
+function v($value, $default)
 {
   return empty($value) ? $default : $value;
 }
