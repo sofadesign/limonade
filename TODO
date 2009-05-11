@@ -1,9 +1,13 @@
 # TODO #
 
+- about the _method parameter in POST requests: adding example
 - designing default limonade views
+- adding url_rewrite features
 - more examples
 - http caching
 - file caching
+- make post, put and delete params accessible with the params() function
+    (take care of possible conflict with a route param: by default override get params, but raise an error notice)
 - a session helper
 - redirect method
 - x-sender headers for serving static files directly thru Apache and Lighttpd

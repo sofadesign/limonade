@@ -65,6 +65,14 @@ The search is performed with a path given through browser URL:
     http://localhost/my_app/index.php?/my/path
     http://localhost/my_app/index.php/my/path
     http://localhost/my_app/?/my/path
+
+When `PUT` or `DELETE` methods are not supported (like in HTML form submision), you can use the `_method` parameter in `POST` requests: it will override the `POST` method.
+
+    <form action="<?=url_for('profile_update')?>" method="post">
+        <p><input type="hidden" name="_method" value="PUT" id="_method"></p>
+        <p>... your form fields</p>
+        <p><input type="submit" value="Update"></p>
+    </form>
     
 *[TODO]: url rewriting*
 

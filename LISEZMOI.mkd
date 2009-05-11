@@ -62,6 +62,14 @@ Les routes sont testées dans l'ordre dans lequel elle sont déclarées. Le chem
     http://localhost/my_app/index.php?/my/path
     http://localhost/my_app/index.php/my/path
     http://localhost/my_app/?/my/path
+
+Quand les méthodes `PUT` ou `DELETE` ne sont pas supportés (comme dans le cas d'une soumission de fomulaire HTML), on utilise le paramètre `_method` dans une requête `POST`: sa valeur surchargera la méthode `POST`.
+
+        <form action="<?=url_for('profile_update')?>" method="post">
+            <p><input type="hidden" name="_method" value="PUT" id="_method"></p>
+            <p>... your form fields</p>
+            <p><input type="submit" value="Update"></p>
+        </form>
     
 *[TODO]: url rewriting*
 
