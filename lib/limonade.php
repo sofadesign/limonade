@@ -901,7 +901,7 @@ function dispatch_get($path_or_array, $function, $agent_regexp = null)
  */
 function dispatch_post($path_or_array, $function, $agent_regexp = null)
 {
-   route("GET", $path_or_array, $function, $agent_regexp);
+   route("POST", $path_or_array, $function, $agent_regexp);
 }
 
 /**
@@ -914,7 +914,7 @@ function dispatch_post($path_or_array, $function, $agent_regexp = null)
  */
 function dispatch_put($path_or_array, $function, $agent_regexp = null)
 {
-   route("GET", $path_or_array, $function, $agent_regexp);
+   route("PUT", $path_or_array, $function, $agent_regexp);
 }
 
 /**
@@ -927,7 +927,7 @@ function dispatch_put($path_or_array, $function, $agent_regexp = null)
  */
 function dispatch_delete($path_or_array, $function, $agent_regexp = null)
 {
-   route("GET", $path_or_array, $function, $agent_regexp);
+   route("DELETE", $path_or_array, $function, $agent_regexp);
 }
 
 
