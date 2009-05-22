@@ -852,6 +852,7 @@ function request_uri($env = null)
 	}
   
   $uri = rtrim($uri, "/"); # removes ending /
+  if(empty($uri)) $uri = '/';
   if($uri[0] != '/') $uri = '/' . $uri; # add a leading slash
   return $uri;
 }
