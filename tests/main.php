@@ -137,6 +137,16 @@ tests("Main");
      # TODO test value_or_default
    }
    
+   function test_main_file_path()
+   {
+     $p = "/one/two/three";
+     assert_equal(file_path('/one','two','three'), $p);
+     assert_equal(file_path('/one','/two','three'), $p);
+     assert_equal(file_path('/one','two','///three'), $p);
+     assert_equal(file_path('/one','two','three/'), $p.'/');
+     assert_equal(file_path('/one','two','three//'), $p.'/');
+   }
+   
    
 endtests();
 ?>
