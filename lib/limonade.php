@@ -1262,7 +1262,7 @@ function txt($content_or_func, $layout = '', $locals = array())
 function json($data, $json_option = 0)
 {
    header('Content-Type: application/x-javascript; charset='.strtolower(option('encoding')));
-   return json_encode($data, $json_option);
+   return version_compare(PHP_VERSION, '5.3.0', '>=') ? json_encode($data, $json_option) : json_encode($data);
 }
 
 /**
