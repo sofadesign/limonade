@@ -75,7 +75,7 @@ error(HTTP_FORBIDDEN, 'my_not_found_error_handler'); /* HTTP 403 Forbiden */
 /* just change the not found error output */   
 function not_found($errno, $errstr, $errfile, $errline)
 {
-  return "<p>".$errstr."</p><p>I'm not here...</p>";
+  return html("<h2>My NotFound Page</h2><p>".$errstr."</p><p>I'm not here...</p>");
 }
 
 /* just change the server error output */
