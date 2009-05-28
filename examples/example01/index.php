@@ -103,6 +103,7 @@ function html_my_layout($vars){ extract($vars);?>
 	<a href="<?=url_for('/')?>">Home</a> |
 	<a href="<?=url_for('/hello/', $name)?>">Hello</a> | 
 	<a href="<?=url_for('/welcome/', $name)?>">Welcome !</a> | 
+	<a href="<?=url_for('/are_you_ok/', $name)?>">Are you ok ?</a> | 
 	<a href="<?=url_for('/how_are_you/', $name)?>">How are you ?</a>
 </body>
 </html>
