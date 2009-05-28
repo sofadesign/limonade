@@ -1153,7 +1153,7 @@ function render($content_or_func, $layout = '', $locals = array())
 	$args = func_get_args();
 	$content_or_func = array_shift($args);
 	$layout = count($args) > 0 ? array_shift($args) : layout();
-	$view_path = option('views_dir').$content_or_func;
+	$view_path = file_path(option('views_dir'),$content_or_func);
 	$vars = array_merge(set(), $locals);
 
   if(function_exists($content_or_func))
