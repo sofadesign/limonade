@@ -1433,23 +1433,6 @@ function require_once_dir($path, $pattern = "*.php")
 }
 
 /**
- * Create a file path by concatenation of given arguments
- *
- * @param string $path, ... 
- * @return string normalized path
- */
-function file_path($path)
-{
-  $args = func_get_args();
-  $ds = DIRECTORY_SEPARATOR;
-  $n_path = count($args) > 1 ? implode($ds, $args) : $path;
-  $n_path = preg_replace( '/'.preg_quote($ds, $ds).'{2,}'.'/', 
-                          $ds, 
-                          $n_path);
-  return $n_path;
-}
-
-/**
  * Converting an array to an XML document
  * Pass in a multi dimensional array and this recrusively loops through and builds up an XML document.
  *
@@ -1887,6 +1870,23 @@ function file_read_chunked($filename, $retbytes = true)
   $status = fclose($handle);
   if ($retbytes && $status) return $cnt; // return num. bytes delivered like readfile() does.
   return $status;
+}
+
+/**
+ * Create a file path by concatenation of given arguments
+ *
+ * @param string $path, ... 
+ * @return string normalized path
+ */
+function file_path($path)
+{
+  $args = func_get_args();
+  $ds = DIRECTORY_SEPARATOR;
+  $n_path = count($args) > 1 ? implode($ds, $args) : $path;
+  $n_path = preg_replace( '/'.preg_quote($ds, $ds).'{2,}'.'/', 
+                          $ds, 
+                          $n_path);
+  return $n_path;
 }
 
 /**
