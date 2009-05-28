@@ -1,4 +1,4 @@
-# Limonade
+# Limonade: README
 
 Limonade is a PHP micro framework for rapid web development and prototyping.
 

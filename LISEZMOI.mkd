@@ -1,4 +1,4 @@
-# Limonade
+# Limonade: LISEZMOI
 
 Limonade est un micro framework PHP qui permet le prototypage et le développement rapide d'applications web.
 
