@@ -49,6 +49,10 @@ dispatch('/welcome/:name', 'welcome');
       halt(HTTP_UNAUTHORIZED, "no, go away!", array(1,2,3));
       break;
       
+      case "david":
+      redirect(url_for('/'));
+      break;
+      
       default:
       trigger_error("Not sure $name lives in Twin Peaks", E_USER_NOTICE);
       # E_USER_NOTICE doesn't stop app execution
@@ -121,6 +125,7 @@ function html_my_layout($vars){ extract($vars);?>
 	<a href="<?=url_for('/welcome/bill')?>">Welcome Bill ?</a> | 
 	<a href="<?=url_for('/welcome/leland')?>">Welcome Leland ?</a> | 
 	<a href="<?=url_for('/welcome/bob')?>">Welcome Bob ?</a> | 
+	<a href="<?=url_for('/welcome/david')?>">Welcome David ?</a> | 
 	<a href="<?=url_for('/welcome/audrey')?>">Welcome Audrey ?</a> | 
 	</p>
 </body>
