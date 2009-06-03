@@ -1552,6 +1552,18 @@ function status($code = 500)
 }
 
 /**
+ * Http redirection
+ *
+ * @param string $url 
+ * @return void
+ */
+function redirect($url)
+{
+  status(HTTP_MOVED_PERMANENTLY);
+  header('Location: '.$url);
+}
+
+/**
  * Returns HTTP response status for a given code.
  * If no code provided, return an array of all status
  *
