@@ -1557,10 +1557,17 @@ function status($code = 500)
  * @param string $url 
  * @return void
  */
-function redirect($url)
+function redirect($uri)
 {
-  status(HTTP_MOVED_PERMANENTLY);
-  header('Location: '.$url);
+  # [NOTE]: (from php.net) HTTP/1.1 requires an absolute URI as argument to » Location:
+  # including the scheme, hostname and absolute path, but some clients accept
+  # relative URIs. You can usually use $_SERVER['HTTP_HOST'],
+  # $_SERVER['PHP_SELF'] and dirname() to make an absolute URI from a relative
+  # one yourself.
+  
+  # TODO make absolute uri
+  header('Location: '.$uri);
+  exit;
 }
 
 /**
