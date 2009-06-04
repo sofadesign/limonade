@@ -1,5 +1,9 @@
 # TODO #
 
+- methods flash
+- shortcut methods for session
+- adding links in README to examples
+- remove examples/ and move it in an external depot
 - about the _method parameter in POST requests: adding example
 - designing default limonade views
 - adding url_rewrite features
