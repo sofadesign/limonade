@@ -841,7 +841,7 @@ function request_uri($env = null)
   	{
   	  $request_uri = rtrim($env['SERVER']['REQUEST_URI'], '?/');
   	  $base_path = $env['SERVER']['SCRIPT_NAME'];
-
+  	  
       if($request_uri."index.php" == $base_path) $request_uri .= "index.php";
   	  $uri = str_replace($base_path, '', $request_uri);
   	}
@@ -850,7 +850,7 @@ function request_uri($env = null)
       $uri = $env['SERVER']['argv'][1];
     }
 	}
-  
+
   $uri = rtrim($uri, "/"); # removes ending /
   if(empty($uri))
   {
@@ -1155,8 +1155,23 @@ function render($content_or_func, $layout = '', $locals = array())
 	$layout = count($args) > 0 ? array_shift($args) : layout();
 	$view_path = file_path(option('views_dir'),$content_or_func);
 	$vars = array_merge(set(), $locals);
-
+  $infinite_loop = false;
+  
+  # Avoid infinite loop: this function is in the backtrace ?
   if(function_exists($content_or_func))
+	{
+    $back_trace = debug_backtrace();
+    while($trace = array_shift($back_trace))
+    {
+      if($trace['function'] == strtolower($content_or_func))
+      {
+        $infinite_loop = true;
+        break;
+      }
+    }
+  }
+
+  if(function_exists($content_or_func) && !$infinite_loop)
 	{
 		ob_start();
 		call_user_func($content_or_func, $vars);
