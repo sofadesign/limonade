@@ -216,7 +216,7 @@ function params($name_or_array_or_null = null, $value = null)
       $value = $nargs > 1 ? $args : $args[0];
       $params[$name] = $value;
     }
-    return $params[$name];
+    return array_key_exists($name,$params) ? $params[$name] : null;
   }
 
   return $params;
