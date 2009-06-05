@@ -9,7 +9,7 @@ Limonade met en oeuvre un ensemble de fonctions complémentaires à l'API de bas
 Les fonctions mises à disposition par Limonade sont assimilables extrêmement rapidement, et fournissent tout ce qu'on est en droit d'attendre d'un framework moderne ( MVC, REST, ...).
 
 
-    require_once 'lib/limonade.php'
+    require_once 'lib/limonade.php';
     dispatch('/', 'hello');
         function hello()
         {

@@ -10,7 +10,7 @@ Limonade is easy to learn and provides everything that you can expect from a mod
 
 
 
-    require_once 'lib/limonade.php'
+    require_once 'lib/limonade.php';
     dispatch('/', 'hello');
         function hello()
         {
