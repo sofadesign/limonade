@@ -1657,7 +1657,8 @@ function http_response_status($num = null)
       507 => 'Insufficient Storage',
       510 => 'Not Extended'
   );
-  return is_null($num) ? $status : $status[$num];
+  if(is_null($num)) return $status;
+  return array_key_exists($num, $status) ? $status[$num] : '';
 }
 
 /**
