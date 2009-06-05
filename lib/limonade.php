@@ -1189,7 +1189,7 @@ function render($content_or_func, $layout = '', $locals = array())
  */ 
 function html($content_or_func, $layout = '', $locals = array())
 {
-   header('Content-Type: text/html; charset='.strtolower(option('encoding')));
+   if(!headers_sent()) header('Content-Type: text/html; charset='.strtolower(option('encoding')));
    $args = func_get_args();
    return call_user_func_array('render', $args);
 }
@@ -1217,7 +1217,7 @@ function layout($function_or_file = null)
  */
 function xml($data)
 {
-  header('Content-Type: text/xml; charset='.strtolower(option('encoding')));
+  if(!headers_sent()) header('Content-Type: text/xml; charset='.strtolower(option('encoding')));
   $args = func_get_args();
   return call_user_func_array('render', $args);
 }
@@ -1232,7 +1232,7 @@ function xml($data)
  */
 function css($content_or_func, $layout = '', $locals = array())
 {
-   header('Content-Type: text/css; charset='.strtolower(option('encoding')));
+   if(!headers_sent()) header('Content-Type: text/css; charset='.strtolower(option('encoding')));
    $args = func_get_args();
    return call_user_func_array('render', $args);
 }
@@ -1247,7 +1247,7 @@ function css($content_or_func, $layout = '', $locals = array())
  */
 function txt($content_or_func, $layout = '', $locals = array())
 {
-   header('Content-Type: text/plain; charset='.strtolower(option('encoding')));
+   if(!headers_sent()) header('Content-Type: text/plain; charset='.strtolower(option('encoding')));
    $args = func_get_args();
    return call_user_func_array('render', $args);
 }
@@ -1261,7 +1261,7 @@ function txt($content_or_func, $layout = '', $locals = array())
  */
 function json($data, $json_option = 0)
 {
-   header('Content-Type: application/x-javascript; charset='.strtolower(option('encoding')));
+   if(!headers_sent()) header('Content-Type: application/x-javascript; charset='.strtolower(option('encoding')));
    return version_compare(PHP_VERSION, '5.3.0', '>=') ? json_encode($data, $json_option) : json_encode($data);
 }
 
@@ -1290,7 +1290,7 @@ function render_file($filename, $return = false)
     $content_type = mime_type(file_extension($filename));
     $header = 'Content-type: '.$content_type;
     if(file_is_text($filename)) $header .= 'charset='.strtolower(option('encoding'));
-    header($header);
+    if(!headers_sent()) header($header);
     return file_read($filename, $return);
   }
   else halt(NOT_FOUND, "unknown filename $filename");
@@ -1547,8 +1547,11 @@ define( 'HTTP_NOT_EXTENDED',                  510 );
  */
 function status($code = 500)
 {
-	$str = http_response_status_code($code);
-	header($str);
+	if(!headers_sent())
+	{
+	  $str = http_response_status_code($code);
+  	header($str);
+	}
 }
 
 /**
@@ -1566,8 +1569,11 @@ function redirect($uri)
   # one yourself.
   
   # TODO make absolute uri
-  header('Location: '.$uri);
-  exit;
+  if(!headers_sent())
+	{
+    header('Location: '.$uri);
+    exit;
+  }
 }
 
 /**
