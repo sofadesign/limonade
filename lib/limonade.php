@@ -582,7 +582,7 @@ function error_not_found_output($errno, $errstr, $errfile, $errline)
     function not_found($errno, $errstr, $errfile=null, $errline=null)
     {
       option('views_dir', option('limonade_dir').'limonade/views/');
-      $msg = h($errstr);
+      $msg = h(rawurldecode($errstr));
       return html("<h1>Page not found:</h1><p>{$msg}</p>", error_layout());
     }
   }
