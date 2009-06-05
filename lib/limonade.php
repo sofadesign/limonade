@@ -481,7 +481,7 @@ function halt($errno = SERVER_ERROR, $msg = '', $debug_args = null)
   if(!empty($args)) $debug_args = $args;
   set('_lim_err_debug_args', $debug_args);
 
-  error_handler_dispatcher($errno, $msg, $errfile, $errline);
+  error_handler_dispatcher($errno, $msg, null, null);
 
 }
 
