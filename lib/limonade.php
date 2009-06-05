@@ -1331,7 +1331,7 @@ function url_for($params = null)
     $p = explode('/',$param);
     foreach($p as $v)
     {
-      if(!empty($v)) $paths[] = urlencode($v);
+      if(!empty($v)) $paths[] = rawurlencode($v);
     }
   }
   
