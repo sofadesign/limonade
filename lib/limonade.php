@@ -79,7 +79,7 @@ function unregister_globals()
 {
   $args = func_get_args();
   foreach($args as $k => $v)
-    if(array_key_exists($k, $GLOBALS)) unset($GLOBALS[$key]);
+    if(array_key_exists($k, $GLOBALS)) unset($GLOBALS[$k]);
 }
 
 if(ini_get('register_globals'))
