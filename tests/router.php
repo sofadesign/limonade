@@ -174,9 +174,10 @@ tests("Router");
                route( "get",    "/edit/:id",   "my_edit_func"   );
                route( "put",    "/update/:id", "my_update_func" );
                route( "delete", "/delete/:id", "my_delete_func" );
+               route( "get",    "^/list/(\d+)","my_list_func"   );
      $routes = route( "get",    "/*.jpg/:size","my_jpeg"        );
      
-     assert_length_of($routes, 7);
+     assert_length_of($routes, 8);
      
      $r = route_find("GET", "/unkown");
      assert_false($r);
@@ -203,7 +204,7 @@ tests("Router");
      route( "get", "/index/*", "my_index_func2"  );
      $routes = route( "delete", "/delete/:id/:confirm", "my_delete_func2" );
      
-     assert_length_of($routes, 9);
+     assert_length_of($routes, 10);
      $r = route_find("GET", "/index");
      assert_equal($r["function"], "my_index_func");
      
@@ -218,6 +219,9 @@ tests("Router");
      
      $r = route_find("DELETE", "/delete/120/ok");
      assert_equal($r["function"], "my_delete_func2");
+     
+     $r = route_find("GET", "/list/120");
+     assert_equal($r["function"], "my_list_func");
      
    }
    

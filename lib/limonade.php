@@ -1112,13 +1112,18 @@ function route_find($method, $path)
        {
          array_shift($matches);
          $n_matches = count($matches);
-         $n_names = count($route["names"]);
+         $names     = array_values($route["names"]);
+         $n_names   = count($names);
          if( $n_matches < $n_names )
          {
            $a = array_fill(0, $n_names - $n_matches, null);
            $matches = array_merge($matches, $a);
          }
-         $params = array_combine(array_values($route["names"]), $matches);
+         else if( $n_matches > $n_names )
+         {
+           $names = range($n_names, $n_matches - 1);
+         }
+         $params = array_combine($names, $matches);
        }
        $route["params"] = $params;
        return $route;
