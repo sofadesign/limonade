@@ -1404,7 +1404,7 @@ function call_if_exists($func)
  */
 function define_unless_exists($name, $value)
 {
-  if(!defined($anme)) define($name, $value);
+  if(!defined($name)) define($name, $value);
 }
 
 /**
