@@ -1,24 +1,44 @@
 # TODO #
 
+- rename `redirect` in `redirect_to`; raise an E_LIM_DEPRECATED error
+- add support for a E_LIM_DEPRECATED error
+- php notices errors should not stop application
+- adding 501 'The requested method is not implemented.' when necessary
+- removes unused `$agent_regexp` options in dispatch functions.
 - methods flash
 - shortcut methods for session
-- adding links in README to examples
-- remove examples/ and move it in an external depot
-- about the _method parameter in POST requests: adding example
+- simple form helper with XSS/CSRF protection
 - designing default limonade views
+- remove examples/ and move it in an external depot
 - adding url_rewrite features
 - more examples
-- http caching
-- file caching
-- make post, put and delete params accessible with the params() function
-    (take care of possible conflict with a route param: by default override get params, but raise an error notice)
-- a session helper
-- redirect method
-- x-sender headers for serving static files directly thru Apache and Lighttpd
-
-- more unit testing
+- complete tests
 
 - public API documentation:
     - tests: tag private functions
     - tests: describe in docblock header abstract definitions
     - add links in header/welcome page(blank.tpl): project web site (clic on logo?), README, github
+
+
+## Later ##
+
+- create capture helpers `content_for($name) ... end_content_for()`. That will help sending content from views to layout
+- add routing support for dispatching to class methods: `dispatch('/hello/:name', 'Hello::who');`
+- add routing support for dispatching to lambdas (requires PHP 5.3.0):
+
+–
+
+    dispatch('/hello/:name', function(){ 
+        // process data here 
+    });
+
+- http caching
+- file caching
+- x-sender headers for serving static files directly thru Apache and Lighttpd
+
+
+## Think about it ##
+
+- adding an options array to dispatch functions. Perhaps for supporting user agent detection, language detection or something like that ?
+- make post, put and delete params accessible with the params() function
+    (take care of possible conflict with a route param: by default override get params, but raise an error notice). Really useful ?
