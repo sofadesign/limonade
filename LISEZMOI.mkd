@@ -21,7 +21,7 @@ Les fonctions mises à disposition par Limonade sont assimilables extrêmement r
 
 Ce document fournit un aperçu rapide mais complet des fonctionnalités  de Limonade.
 
-Pour plus d'informations, vous pouvez également consulter les [exemples](http://github.com/sofadesign/limonade/tree/3327478bba6a82e3a52dcd738fcf0616950e58b6/examples) et bien sûr le [code source](http://github.com/sofadesign/limonade/blob/3327478bba6a82e3a52dcd738fcf0616950e58b6/lib/limonade.php) de Limonade, qui reste encore sa meilleure documentation.
+Pour plus d'informations, vous pouvez également consulter le [site](http://limonade.sofa-design/), les [exemples](http://limonade.sofa-design.net/examples.htm) et bien sûr le [code source](http://github.com/sofadesign/limonade/blob/master/lib/limonade.php) de Limonade, qui reste encore sa meilleure documentation.
 
 Un [groupe de discussion](http://groups.google.fr/group/limonade) est également à disposition pour plus d'échanges.
 
@@ -410,7 +410,7 @@ La constante `E_LIM_PHP` désigne toutes les erreurs PHP (renvoyé par PHP ou vi
 
 ## More ##
 
-* [Limonade web site](http://sofa-design.net/limonade/)
+* [Limonade web site](http://limonade.sofa-design.net/)
 * [Issue tracking / release planning](http://sofadesign.lighthouseapp.com/projects/29612-limonade/overview)
 * [Support / Discussions](http://groups.google.fr/group/limonade)
 

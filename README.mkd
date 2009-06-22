@@ -22,7 +22,7 @@ Limonade is easy to learn and provides everything that you can expect from a mod
 
 This document provides a quick but comprehensive guide of Limonade features.
 
-For more informations, you can see [examples](http://github.com/sofadesign/limonade/tree/3327478bba6a82e3a52dcd738fcf0616950e58b6/examples) and of course, the [source code](http://github.com/sofadesign/limonade/blob/3327478bba6a82e3a52dcd738fcf0616950e58b6/lib/limonade.php) which is still the best documentation.
+For more informations, you can see the [website](http://limonade.sofa-design.net/),  [examples](http://limonade.sofa-design.net/examples.htm) and of course, the [source code](http://github.com/sofadesign/limonade/blob/master/lib/limonade.php) which is still the best documentation.
 
 A [discussion group](http://groups.google.fr/group/limonade) is also available for more exchanges.
 
@@ -422,7 +422,7 @@ In addition to the common `NOT_FOUND` and `SERVER_ERROR` errors displays, Limona
 
 ## More ##
 
-* [Limonade web site](http://sofa-design.net/limonade/)
+* [Limonade web site](http://limonade.sofa-design.net/)
 * [Issue tracking / release planning](http://sofadesign.lighthouseapp.com/projects/29612-limonade/overview)
 * [Support / Discussions](http://groups.google.fr/group/limonade)
 

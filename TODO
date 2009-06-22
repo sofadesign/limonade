@@ -20,6 +20,7 @@
     - add links in header/welcome page(blank.tpl): project web site (clic on logo?), README, github
 
 
+
 ## Later ##
 
 - create capture helpers `content_for($name) ... end_content_for()`. That will help sending content from views to layout
