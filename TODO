@@ -2,6 +2,7 @@
 
 - rename `redirect` in `redirect_to`; raise an E_LIM_DEPRECATED error
 - add support for a E_LIM_DEPRECATED error
+- removes `array_to_xml` function: doesn't need to be in the limonade core
 - php notices errors should not stop application
 - adding 501 'The requested method is not implemented.' when necessary
 - removes unused `$agent_regexp` options in dispatch functions.
