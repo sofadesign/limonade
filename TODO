@@ -5,7 +5,8 @@
 - removes `array_to_xml` function: doesn't need to be in the limonade core
 - php notices errors should not stop application
 - adding 501 'The requested method is not implemented.' when necessary
-- removes unused `$agent_regexp` options in dispatch functions.
+- removes unused `` options in dispatch functions.
+- add a render_partial function (shortcut for render, without the layout param...)
 - methods flash
 - shortcut methods for session
 - simple form helper with XSS/CSRF protection
