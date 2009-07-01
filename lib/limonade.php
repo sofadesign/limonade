@@ -1452,54 +1452,6 @@ function require_once_dir($path, $pattern = "*.php")
   return $filenames;
 }
 
-/**
- * Converting an array to an XML document
- * Pass in a multi dimensional array and this recrusively loops through and builds up an XML document.
- *
- * (inspired from http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/)
- * 
- * @param array $data
- * @param string $rootNodeName - what you want the root node to be - defaultsto data.
- * @param SimpleXMLElement $xml - should only be used recursively
- * @return string XML
- */
-function array_to_xml($data, $rootNodeName = 'data', &$xml=null)
-{
-	// turn off compatibility mode as simple xml throws a wobbly if you don't.
-	if (ini_get('zend.ze1_compatibility_mode') == 1) ini_set ('zend.ze1_compatibility_mode', 0);
-
-	if (is_null($xml))
-	{
-		$xml_str = "<?xml version='1.0' encoding='".
-		            option(encoding)."'?><$rootNodeName />";
-		$xml = simplexml_load_string($xml_str);
-	}
-
-	// loop through the data passed in.
-	foreach($data as $key => $value)
-	{
-		// no numeric keys in our xml please!
-		if (is_numeric($key)) $key = "node_". (string) $key;
-
-		// replace anything not alpha numeric
-		$key = preg_replace('/[^\w\d-_]/i', '_', $key);
-
-		// if there is another array found recrusively call this function
-		if (is_array($value))
-		{
-			$node = $xml->addChild($key);
-			array_to_xml($value, $rootNodeName, $node);
-		}
-		else 
-		{
-			// add single node.
-      $value = h($value);
-			$xml->addChild($key, $value);
-		}
-
-	}
-	return $xml->asXML();
-}
 
 ## HTTP utils  _________________________________________________________________
 
