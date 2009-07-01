@@ -1,5 +1,12 @@
 [Changes since last revision]
 
+
+
+
+[2009-07-01: VERSION 0.3.1]
+
+* [FIXED] lib dir is now loaded after configure()
+* Minor code cleanup
 * [NEW] README file available in english
 * [CHANGED][FIXED] README and LISEZMOI
 
