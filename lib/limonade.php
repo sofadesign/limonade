@@ -1466,7 +1466,7 @@ function value_or_default($value, $default)
  */
 function v($value, $default)
 {
-  return call_user_func('value_or_default', $value, $default);
+  return value_or_default($value, $default);
 }
 
 /**
