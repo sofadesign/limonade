@@ -288,10 +288,13 @@ function run($env = null)
   ini_set('display_errors', 1);
   set_error_handler('error_handler_dispatcher', E_ALL ^ E_NOTICE);
   
-  # 2. Loading libs
+  # 2. Set user configuration
+  call_if_exists('configure');
+  
+  # 3. Loading libs
   require_once_dir(option('lib_dir'));
   
-  # 3. Set some default methods if needed
+  # 4. Set some default methods if needed
   if(!function_exists('after'))
   {
     function after($output)
@@ -305,10 +308,7 @@ function run($env = null)
     {
       halt(NOT_FOUND, "($request_method) $request_uri");
     }
-  }
-  
-  # 4. Set user configuration
-  call_if_exists('configure');
+  }  
   
   # 5. Check request
   if($rm = request_method())
