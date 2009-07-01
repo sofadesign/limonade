@@ -59,6 +59,7 @@ define('LIMONADE',             '0.3');
 define('LIM_START_MICROTIME',  (float)substr(microtime(), 0, 10));
 define('E_LIM_HTTP',           32768);
 define('E_LIM_PHP',            65536);
+define('E_LIM_DEPRECATED',     35000);
 define('NOT_FOUND',            404);
 define('SERVER_ERROR',         500);
 define('ENV_PRODUCTION',       10);
@@ -510,22 +511,38 @@ function error_handler_dispatcher($errno, $errstr, $errfile, $errline)
     }
   }  
   
-  $handlers = error();
-  $is_http_err = http_response_status_is_valid($errno);
-  foreach($handlers as $handler)
+  # Notices and warning won't halt execution
+  if(error_wont_halt_app($errno))
   {
-    $e = is_array($handler['errno']) ? $handler['errno'] : array($handler['errno']);
-    while($ee = array_shift($e))
+    if(option('debug'))
     {
-      if($ee == $errno || $ee == E_LIM_PHP || ($ee == E_LIM_HTTP && $is_http_err))
-      {
-        echo call_if_exists($handler['function'], $errno, $errstr, $errfile, $errline);
-        exit;
-      }
+      $o  = "<p>[".error_type($errno)."] ";
+  	  $o .= "$errstr in <strong>$errfile</strong> line <strong>$errline</strong>: ";
+  	  $o .= "</p>";
+  	  error_notice($o);
+  	  return;
     }
   }
-  echo error_default_handler($errno, $errstr, $errfile, $errline);
-  exit;
+  else
+  {
+    # Other errors will stop application
+    $handlers = error();
+    $is_http_err = http_response_status_is_valid($errno);
+    foreach($handlers as $handler)
+    {
+      $e = is_array($handler['errno']) ? $handler['errno'] : array($handler['errno']);
+      while($ee = array_shift($e))
+      {
+        if($ee == $errno || $ee == E_LIM_PHP || ($ee == E_LIM_HTTP && $is_http_err))
+        {
+          echo call_if_exists($handler['function'], $errno, $errstr, $errfile, $errline);
+          exit;
+        }
+      }
+    }
+    echo error_default_handler($errno, $errstr, $errfile, $errline);
+    exit;
+  }
 }
 
 
@@ -544,15 +561,6 @@ function error_default_handler($errno, $errstr, $errfile, $errline)
   $http_error_code = $is_http_err ? $errno : SERVER_ERROR;
     
   status($http_error_code);
-  
-  if(($errno == E_USER_NOTICE || $errno == E_NOTICE) && option('debug'))
-  {
-    $o  = "<p>[".error_type($errno)."] ";
-	  $o .= "$errstr in <strong>$errfile</strong> line <strong>$errline</strong>: ";
-	  $o .= "</p>";
-	  error_notice($o);
-	  return;
-  }
 
   return $http_error_code == NOT_FOUND ?
             error_not_found_output($errno, $errstr, $errfile, $errline) :
@@ -653,6 +661,27 @@ function error_notice($str = null)
   return $notices;
 }
 
+/**
+ * Checks if an error is will halt application execution. 
+ * Notices and warnings will not.
+ *
+ * @access private
+ * @param string $num error code number
+ * @return boolean
+ */
+function error_wont_halt_app($num)
+{
+  return $num == E_NOTICE ||
+         $num == E_WARNING ||
+         $num == E_CORE_WARNING ||
+         $num == E_COMPILE_WARNING ||
+         $num == E_USER_WARNING ||
+         $num == E_USER_NOTICE ||
+         $num == E_DEPRECATED ||
+         $num == E_USER_DEPRECATED ||
+         $num == E_LIM_DEPRECATED;
+}
+
 
 
 /**
@@ -676,7 +705,10 @@ function error_type($num = null)
               E_USER_WARNING       => 'USER WARNING',
               E_USER_NOTICE        => 'USER NOTICE',
               E_STRICT             => 'STRICT NOTICE',
-              E_RECOVERABLE_ERROR  => 'RECOVERABLE ERROR'
+              E_RECOVERABLE_ERROR  => 'RECOVERABLE ERROR',
+              E_DEPRECATED         => 'DEPRECATED WARNING',
+              E_USER_DEPRECATED    => 'USER DEPRECATED WARNING',
+              E_LIM_DEPRECATED     => 'LIMONADE DEPRECATED WARNING'
               );
   return is_null($num) ? $types : $types[$num];
 }
@@ -1532,7 +1564,7 @@ function status($code = 500)
  * @param string $url 
  * @return void
  */
-function redirect($uri)
+function redirect_to($uri)
 {
   # [NOTE]: (from php.net) HTTP/1.1 requires an absolute URI as argument to » Location:
   # including the scheme, hostname and absolute path, but some clients accept
@@ -1546,6 +1578,20 @@ function redirect($uri)
     header('Location: '.$uri);
     exit;
   }
+}
+
+/**
+ * Http redirection
+ *
+ * @deprecated deprecated since version 0.4. Please use {@link redirect_to()} instead.
+ * @param string $url 
+ * @return void
+ */
+function redirect($uri)
+{
+  # halt('redirect() is deprecated. Please use redirect_to() instead.', E_LIM_DEPRECATED);
+  # halt not necesary... it won't be visible because of http redirection...
+  redirect_to($uri);
 }
 
 /**
