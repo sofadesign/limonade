@@ -1434,7 +1434,7 @@ function value_or_default($value, $default)
  */
 function v($value, $default)
 {
-  return empty($value) ? $default : $value;
+  return call_user_func('value_or_default', $value, $default);
 }
 
 /**

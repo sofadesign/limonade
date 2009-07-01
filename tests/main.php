@@ -134,7 +134,13 @@ tests("Main");
    
    function test_main_value_or_default()
    {
-     # TODO test value_or_default
+     assert_equal(value_or_default(10, 20), 10);
+     assert_equal(value_or_default(0, 20), 20);
+     assert_equal(value_or_default(null, 20), 20);
+     assert_equal(value_or_default('hello', 'world'), 'hello');
+     assert_equal(value_or_default('', 'world'), 'world');
+     assert_equal(value_or_default(10, 20), v(10, 20));
+     assert_equal(value_or_default(0, 20), v(0, 20));
    }
    
    function test_main_file_path()
