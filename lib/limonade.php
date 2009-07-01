@@ -379,7 +379,7 @@ function env($reset = null)
     foreach($vars as $var)
     {
       $varname = "_$var";
-      if(!array_key_exists("$varname", $GLOBALS)) $GLOBALS[$varname] = array();
+      if(!array_key_exists($varname, $GLOBALS)) $GLOBALS[$varname] = array();
       $env[$var] =& $GLOBALS[$varname];
     }
     
