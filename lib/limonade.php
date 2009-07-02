@@ -922,9 +922,9 @@ function request_uri($env = null)
  *
  * @return void
  */
-function dispatch($path_or_array, $function, $agent_regexp = null)
+function dispatch($path_or_array, $function)
 {
-  dispatch_get($path_or_array, $function, $agent_regexp);
+  dispatch_get($path_or_array, $function);
 }
 
 /**
@@ -932,12 +932,11 @@ function dispatch($path_or_array, $function, $agent_regexp = null)
  *
  * @param string $path_or_array 
  * @param string $function 
- * @param string $agent_regexp 
  * @return void
  */
-function dispatch_get($path_or_array, $function, $agent_regexp = null)
+function dispatch_get($path_or_array, $function)
 {
-  route("GET", $path_or_array, $function, $agent_regexp);
+  route("GET", $path_or_array, $function);
 }
 
 /**
@@ -945,12 +944,11 @@ function dispatch_get($path_or_array, $function, $agent_regexp = null)
  *
  * @param string $path_or_array 
  * @param string $function 
- * @param string $agent_regexp 
  * @return void
  */
-function dispatch_post($path_or_array, $function, $agent_regexp = null)
+function dispatch_post($path_or_array, $function)
 {
-   route("POST", $path_or_array, $function, $agent_regexp);
+   route("POST", $path_or_array, $function);
 }
 
 /**
@@ -958,12 +956,11 @@ function dispatch_post($path_or_array, $function, $agent_regexp = null)
  *
  * @param string $path_or_array 
  * @param string $function 
- * @param string $agent_regexp 
  * @return void
  */
-function dispatch_put($path_or_array, $function, $agent_regexp = null)
+function dispatch_put($path_or_array, $function)
 {
-   route("PUT", $path_or_array, $function, $agent_regexp);
+   route("PUT", $path_or_array, $function);
 }
 
 /**
@@ -971,12 +968,11 @@ function dispatch_put($path_or_array, $function, $agent_regexp = null)
  *
  * @param string $path_or_array 
  * @param string $function 
- * @param string $agent_regexp 
  * @return void
  */
-function dispatch_delete($path_or_array, $function, $agent_regexp = null)
+function dispatch_delete($path_or_array, $function)
 {
-   route("DELETE", $path_or_array, $function, $agent_regexp);
+   route("DELETE", $path_or_array, $function);
 }
 
 
@@ -988,8 +984,7 @@ function dispatch_delete($path_or_array, $function, $agent_regexp = null)
  * @access private
  * @param string $method 
  * @param string $path_or_array 
- * @param string $func 
- * @param string $agent_regexp 
+ * @param string $func
  * @return array
  */
 function route()
@@ -1006,9 +1001,8 @@ function route()
 	    $method        = $args[0];
   	  $path_or_array = $args[1];
   	  $func          = $args[2];
-  	  $agent_regexp  = array_key_exists(3, $args) ? $args[3] : null;
 
-  	  $routes[] = route_build($method, $path_or_array, $func, $agent_regexp);
+  	  $routes[] = route_build($method, $path_or_array, $func);
 	  }
 	  
 	}
@@ -1032,11 +1026,10 @@ function route_reset()
  * @access private
  * @param string $method 
  * @param string $path_or_array 
- * @param string $func 
- * @param string $agent_regexp 
+ * @param string $func
  * @return array
  */
-function route_build($method, $path_or_array, $func, $agent_regexp = null)
+function route_build($method, $path_or_array, $func)
 {
    $method = strtoupper($method);
    if(!in_array($method, request_methods())) 
@@ -1128,8 +1121,7 @@ function route_build($method, $path_or_array, $func, $agent_regexp = null)
    return array( "method"       => $method,
                  "pattern"      => $pattern,
                  "names"        => $names,
-                 "function"     => $func,
-                 "agent_regexp" => $agent_regexp );
+                 "function"     => $func     );
 }
 
 /**
