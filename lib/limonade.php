@@ -55,18 +55,19 @@
 /**
  * Limonade version
  */
-define('LIMONADE',             '0.4');
-define('LIM_START_MICROTIME',  (float)substr(microtime(), 0, 10));
-define('LIM_SESSION_NAME',     'Fresh_and_Minty_Limonade_App');
-define('E_LIM_HTTP',           32768);
-define('E_LIM_PHP',            65536);
-define('E_LIM_DEPRECATED',     35000);
-define('NOT_FOUND',            404);
-define('SERVER_ERROR',         500);
-define('ENV_PRODUCTION',       10);
-define('ENV_DEVELOPMENT',      100);
-define('X-SENDFILE',           10);
-define('X-LIGHTTPD-SEND-FILE', 20);
+define('LIMONADE',              '0.4');
+define('LIM_START_MICROTIME',   (float)substr(microtime(), 0, 10));
+define('LIM_SESSION_NAME',      'Fresh_and_Minty_Limonade_App');
+define('LIM_SESSION_FLASH_KEY', '_lim_flash_messages');
+define('E_LIM_HTTP',            32768);
+define('E_LIM_PHP',             65536);
+define('E_LIM_DEPRECATED',      35000);
+define('NOT_FOUND',             404);
+define('SERVER_ERROR',          500);
+define('ENV_PRODUCTION',        10);
+define('ENV_DEVELOPMENT',       100);
+define('X-SENDFILE',            10);
+define('X-LIGHTTPD-SEND-FILE',  20);
 
 
 ## SETTING BASIC SECURITY _____________________________________________________
@@ -150,7 +151,7 @@ ini_set('display_errors', 0);
  * Set and returns options values
  * 
  * If multiple values are provided, set $name option with an array of those values.
- * If only ther is only one value, set $name option with the provided $values
+ * If there is only one value, set $name option with the provided $values
  *
  * @param string $name 
  * @param mixed  $values,... 
@@ -228,7 +229,7 @@ function params($name_or_array_or_null = null, $value = null)
  * Set and returns template variables
  * 
  * If multiple values are provided, set $name variable with an array of those values.
- * If only ther is only one value, set $name variable with the provided $values
+ * If there is only one value, set $name variable with the provided $values
  *
  * @param string $name 
  * @param mixed  $values,... 
@@ -672,8 +673,8 @@ function error_notices_render()
   if(option('debug') && option('env') > ENV_PRODUCTION)
   {
     $notices = error_notice();
-    error_notice(null);
-    $c_view_dir = option('views_dir'); // keep for later
+    error_notice(null); // reset notices
+    $c_view_dir = option('views_dir'); // keep for restore after render
     option('views_dir', option('limonade_views_dir'));
     $o = render('_notices.html.php', null, array('notices' => $notices));
     option('views_dir', $c_view_dir); // restore current views dir
@@ -1417,6 +1418,43 @@ function h($str, $quote_style = ENT_NOQUOTES, $charset = null)
 {
 	if(is_null($charset)) $charset = strtoupper(option('encoding'));
 	return htmlspecialchars($str, $quote_style, $charset); 
+}
+
+/**
+ * Set and returns flash messages stored in $_SESSION
+ * 
+ * If multiple values are provided, set $name variable with an array of those values.
+ * If there is only one value, set $name variable with the provided $values
+ *
+ * @param string $name 
+ * @param mixed  $values,... 
+ * @return mixed variable value for $name if $name argument is provided, else return all variables
+ */
+function flash($name = null, $value = null)
+{
+  if(!defined('SID')) trigger_error("Flash messages can't be used because session isn't enabled", E_USER_WARNING);
+  $fkey = LIM_SESSION_FLASH_KEY;
+  if(!array_key_exists($fkey, $_SESSION)) $_SESSION[$fkey] = array();
+  
+  $args = func_get_args();
+  $name = array_shift($args);
+  if(is_null($name)) return $_SESSION[$fkey];
+  if(!empty($args))
+  {
+    $_SESSION[$fkey][$name] = count($args) > 1 ? $args : $args[0];
+  }
+  if(array_key_exists($name, $_SESSION[$fkey])) return $_SESSION[$fkey][$name];
+  return $_SESSION[$fkey];
+}
+
+/**
+ * Resets all flash messages
+ *
+ * @return void
+ */
+function flash_reset()
+{
+  $_SESSION[LIM_SESSION_FLASH_KEY] = array();
 }
 
 
