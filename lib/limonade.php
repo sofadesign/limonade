@@ -55,8 +55,9 @@
 /**
  * Limonade version
  */
-define('LIMONADE',             '0.3');
+define('LIMONADE',             '0.4');
 define('LIM_START_MICROTIME',  (float)substr(microtime(), 0, 10));
+define('LIM_SESSION_NAME',     'Fresh_and_Minty_Limonade_App');
 define('E_LIM_HTTP',           32768);
 define('E_LIM_PHP',            65536);
 define('E_LIM_DEPRECATED',     35000);
@@ -281,7 +282,7 @@ function run($env = null)
   option('lib_dir',            $root_dir.'/lib/');
   option('env',                ENV_PRODUCTION);
   option('debug',              true);
-  option('session',           'Fresh_and_Minty_Limonade_App'); // true, false or the name of your session
+  option('session',            LIM_SESSION_NAME); // true, false or the name of your session
   option('encoding',           'utf-8');
   option('x-sendfile',         0); // 0: disabled, 
                                    // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
