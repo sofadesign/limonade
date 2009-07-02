@@ -1,9 +1,9 @@
 # TODO #
 
-- add a render_partial function (shortcut for render, without the layout param...)
 - designing default limonade views
-- methods flash
-- shortcut methods for session
+- adding documentation about changes between 0.3 and 0.4
+- update README files with new features / changes
+- add a render_partial function (shortcut for render, without the layout param...)
 - simple form helper with XSS/CSRF protection
 - adding a debug() helper
 
