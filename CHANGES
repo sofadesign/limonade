@@ -1,6 +1,13 @@
 [Changes since last revision]
 
-
+* rewrites error notices features: 
+   - php notices/warning errors won't stop application anymore
+   - error notices rendering rewritten
+* removes unused `$user_agent` options in dispatch and route functions.
+* [NEW] support for E_DEPRECATED and E_USER_DEPRECATED errors (PHP 5.3.0 >)
+* [NEW] LIM_DEPRACTED_ERROR (can be called with halt())
+* rename `redirect` in `redirect_to`; `redirect` is deprecated.
+* removes `array_to_xml` function: doesn't need to be in the limonade core
 
 
 [2009-07-01: VERSION 0.3.1]
