@@ -281,6 +281,7 @@ function run($env = null)
   option('lib_dir',            $root_dir.'/lib/');
   option('env',                ENV_PRODUCTION);
   option('debug',              true);
+  option('session',           'Fresh_and_Minty_Limonade_App'); // true, false or the name of your session
   option('encoding',           'utf-8');
   option('x-sendfile',         0); // 0: disabled, 
                                    // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
@@ -296,7 +297,14 @@ function run($env = null)
   # 3. Loading libs
   require_once_dir(option('lib_dir'));
   
-  # 4. Set some default methods if needed
+  # 4. Starting session
+  if(!defined('SID') && option('session'))
+  {
+    if(!is_bool(option('session'))) session_name(option('session'));
+    if(!session_start()) trigger_error("An error occured while trying to start the session", E_USER_WARNING);
+  }
+  
+  # 5. Set some default methods if needed
   if(!function_exists('after'))
   {
     function after($output)
@@ -312,7 +320,7 @@ function run($env = null)
     }
   }  
   
-  # 5. Check request
+  # 6. Check request
   if($rm = request_method())
   {
     if(!request_method_is_allowed($rm))
@@ -336,6 +344,7 @@ function run($env = null)
         {
           echo after(error_notices_render() . $output);
         }
+        if(defined('SID')) session_write_close();
         exit;
       }
       else halt(SERVER_ERROR, "Routing error: undefined function '{$route['function']}'", $route);      
@@ -530,6 +539,7 @@ function error_handler_dispatcher($errno, $errstr, $errfile, $errline)
       }
     }
     echo error_default_handler($errno, $errstr, $errfile, $errline);
+    if(defined('SID')) session_write_close();
     exit;
   }
 }
