@@ -13,7 +13,7 @@ function configure()
 function before()
 {
   layout('html_my_layout'); # setting default html layout
-  error_layout('html_my_layout');
+  //error_layout('html_my_layout');
 }
 
 dispatch('/', 'hello_world');
@@ -77,10 +77,10 @@ error(HTTP_FORBIDDEN, 'my_not_found_error_handler'); /* HTTP 403 Forbiden */
   }
 
 /* just change the not found error output */   
-function not_found($errno, $errstr, $errfile, $errline)
-{
-  return html("<h2>My NotFound Page</h2><p>".$errstr."</p><p>I'm not here...</p>");
-}
+// function not_found($errno, $errstr, $errfile, $errline)
+// {
+//   return html("<h2>My NotFound Page</h2><p>".$errstr."</p><p>I'm not here...</p>");
+// }
 
 /* just change the server error output */
 // function server_error($errno, $errstr, $errfile, $errline)
