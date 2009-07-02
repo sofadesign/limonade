@@ -11,6 +11,7 @@
 * removes `array_to_xml` function: doesn't need to be in the limonade core
 * [NEW] Session option `option('session')`. Can be true, false or a string for session. By default, it take the LIM_SESSION_NAME value, and it starts.
 * [NEW] Flash messages features hepers: `flash()`, `flash_reset()`
+* [CHANGED] Update and adding design to limonade default views (used for errors)
 
 
 [2009-07-01: VERSION 0.3.1]

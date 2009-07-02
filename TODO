@@ -1,6 +1,5 @@
 # TODO #
 
-- designing default limonade views
 - adding documentation about changes between 0.3 and 0.4
 - update README files with new features / changes
 - add a render_partial function (shortcut for render, without the layout param...)
