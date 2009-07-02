@@ -5,6 +5,9 @@
 	<title>Limonade, the fizzy PHP micro-framework</title>
 </head>
 <body>
-<?=$content;?>
+  <?= error_notices_render(); ?>
+  <div id="content">
+    <?=$content;?>
+  </div>
 </body>
 </html>
