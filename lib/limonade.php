@@ -277,6 +277,7 @@ function run($env = null)
   option('root_dir',           $root_dir);
   option('limonade_dir',       dirname(__FILE__).'/');
   option('limonade_views_dir', dirname(__FILE__).'/limonade/views/');
+  option('limonade_public_dir',dirname(__FILE__).'/limonade/public/');
   option('public_dir',         $root_dir.'/public/');
   option('views_dir',          $root_dir.'/views/');
   option('controllers_dir',    $root_dir.'/controllers/');
@@ -322,7 +323,35 @@ function run($env = null)
     }
   }  
   
-  # 6. Check request
+  # 6. Set default routes used for default views
+  dispatch(array("/_lim_css/*.css", array('_lim_css_filename')), 'render_limonade_css');
+    /**
+     * Internal controller that responds to route /_lim_css/*.css
+     *
+     * @access private
+     * @return string
+     */
+    function render_limonade_css()
+    {
+      option('views_dir', file_path(option('limonade_public_dir'), 'css'));
+      $fpath = file_path(params('_lim_css_filename').".css");
+      return css($fpath);
+    }
+  
+  dispatch(array("/_lim_public/**", array('_lim_public_file')), 'render_limonade_file');
+    /**
+     * Internal controller that responds to route /_lim_public/**
+     *
+     * @access private
+     * @return void
+     */
+    function render_limonade_file()
+    {
+      $fpath = file_path(option('limonade_public_dir'), params('_lim_public_file'));
+      return render_file($fpath, true);
+    }
+  
+  # 7. Check request
   if($rm = request_method())
   {
     if(!request_method_is_allowed($rm))
@@ -592,7 +621,7 @@ function error_not_found_output($errno, $errstr, $errfile, $errline)
     {
       option('views_dir', option('limonade_views_dir'));
       $msg = h(rawurldecode($errstr));
-      return html("<h1>Page not found:</h1><p>{$msg}</p>", error_layout());
+      return html("<h1>Page not found:</h1><p><code>{$msg}</code></p>", error_layout());
     }
   }
   return not_found($errno, $errstr, $errfile, $errline);
