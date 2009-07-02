@@ -272,18 +272,19 @@ function run($env = null)
    
   # 0. Set default configuration
   $root_dir = dirname(app_file());
-  option('root_dir',        $root_dir);
-  option('limonade_dir',    dirname(__FILE__).'/');
-  option('public_dir',      $root_dir.'/public/');
-  option('views_dir',       $root_dir.'/views/');
-  option('controllers_dir', $root_dir.'/controllers/');
-  option('lib_dir',         $root_dir.'/lib/');
-  option('env',             ENV_PRODUCTION);
-  option('debug',           true);
-  option('encoding',        'utf-8');
-  option('x-sendfile',      0); // 0: disabled, 
-                                // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
-                                // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
+  option('root_dir',           $root_dir);
+  option('limonade_dir',       dirname(__FILE__).'/');
+  option('limonade_views_dir', dirname(__FILE__).'/limonade/views/');
+  option('public_dir',         $root_dir.'/public/');
+  option('views_dir',          $root_dir.'/views/');
+  option('controllers_dir',    $root_dir.'/controllers/');
+  option('lib_dir',            $root_dir.'/lib/');
+  option('env',                ENV_PRODUCTION);
+  option('debug',              true);
+  option('encoding',           'utf-8');
+  option('x-sendfile',         0); // 0: disabled, 
+                                   // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
+                                   // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
   
   # 1. Set error handling
   ini_set('display_errors', 1);
@@ -314,6 +315,9 @@ function run($env = null)
   # 5. Check request
   if($rm = request_method())
   {
+    if(!request_method_is_allowed($rm))
+      halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
+    
     # 5.1 Check matching route
     if($route = route_find($rm, request_uri()))
     {
@@ -330,16 +334,7 @@ function run($env = null)
         # 5.4 Call matching controller function and output result
         if($output = call_user_func($route['function']))
         {
-          if(option('debug') && option('env') > ENV_PRODUCTION)
-          {
-            $notices = error_notice();
-            if(!empty($notices))
-            {
-              foreach($notices as $notice) echo $notice;
-              echo '<hr>';
-            }
-          }
-          echo after($output);
+          echo after(error_notices_render() . $output);
         }
         exit;
       }
@@ -348,7 +343,7 @@ function run($env = null)
     else route_missing($rm, request_uri());
     
   }
-  else halt(SERVER_ERROR, "Unknown request method <code>$rm</code>");
+  else halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
   
 }
 
@@ -514,14 +509,8 @@ function error_handler_dispatcher($errno, $errstr, $errfile, $errline)
   # Notices and warning won't halt execution
   if(error_wont_halt_app($errno))
   {
-    if(option('debug'))
-    {
-      $o  = "<p>[".error_type($errno)."] ";
-  	  $o .= "$errstr in <strong>$errfile</strong> line <strong>$errline</strong>: ";
-  	  $o .= "</p>";
-  	  error_notice($o);
-  	  return;
-    }
+    error_notice($errno, $errstr, $errfile, $errline);
+  	return;
   }
   else
   {
@@ -589,7 +578,7 @@ function error_not_found_output($errno, $errstr, $errfile, $errline)
      */
     function not_found($errno, $errstr, $errfile=null, $errline=null)
     {
-      option('views_dir', option('limonade_dir').'limonade/views/');
+      option('views_dir', option('limonade_views_dir'));
       $msg = h(rawurldecode($errstr));
       return html("<h1>Page not found:</h1><p>{$msg}</p>", error_layout());
     }
@@ -624,7 +613,7 @@ function error_server_error_output($errno, $errstr, $errfile, $errline)
     {
       $is_http_error = http_response_status_is_valid($errno);
       $args = compact('errno', 'errstr', 'errfile', 'errline', 'is_http_error');	
-    	option('views_dir', option('limonade_dir').'limonade/views/');
+    	option('views_dir', option('limonade_views_dir'));
     	return html('error.html.php', error_layout(), $args);
     }
   }
@@ -646,19 +635,40 @@ function error_layout($layout = false)
 
 
 /**
- * Set a notice if provided and return all stored notices
+ * Set a notice if arguments are provided
+ * Returns all stored notices.
+ * If $errno argument is null, reset the notices array
  *
- * @param string $str 
+ * @access private
+ * @param string, null $str 
  * @return array
  */
-function error_notice($str = null)
+function error_notice($errno = false, $errstr = null, $errfile = null, $errline = null)
 {
   static $notices = array();
-  if(!is_null($str))
-  {
-    $notices[] = $str;
-  }
+  if($errno) $notices[] = compact('errno', 'errstr', 'errfile', 'errline');
+  else if(is_null($errno)) $notices = array();
   return $notices;
+}
+
+/**
+ * Returns notices output rendering and reset notices
+ *
+ * @return string
+ */
+function error_notices_render()
+{
+  if(option('debug') && option('env') > ENV_PRODUCTION)
+  {
+    $notices = error_notice();
+    error_notice(null);
+    $c_view_dir = option('views_dir'); // keep for later
+    option('views_dir', option('limonade_views_dir'));
+    $o = render('_notices.html.php', null, array('notices' => $notices));
+    option('views_dir', $c_view_dir); // restore current views dir
+    
+    return $o;
+  }
 }
 
 /**
@@ -1030,7 +1040,8 @@ function route_build($method, $path_or_array, $func, $agent_regexp = null)
 {
    $method = strtoupper($method);
    if(!in_array($method, request_methods())) 
-      trigger_error("'$method' request method is unkown or unavailable.", E_USER_ERROR);
+      trigger_error("'$method' request method is unkown or unavailable.", E_USER_WARNING);
+      
    
    if(is_array($path_or_array))
    {
