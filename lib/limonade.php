@@ -1419,10 +1419,10 @@ function render_file($filename, $return = false)
 function url_for($params = null)
 {
   $env = env();
-  $request_uri = rtrim($env['SERVER']['REQUEST_URI'], '?');
-  $base_path   = $env['SERVER']['SCRIPT_NAME'];
-
-  $base_path = ereg_replace('index\.php$', '?', $base_path);
+  # better for url rewrite
+  # TODO: needs to be testes in various cases (urL rewrite or note, in document root or not, with ? or not...)
+  $uri = request_uri();
+  $base_path = preg_replace('/'.preg_quote($uri, '/').'$/', '', rtrim($env['SERVER']['REQUEST_URI'], '/'));
 
   $paths = array();
   $params = func_get_args();
