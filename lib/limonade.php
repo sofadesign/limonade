@@ -374,11 +374,15 @@ function run($env = null)
         # 5.3 Call before function
         call_if_exists('before');
         
-        # 5.4 Call matching controller function and output result
+        # 5.4 Make flash messages available in view
+        set('flash', flash_now());
+        
+        # 5.5 Call matching controller function and output result
         if($output = call_user_func($route['function']))
         {
           echo after(error_notices_render() . $output);
         }
+        flash_sweeper();
         if(defined('SID')) session_write_close();
         exit;
       }
@@ -1454,40 +1458,83 @@ function h($str, $quote_style = ENT_NOQUOTES, $charset = null)
 }
 
 /**
- * Set and returns flash messages stored in $_SESSION
+ * Set and returns flash messages that will be available in the next action
+ * via the {@link flash_now()} function or the view variable <code>$flash</code>.
  * 
- * If multiple values are provided, set $name variable with an array of those values.
- * If there is only one value, set $name variable with the provided $values
+ * If multiple values are provided, set <code>$name</code> variable with an array of those values.
+ * If there is only one value, set <code>$name</code> variable with the provided $values
+ * or if it's <code>$name</code> is an array, merge it with current messages.
  *
- * @param string $name 
+ * @param string, array $name 
  * @param mixed  $values,... 
  * @return mixed variable value for $name if $name argument is provided, else return all variables
  */
 function flash($name = null, $value = null)
 {
   if(!defined('SID')) trigger_error("Flash messages can't be used because session isn't enabled", E_USER_WARNING);
-  $fkey = LIM_SESSION_FLASH_KEY;
-  if(!array_key_exists($fkey, $_SESSION)) $_SESSION[$fkey] = array();
-  
+  static $messages = array();
   $args = func_get_args();
   $name = array_shift($args);
-  if(is_null($name)) return $_SESSION[$fkey];
+  if(is_null($name)) return $messages;
+  if(is_array($name)) return $messages = array_merge($messages, $name);
   if(!empty($args))
   {
-    $_SESSION[$fkey][$name] = count($args) > 1 ? $args : $args[0];
+    $messages[$name] = count($args) > 1 ? $args : $args[0];
   }
-  if(array_key_exists($name, $_SESSION[$fkey])) return $_SESSION[$fkey][$name];
-  return $_SESSION[$fkey];
+  if(array_key_exists($name, $messages)) return $messages[$name];
+  return $messages;
 }
 
 /**
- * Resets all flash messages
+ * Set and returns flash messages available for the current action, included those
+ * defined in the previous action with {@link flash()}
+ * Those messages will also be passed to the views and made available in the 
+ * <code>$flash</code> variable.
+ * 
+ * If multiple values are provided, set <code>$name</code> variable with an array of those values.
+ * If there is only one value, set <code>$name</code> variable with the provided $values
+ * or if it's <code>$name</code> is an array, merge it with current messages.
  *
+ * @param string, array $name 
+ * @param mixed  $values,... 
+ * @return mixed variable value for $name if $name argument is provided, else return all variables
+ */
+function flash_now($name = null, $value = null)
+{
+  static $messages = null;
+  if(is_null($messages))
+  {
+    $fkey = LIM_SESSION_FLASH_KEY;
+    $messages = array();
+    if(defined('SID') && array_key_exists($fkey, $_SESSION)) $messages = $_SESSION[$fkey];
+  }
+  $args = func_get_args();
+  $name = array_shift($args);
+  if(is_null($name)) return $messages;
+  if(is_array($name)) return $messages = array_merge($messages, $name);
+  if(!empty($args))
+  {
+    $messages[$name] = count($args) > 1 ? $args : $args[0];
+  }
+  if(array_key_exists($name, $messages)) return $messages[$name];
+  return $messages;
+}
+
+/**
+ * Delete current flash messages in session, and set new ones stored with 
+ * flash function.
+ * Called before application exits.
+ *
+ * @access private
  * @return void
  */
-function flash_reset()
+function flash_sweep()
 {
-  $_SESSION[LIM_SESSION_FLASH_KEY] = array();
+  if(defined('SID'))
+  {
+    $fkey = LIM_SESSION_FLASH_KEY;
+    $_SESSION[$fkey] = flash();
+  }
 }
 
 
