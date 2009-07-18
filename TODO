@@ -1,12 +1,9 @@
 # TODO #
 
-- testing redesigned flash fetaures
-- testing stop_and_exit() and the before_exit() callback
 - more unit and functional tests
 - adding documentation about changes between 0.3 and 0.4
 - update README files with new features / changes
 - in run(), passing  to all functions that require it
-- make flash auto reset (when next action is done)
 - params function should be singular like option ?
 - adding a debug() helper
 - new redirect_to (support for https)

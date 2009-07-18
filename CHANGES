@@ -8,6 +8,8 @@
 * [NEW] support for E_DEPRECATED and E_USER_DEPRECATED errors (PHP 5.3.0 >)
 * [NEW] LIM_DEPRACTED_ERROR (can be called with halt())
 * [CHANGED] rename `redirect` in `redirect_to`; `redirect` is deprecated.
+* [CHANGED] `redirect_to` is based on `url_for` and takes the same arguments
+* [CHANGED] Now `url_for` supports full URLs with a schema 
 * removes `array_to_xml` function: doesn't need to be in the limonade core
 * [NEW] Session option `option('session')`. Can be true, false or a string for session. By default, it take the LIM_SESSION_NAME value, and it starts.
 * [NEW] Flash messages features hepers: `flash()`, `flash_reset()`
