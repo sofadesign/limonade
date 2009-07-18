@@ -375,10 +375,7 @@ function run($env = null)
         # 5.3 Call before function
         call_if_exists('before');
         
-        # 5.4 Make flash messages available in view
-        set('flash', flash_now());
-        
-        # 5.5 Call matching controller function and output result
+        # 5.4 Call matching controller function and output result
         if($output = call_user_func($route['function']))
         {
           echo after(error_notices_render() . $output);
@@ -1255,6 +1252,7 @@ function render($content_or_func, $layout = '', $locals = array())
 	$content_or_func = array_shift($args);
 	$layout = count($args) > 0 ? array_shift($args) : layout();
 	$view_path = file_path(option('views_dir'),$content_or_func);
+	set('flash', flash_now());
 	$vars = array_merge(set(), $locals);
   $infinite_loop = false;
   
