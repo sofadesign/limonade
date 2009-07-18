@@ -382,9 +382,7 @@ function run($env = null)
         {
           echo after(error_notices_render() . $output);
         }
-        flash_sweeper();
-        if(defined('SID')) session_write_close();
-        exit;
+        stop_and_exit();
       }
       else halt(SERVER_ERROR, "Routing error: undefined function '{$route['function']}'", $route);      
     }
@@ -393,6 +391,19 @@ function run($env = null)
   }
   else halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
   
+}
+
+/**
+ * Stop and exit limonade application
+ *
+ * @access private 
+ * @return void
+ */
+function stop_and_exit()
+{
+  flash_sweeper();
+  if(defined('SID')) session_write_close();
+  exit;
 }
 
 /**
@@ -578,8 +589,7 @@ function error_handler_dispatcher($errno, $errstr, $errfile, $errline)
       }
     }
     echo error_default_handler($errno, $errstr, $errfile, $errline);
-    if(defined('SID')) session_write_close();
-    exit;
+    stop_and_exit();
   }
 }
 
@@ -1523,7 +1533,7 @@ function flash_now($name = null, $value = null)
 /**
  * Delete current flash messages in session, and set new ones stored with 
  * flash function.
- * Called before application exits.
+ * Called before application exit.
  *
  * @access private
  * @return void
