@@ -4,11 +4,19 @@ require_once dirname(dirname(__FILE__)).'/lib/limonade/tests.php';
 
 $basedir = dirname(__FILE__).DS;
 
-tests_all('Limonade');
+if(!defined('TESTS_DOC_ROOT'))
+{
+  $doc_root = "http://localhost/limonade-php.net/code/tests/apps/";
+  define('TESTS_DOC_ROOT', $doc_root);
+}
+
+
+test_suite('Limonade');
   require $basedir."tests.php";
   require $basedir."router.php";
   require $basedir."request.php";
   require $basedir."main.php";
-endtests_all();
+  require $basedir."functional.php";
+end_test_suite();
 
 ?>

@@ -1,9 +1,9 @@
 <?php
 
-tests("Router");
-   tests_describe("Testing limonade router functions.");
+test_case("Router");
+   test_case_describe("Testing limonade router functions.");
    
-   function tests_before_each_test_in_router()
+   function before_each_test_in_router()
    {
      route_reset();
    }
@@ -150,7 +150,7 @@ tests("Router");
      
      $r = route("get", "/index", "my_func");
      assert_length_of($r, 1);
-     assert_length_of($r[0], 5);
+     assert_length_of($r[0], 4);
      assert_equal($r[0]["method"], "GET");
      assert_equal($r[0]["pattern"], "#^/index(?:/*?)?$#i");
      assert_empty($r[0]["names"]);
@@ -158,7 +158,7 @@ tests("Router");
      
      $r = route("put", "/blog/:id", "my_update_func");
      assert_length_of($r, 2);
-     assert_length_of($r[1], 5);
+     assert_length_of($r[1], 4);
      assert_equal($r[1]["method"], "PUT");
      assert_match($r[1]["pattern"], "/blog/102");
      assert_length_of($r[1]["names"], 1);
@@ -225,6 +225,6 @@ tests("Router");
      
    }
    
-endtests();
+end_test_case();
 
 ?>

@@ -1,10 +1,10 @@
 <?php
 if(!defined('LIMONADE')){$h="HTTP/1.0 401 Unauthorized";header($h);die($h);}// Security check
 
-tests("Main");
-   tests_describe("Testing limonade main functions.");
+test_case("Main");
+   test_case_describe("Testing limonade main functions.");
    
-   function tests_before_each_test_in_main()
+   function before_each_test_in_main()
    {
      env(null);
    }
@@ -154,5 +154,5 @@ tests("Main");
    }
    
    
-endtests();
+end_test_case();
 ?>

@@ -1,9 +1,9 @@
 <?php
 
-tests("Request");
-   tests_describe("Testing limonade request functions.");
+test_case("Request");
+   test_case_describe("Testing limonade request functions.");
    
-   function tests_before_each_test_in_request()
+   function before_each_test_in_request()
    {
      env(null);
    }
@@ -74,5 +74,5 @@ tests("Request");
 
    }
    
-endtests();
+end_test_case();
    

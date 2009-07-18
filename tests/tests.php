@@ -1,18 +1,18 @@
 <?php
 
-tests("Test");
+test_case("Test");
 
-   tests_describe( "Testing test and assertions functions.\n". 
-                   "Must run first, before all other tests."   );
+   test_case_describe( "Testing test and assertions functions.\n". 
+                       "Must run first, before all other tests."   );
 
-    function tests_before_each_test_in_test()
+    function before_each_test_in_test()
     {
        // echo "// test_before_test(): executed before each test\n";
        global $val;
        $val = NULL;
     }
    
-   function tests_before_each_assert_in_test()
+   function before_each_assert_in_test()
    {
       // echo "// test_before_test(): executed before each test\n";
       global $val;
@@ -53,6 +53,17 @@ tests("Test");
    {
       assert_trigger_error("my_triggering_error_func", array(true));
    }
-endtests();
+   
+   function test_test_assert_request()
+   {
+     assert_true(defined('TESTS_DOC_ROOT'), "Undefined 'TESTS_DOC_ROOT' constant");
+     $response =  test_request(TESTS_DOC_ROOT.'00-empty.php', 'GET', true);
+     assert_header($response, 'Content-type');
+     assert_header($response, 'Content-type', 'text/html');
+     assert_header($response, 'Content-Type');
+     assert_header($response, 'Content-Type', 'text/html');
+   }
+   
+end_test_case();
 
 ?>

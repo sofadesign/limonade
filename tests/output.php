@@ -1,9 +1,9 @@
 <?php
 
-tests("Output");
-  tests_describe("Testing limonade output functions.");
+test_case("Output");
+  test_case_describe("Testing limonade output functions.");
   
-  function tests_before_each_test_in_output()
+  function before_each_test_in_output()
   {
     env(null);
   }
@@ -25,5 +25,5 @@ tests("Output");
   
   
   
-endtests();
+end_test_case();
 ?>
