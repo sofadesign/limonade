@@ -93,5 +93,16 @@ function route_missing($request_method, $request_uri)
 {
   halt(NOT_FOUND, "($request_method) $request_uri"); # by default
 }
+
+/**
+ * Called before stoppping and exiting application.
+ *
+ * @abstract this function might be redefined by user
+ * @return void 
+ */
+function before_exit()
+{
+  
+}
  
 ?>

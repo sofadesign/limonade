@@ -147,6 +147,7 @@ ini_set('display_errors', 0);
 # function not_found(){}
 # function server_error(){}
 # function route_missing(){}
+# function before_exit(){}
 
 
 ## MAIN PUBLIC FUNCTIONS _______________________________________________________
@@ -401,6 +402,7 @@ function run($env = null)
  */
 function stop_and_exit()
 {
+  call_if_exists('before_exit');
   flash_sweeper();
   if(defined('SID')) session_write_close();
   exit;
