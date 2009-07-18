@@ -400,7 +400,7 @@ function run($env = null)
 function stop_and_exit()
 {
   call_if_exists('before_exit');
-  flash_sweeper();
+  flash_sweep();
   if(defined('SID')) session_write_close();
   exit;
 }
@@ -1253,14 +1253,11 @@ function render($content_or_func, $layout = '', $locals = array())
 	$layout = count($args) > 0 ? array_shift($args) : layout();
 	$view_path = file_path(option('views_dir'),$content_or_func);
 	$vars = array_merge(set(), $locals);
-	if(array_key_exists('flash', $vars))
-	{
-	  trigger_error('A $flash variable is already passed to view. Flash messages will only be accessible through flash_now()', E_USER_NOTICE);
-	}
-	else
-	{
-	  $vars['flash'] = flash_now();
-	}
+	
+	$flash = flash_now();
+	if(array_key_exists('flash', $vars)) trigger_error('A $flash variable is already passed to view. Flash messages will only be accessible through flash_now()', E_USER_NOTICE);  
+	else if(!empty($flash)) $vars['flash'] = $flash;
+
   $infinite_loop = false;
   
   # Avoid infinite loop: this function is in the backtrace ?
@@ -1434,21 +1431,24 @@ function render_file($filename, $return = false)
 /**
  * Returns an url composed of params joined with /
  *
- * @param string $params 
+ * @param string $params,... 
  * @return string
  */ 
 function url_for($params = null)
 {
-  $env = env();
-  # better for url rewrite
-  # TODO: needs to be testes in various cases (urL rewrite or note, in document root or not, with ? or not...)
-  $uri = request_uri();
-  $base_path = preg_replace('/'.preg_quote($uri, '/').'$/', '', rtrim($env['SERVER']['REQUEST_URI'], '/'));
-
-  $paths = array();
+  $paths  = array();
   $params = func_get_args();
+  $first  = true;
   foreach($params as $param)
   {
+    if($first)
+    {
+      if(filter_var($param , FILTER_VALIDATE_URL))
+      {
+        $paths[] = $param;
+        continue;
+      }
+    }
     $p = explode('/',$param);
     foreach($p as $v)
     {
@@ -1456,7 +1456,20 @@ function url_for($params = null)
     }
   }
   
-  return rtrim($base_path."/".implode('/', $paths), '/');
+  $path = rtrim(implode('/', $paths), '/');
+  
+  if(!filter_var($path , FILTER_VALIDATE_URL)) 
+  {
+    # it's a relative URL or an URL without a schema
+    $env = env();
+    # better for url rewrite
+    # TODO: needs to be testes in various cases (urL rewrite or note, in document root or not, with ? or not...)
+    $uri = request_uri();
+    $base_path = preg_replace('/'.preg_quote($uri, '/').'$/', '', rtrim($env['SERVER']['REQUEST_URI'], '/'));
+    $path = $base_path."/".$path;
+  }
+
+  return $path;
 }
 
 /**
@@ -1710,10 +1723,10 @@ function status($code = 500)
 /**
  * Http redirection
  *
- * @param string $url 
+ * @param string $params,... 
  * @return void
  */
-function redirect_to($uri)
+function redirect_to($params)
 {
   # [NOTE]: (from php.net) HTTP/1.1 requires an absolute URI as argument to » Location:
   # including the scheme, hostname and absolute path, but some clients accept
@@ -1724,6 +1737,7 @@ function redirect_to($uri)
   # TODO make absolute uri
   if(!headers_sent())
 	{
+    $uri = call_user_func_array('url_for', $params);
     header('Location: '.$uri);
     exit;
   }
