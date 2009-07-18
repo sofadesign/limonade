@@ -1252,8 +1252,15 @@ function render($content_or_func, $layout = '', $locals = array())
 	$content_or_func = array_shift($args);
 	$layout = count($args) > 0 ? array_shift($args) : layout();
 	$view_path = file_path(option('views_dir'),$content_or_func);
-	set('flash', flash_now());
 	$vars = array_merge(set(), $locals);
+	if(array_key_exists('flash', $vars))
+	{
+	  trigger_error('A $flash variable is already passed to view. Flash messages will only be accessible through flash_now()', E_USER_NOTICE);
+	}
+	else
+	{
+	  $vars['flash'] = flash_now();
+	}
   $infinite_loop = false;
   
   # Avoid infinite loop: this function is in the backtrace ?
