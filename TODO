@@ -1,15 +1,28 @@
 # TODO #
 
+- testing redesigned flash fetaures
+- testing stop_and_exit() and the before_exit() callback
+- more unit and functional tests
 - adding documentation about changes between 0.3 and 0.4
 - update README files with new features / changes
-- add a render_partial function (shortcut for render, without the layout param...)
-- simple form helper with XSS/CSRF protection
+- in run(), passing  to all functions that require it
+- make flash auto reset (when next action is done)
+- params function should be singular like option ?
 - adding a debug() helper
+- new redirect_to (support for https)
+- adding url_rewrite features
+- enhance url_for with url rewrite
+- add header X-Limonade-PHP: (lim version name); (cosmetic ;-)
+
+- adding HEAD HTTP support (#12 HTTP HEAD request results in a 500 response code)
+- add a render_partial function (shortcut for render, without the layout param...)
+- adding gzip option (http://fr.php.net/manual/en/zlib.configuration.php#ini.zlib.output-compression)
+- simple form helper with XSS/CSRF protection
+
 
 - remove examples/ and move it in an external depot
-- adding url_rewrite features
 - more examples
-- complete tests
+
 
 - public API documentation:
     - tests: tag private functions
