@@ -153,6 +153,19 @@ test_case("Main");
      assert_equal(file_path('/one','two','three//'), $p.'/');
    }
    
+   function test_main_url_for()
+   {
+     assert_equal(url_for(''), '/');
+     assert_equal(url_for('/'), '/');
+     assert_equal(url_for('test'), '/test');
+     assert_equal(url_for('test', 1, 2), '/test/1/2');
+     assert_equal(url_for('one', 'two', 'three'), '/one/two/three');
+     $site_url = 'http://limonade.sofa-design.net';
+     assert_equal(url_for($site_url), $site_url);
+     assert_equal(url_for($site_url, 'examples'), $site_url.'/examples');
+     $ssite_url = 'https://limonade.sofa-design.net';
+     assert_equal(url_for($ssite_url), $ssite_url);
+   }
    
 end_test_case();
 ?>
