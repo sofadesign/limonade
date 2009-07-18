@@ -1,5 +1,6 @@
 [Changes since last revision]
 
+[2009-07-18: VERSION 0.4]
 
 * rewrites error notices features: 
    - php notices/warning errors won't stop application anymore
