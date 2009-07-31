@@ -359,12 +359,7 @@ function run($env = null)
   # 6. Check request
   if($rm = request_method())
   {
-    if($request_is_head = request_is_head())
-    {
-      // treat it as a GET request but without output
-      $rm = 'GET';
-      ob_start();
-    }
+    if(request_is_head()) ob_start(); // then no output
     
     if(!request_method_is_allowed($rm))
       halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
@@ -1005,7 +1000,7 @@ function dispatch($path_or_array, $function)
 }
 
 /**
- * Add a GET route
+ * Add a GET route. Also automatically defines a HEAD route.
  *
  * @param string $path_or_array 
  * @param string $function 
@@ -1014,6 +1009,7 @@ function dispatch($path_or_array, $function)
 function dispatch_get($path_or_array, $function)
 {
   route("GET", $path_or_array, $function);
+  route("HEAD", $path_or_array, $function);
 }
 
 /**
