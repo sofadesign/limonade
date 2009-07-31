@@ -359,6 +359,13 @@ function run($env = null)
   # 6. Check request
   if($rm = request_method())
   {
+    if($request_is_head = request_is_head())
+    {
+      // treat it as a GET request but without output
+      $rm = 'GET';
+      ob_start();
+    }
+    
     if(!request_method_is_allowed($rm))
       halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
     
@@ -402,6 +409,7 @@ function stop_and_exit()
   call_if_exists('before_exit');
   flash_sweep();
   if(defined('SID')) session_write_close();
+  ob_end_clean(); // when request_is_head()
   exit;
 }
 
@@ -436,7 +444,7 @@ function env($reset = null)
       if(!array_key_exists($varname, $GLOBALS)) $GLOBALS[$varname] = array();
       $env[$var] =& $GLOBALS[$varname];
     }
-    
+
     $method = request_method($env);
     if($method == 'PUT' || $method == 'DELETE')
     {
@@ -882,13 +890,24 @@ function request_is_delete($env = null)
 }
 
 /**
+ * Checks if request method is HEAD
+ *
+ * @param string $env 
+ * @return bool
+ */
+function request_is_head($env = null)
+{
+  return request_method($env) == "HEAD";
+}
+
+/**
  * Returns allowed request methods
  *
  * @return array
  */
 function request_methods()
 {
-   return array("GET","POST","PUT","DELETE");
+   return array("GET","POST","PUT","DELETE", "HEAD");
 }
 
 /**
