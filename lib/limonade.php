@@ -1754,6 +1754,7 @@ function redirect_to($params)
   if(!headers_sent())
 	{
     $uri = call_user_func_array('url_for', $params);
+    stop_and_exit(false);
     header('Location: '.$uri);
     exit;
   }
