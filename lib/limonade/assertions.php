@@ -167,6 +167,3 @@ function assert_response($response, $expected_status, $message)
   //     $this->_response_code = $matches[2];
   // }
 }
-
-
-?>

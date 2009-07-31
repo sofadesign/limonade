@@ -104,5 +104,3 @@ function before_exit()
 {
   
 }
- 
-?>

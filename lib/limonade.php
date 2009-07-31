@@ -55,7 +55,7 @@
 /**
  * Limonade version
  */
-define('LIMONADE',              '0.4');
+define('LIMONADE',              '0.4.1');
 define('LIM_START_MICROTIME',   (float)substr(microtime(), 0, 10));
 define('LIM_SESSION_NAME',      'Fresh_and_Minty_Limonade_App');
 define('LIM_SESSION_FLASH_KEY', '_lim_flash_messages');
@@ -126,6 +126,34 @@ if(get_magic_quotes_runtime()) set_magic_quotes_runtime(false);
 #    if you want to show errors before running app
 ini_set('display_errors', 0);
 
+## SETTING INTERNAL ROUTES _____________________________________________________
+
+dispatch(array("/_lim_css/*.css", array('_lim_css_filename')), 'render_limonade_css');
+  /**
+   * Internal controller that responds to route /_lim_css/*.css
+   *
+   * @access private
+   * @return string
+   */
+  function render_limonade_css()
+  {
+    option('views_dir', file_path(option('limonade_public_dir'), 'css'));
+    $fpath = file_path(params('_lim_css_filename').".css");
+    return css($fpath, null); // with no layout
+  }
+
+dispatch(array("/_lim_public/**", array('_lim_public_file')), 'render_limonade_file');
+  /**
+   * Internal controller that responds to route /_lim_public/**
+   *
+   * @access private
+   * @return void
+   */
+  function render_limonade_file()
+  {
+    $fpath = file_path(option('limonade_public_dir'), params('_lim_public_file'));
+    return render_file($fpath, true);
+  }
 
 
 
@@ -279,7 +307,13 @@ function run($env = null)
    
   # 0. Set default configuration
   $root_dir = dirname(app_file());
+  $base_path = dirname($env['SERVER']['SCRIPT_NAME']);
+  $base_file = basename($env['SERVER']['SCRIPT_NAME']);
+  $base_uri  = $base_path . '/'
+             . ($base_file == 'index.php') ? '?' : $base_file.'?';
   option('root_dir',           $root_dir);
+  option('base_path',          $base_path);
+  option('base_uri',           $base_uri); // set it manually if you use url_rewriting
   option('limonade_dir',       dirname(__FILE__).'/');
   option('limonade_views_dir', dirname(__FILE__).'/limonade/views/');
   option('limonade_public_dir',dirname(__FILE__).'/limonade/public/');
@@ -287,6 +321,7 @@ function run($env = null)
   option('views_dir',          $root_dir.'/views/');
   option('controllers_dir',    $root_dir.'/controllers/');
   option('lib_dir',            $root_dir.'/lib/');
+  option('error_views_dir',    option('limonade_views_dir'));
   option('env',                ENV_PRODUCTION);
   option('debug',              true);
   option('session',            LIM_SESSION_NAME); // true, false or the name of your session
@@ -326,56 +361,30 @@ function run($env = null)
     {
       halt(NOT_FOUND, "($request_method) $request_uri");
     }
-  }  
+  }
   
-  # 6. Set default routes used for default views
-  dispatch(array("/_lim_css/*.css", array('_lim_css_filename')), 'render_limonade_css');
-    /**
-     * Internal controller that responds to route /_lim_css/*.css
-     *
-     * @access private
-     * @return string
-     */
-    function render_limonade_css()
-    {
-      option('views_dir', file_path(option('limonade_public_dir'), 'css'));
-      $fpath = file_path(params('_lim_css_filename').".css");
-      return css($fpath);
-    }
-  
-  dispatch(array("/_lim_public/**", array('_lim_public_file')), 'render_limonade_file');
-    /**
-     * Internal controller that responds to route /_lim_public/**
-     *
-     * @access private
-     * @return void
-     */
-    function render_limonade_file()
-    {
-      $fpath = file_path(option('limonade_public_dir'), params('_lim_public_file'));
-      return render_file($fpath, true);
-    }
-  
-  # 7. Check request
+  # 6. Check request
   if($rm = request_method())
   {
+    if(request_is_head()) ob_start(); // then no output
+    
     if(!request_method_is_allowed($rm))
       halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
     
-    # 5.1 Check matching route
+    # 6.1 Check matching route
     if($route = route_find($rm, request_uri()))
     {
       params($route['params']);
       
-      # 5.2 Load controllers dir
+      # 6.2 Load controllers dir
       require_once_dir(option('controllers_dir'));
       
       if(function_exists($route['function']))
       {
-        # 5.3 Call before function
+        # 6.3 Call before function
         call_if_exists('before');
         
-        # 5.4 Call matching controller function and output result
+        # 6.4 Call matching controller function and output result
         if($output = call_user_func($route['function']))
         {
           echo after(error_notices_render() . $output);
@@ -395,14 +404,16 @@ function run($env = null)
  * Stop and exit limonade application
  *
  * @access private 
+ * @param boolean exit or not
  * @return void
  */
-function stop_and_exit()
+function stop_and_exit($exit = true)
 {
   call_if_exists('before_exit');
   flash_sweep();
   if(defined('SID')) session_write_close();
-  exit;
+  ob_end_clean(); // when request_is_head()
+  if($exit) exit;
 }
 
 /**
@@ -436,7 +447,7 @@ function env($reset = null)
       if(!array_key_exists($varname, $GLOBALS)) $GLOBALS[$varname] = array();
       $env[$var] =& $GLOBALS[$varname];
     }
-    
+
     $method = request_method($env);
     if($method == 'PUT' || $method == 'DELETE')
     {
@@ -636,7 +647,7 @@ function error_not_found_output($errno, $errstr, $errfile, $errline)
      */
     function not_found($errno, $errstr, $errfile=null, $errline=null)
     {
-      option('views_dir', option('limonade_views_dir'));
+      option('views_dir', option('error_views_dir'));
       $msg = h(rawurldecode($errstr));
       return html("<h1>Page not found:</h1><p><code>{$msg}</code></p>", error_layout());
     }
@@ -670,9 +681,11 @@ function error_server_error_output($errno, $errstr, $errfile, $errline)
     function server_error($errno, $errstr, $errfile=null, $errline=null)
     {
       $is_http_error = http_response_status_is_valid($errno);
-      $args = compact('errno', 'errstr', 'errfile', 'errline', 'is_http_error');	
-    	option('views_dir', option('limonade_views_dir'));
-    	return html('error.html.php', error_layout(), $args);
+      $args = compact('errno', 'errstr', 'errfile', 'errline', 'is_http_error');
+      option('views_dir', option('limonade_views_dir'));
+      $html = render('error.html.php', null, $args);	
+    	option('views_dir', option('error_views_dir'));
+    	return html($html, error_layout(), $args);
     }
   }
   return server_error($errno, $errstr, $errfile, $errline);
@@ -687,7 +700,11 @@ function error_server_error_output($errno, $errstr, $errfile, $errline)
 function error_layout($layout = false)
 {
   static $o_layout = 'default_layout.php';
-  if($layout !== false) $o_layout = $layout;
+  if($layout !== false)
+  {
+    option('error_views_dir', option('views_dir'));
+    $o_layout = $layout;
+  }
   return $o_layout;
 }
 
@@ -882,13 +899,24 @@ function request_is_delete($env = null)
 }
 
 /**
+ * Checks if request method is HEAD
+ *
+ * @param string $env 
+ * @return bool
+ */
+function request_is_head($env = null)
+{
+  return request_method($env) == "HEAD";
+}
+
+/**
  * Returns allowed request methods
  *
  * @return array
  */
 function request_methods()
 {
-   return array("GET","POST","PUT","DELETE");
+   return array("GET","POST","PUT","DELETE", "HEAD");
 }
 
 /**
@@ -986,7 +1014,7 @@ function dispatch($path_or_array, $function)
 }
 
 /**
- * Add a GET route
+ * Add a GET route. Also automatically defines a HEAD route.
  *
  * @param string $path_or_array 
  * @param string $function 
@@ -995,6 +1023,7 @@ function dispatch($path_or_array, $function)
 function dispatch_get($path_or_array, $function)
 {
   route("GET", $path_or_array, $function);
+  route("HEAD", $path_or_array, $function);
 }
 
 /**
@@ -1461,12 +1490,8 @@ function url_for($params = null)
   if(!filter_var($path , FILTER_VALIDATE_URL)) 
   {
     # it's a relative URL or an URL without a schema
-    $env = env();
-    # better for url rewrite
-    # TODO: needs to be testes in various cases (urL rewrite or note, in document root or not, with ? or not...)
-    $uri = request_uri();
-    $base_path = preg_replace('/'.preg_quote($uri, '/').'$/', '', rtrim($env['SERVER']['REQUEST_URI'], '/'));
-    $path = $base_path."/".$path;
+    $base_uri = option('base_uri');
+    $path = file_path($base_uri, $path);
   }
 
   return $path;
@@ -1737,7 +1762,9 @@ function redirect_to($params)
   # TODO make absolute uri
   if(!headers_sent())
 	{
+    $params = func_get_args();
     $uri = call_user_func_array('url_for', $params);
+    stop_and_exit(false);
     header('Location: '.$uri);
     exit;
   }
@@ -1882,6 +1909,7 @@ function mime_type($ext = null)
     'cpt'     => 'application/mac-compactpro',
     'csh'     => 'application/x-csh',
     'css'     => 'text/css',
+    'csv'     => 'text/csv',
     'dcr'     => 'application/x-director',
     'dir'     => 'application/x-director',
     'djv'     => 'image/vnd.djvu',
@@ -2023,25 +2051,23 @@ function mime_type($ext = null)
   return is_null($ext) ? $types : $types[strtolower($ext)];
 }
 
-if(!function_exists('mime_content_type')) {
-  /**
-   * Detect MIME Content-type for a file
-   *
-   * @param string $filename Path to the tested file.
-   * @return string
-   */
-  function mime_content_type($filename)
-  {
-    $ext = strtolower(array_pop(explode('.', $filename)));
-    if($mime = mime_type($ext)) return $mime;
-    elseif (function_exists('finfo_open')) {
-        $finfo = finfo_open(FILEINFO_MIME);
-        $mime = finfo_file($finfo, $filename);
-        finfo_close($finfo);
-        return $mime;
-    }
-    else return 'application/octet-stream';
+/**
+ * Detect MIME Content-type for a file
+ *
+ * @param string $filename Path to the tested file.
+ * @return string
+ */
+function file_mime_content_type($filename)
+{
+  $ext = file_extension($filename); /* strtolower isn't necessary */
+  if($mime = mime_type($ext)) return $mime;
+  elseif (function_exists('finfo_open')) {
+      $finfo = finfo_open(FILEINFO_MIME);
+      $mime = finfo_file($finfo, $filename);
+      finfo_close($finfo);
+      return $mime;
   }
+  else return 'application/octet-stream';
 }
 
 
@@ -2117,7 +2143,7 @@ function file_extension($filename)
  */
 function file_is_text($filename)
 {
-	if($mime = mime_content_type($filename)) return substr($mime,0,5) == "text/";
+	if($mime = file_mime_content_type($filename)) return substr($mime,0,5) == "text/";
 	return null;
 }
 
@@ -2175,5 +2201,3 @@ function file_list_dir($dir)
 
 
 #   ================================= END ==================================   #
-
-?>

@@ -60,7 +60,6 @@ Les routes sont testées dans l'ordre dans lequel elle sont déclarées. Le chem
     http://localhost/my_app/?u=/my/path
     http://localhost/my_app/?uri=/my/path
     http://localhost/my_app/index.php?/my/path
-    http://localhost/my_app/index.php/my/path
     http://localhost/my_app/?/my/path
 
 Quand les méthodes `PUT` ou `DELETE` ne sont pas supportés (comme dans le cas d'une soumission de fomulaire HTML), on utilise le paramètre `_method` dans une requête `POST`: sa valeur surchargera la méthode `POST`.
@@ -70,8 +69,6 @@ Quand les méthodes `PUT` ou `DELETE` ne sont pas supportés (comme dans le cas 
             <p>... your form fields</p>
             <p><input type="submit" value="Update"></p>
         </form>
-    
-*[TODO]: url rewriting*
 
 Les masque peuvent contenir des paramètres nommés, dont la valeur seront ensuite accessible via la fonction `params()`
 
@@ -325,6 +322,17 @@ Les options utilisées par Limonade ont par défaut les valeurs suivantes:
     option('x-sendfile',      0); // 0: disabled, 
                                 // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
                                 // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
+
+## Helpers ##
+
+Consultez le code source et l'API pour de plus amples informations sur les helpers disponibles.
+
+### url_for ###
+
+Utilisez la fonction `url_for` afin de créer automatiquement des urls bien formées quel que soit le dossier dans lequel est installée votre application sur le serveur web.
+
+Si vous utilisez l'url rewriting, vous devez spécifier explicitement l'option `base_uri` (par défaut `/chemin_de_mon_appli/?`).
+
 
 ## Gestion des erreurs ##
 

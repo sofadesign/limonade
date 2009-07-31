@@ -143,16 +143,6 @@ test_case("Main");
      assert_equal(value_or_default(0, 20), v(0, 20));
    }
    
-   function test_main_file_path()
-   {
-     $p = "/one/two/three";
-     assert_equal(file_path('/one','two','three'), $p);
-     assert_equal(file_path('/one','/two','three'), $p);
-     assert_equal(file_path('/one','two','///three'), $p);
-     assert_equal(file_path('/one','two','three/'), $p.'/');
-     assert_equal(file_path('/one','two','three//'), $p.'/');
-   }
-   
    function test_main_url_for()
    {
      assert_equal(url_for(''), '/');
@@ -168,4 +158,3 @@ test_case("Main");
    }
    
 end_test_case();
-?>

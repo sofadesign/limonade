@@ -11,7 +11,7 @@ test_case("Request");
    function test_request_methods()
    {
      $m = request_methods();
-     assert_length_of($m, 4);
+     assert_length_of($m, 5);
    }
    
    function test_request_method_is_allowed()
@@ -21,6 +21,7 @@ test_case("Request");
      assert_true(request_method_is_allowed("POST"));
      assert_true(request_method_is_allowed("PUT"));
      assert_true(request_method_is_allowed("DELETE"));
+     assert_true(request_method_is_allowed("HEAD"));
    }
    
    function test_request_method()

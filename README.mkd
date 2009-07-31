@@ -4,7 +4,7 @@ Limonade is a PHP micro framework for rapid web development and prototyping.
 
 It's inspired by frameworks like [Sinatra](http://www.sinatrarb.com/) or [Camping](http://github.com/why/camping/tree/master) in Ruby, or [Orbit](http://orbit.luaforge.net/) in Lua. It aims to be simple, lightweight and extremly flexible.
 
-Limonade provides a set functions that complete the PHP basic set, while keeping consistency with native functions and sitting up on them.
+Limonade provides functions that complete the PHP basic set, while keeping consistency with native functions and sitting up on them.
 
 Limonade is easy to learn and provides everything that you can expect from a modern framework (MVC, REST, ...)
 
@@ -63,7 +63,6 @@ The search is performed with a path given through browser URL:
     http://localhost/my_app/?u=/my/path
     http://localhost/my_app/?uri=/my/path
     http://localhost/my_app/index.php?/my/path
-    http://localhost/my_app/index.php/my/path
     http://localhost/my_app/?/my/path
 
 When `PUT` or `DELETE` methods are not supported (like in HTML form submision), you can use the `_method` parameter in `POST` requests: it will override the `POST` method.
@@ -73,8 +72,6 @@ When `PUT` or `DELETE` methods are not supported (like in HTML form submision), 
         <p>... your form fields</p>
         <p><input type="submit" value="Update"></p>
     </form>
-    
-*[TODO]: url rewriting*
 
 Patterns may include named parameters. Associated values of those parameters are available with the `params()` function.
 
@@ -338,6 +335,17 @@ Default Limonade options have the following values:
     option('x-sendfile',      0); // 0: disabled, 
                                 // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
                                 // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
+
+## Helpers ##
+
+See sources or api for more about all available helpers.
+
+### url_for ###
+
+You can use the `url_for` function for rendering limonade urls. They will be well formed whatever the folder in the document root your application is installed on your web server.
+
+If you want to use url rewriting, you need to set explicitly the `base_uri` option ( default is `/your_file_path/?`)
+
 
 ## Halting and error handling ##
 
