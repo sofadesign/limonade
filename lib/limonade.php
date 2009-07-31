@@ -55,7 +55,7 @@
 /**
  * Limonade version
  */
-define('LIMONADE',              '0.4');
+define('LIMONADE',              '0.4.1');
 define('LIM_START_MICROTIME',   (float)substr(microtime(), 0, 10));
 define('LIM_SESSION_NAME',      'Fresh_and_Minty_Limonade_App');
 define('LIM_SESSION_FLASH_KEY', '_lim_flash_messages');
@@ -307,7 +307,13 @@ function run($env = null)
    
   # 0. Set default configuration
   $root_dir = dirname(app_file());
+  $base_path = dirname($env['SERVER']['SCRIPT_NAME']);
+  $base_file = basename($env['SERVER']['SCRIPT_NAME']);
+  $base_uri  = $base_path . '/'
+             . ($base_file == 'index.php') ? '?' : $base_file.'?';
   option('root_dir',           $root_dir);
+  option('base_path',          $base_path);
+  option('base_uri',           $base_uri); // set it manually if you use url_rewriting
   option('limonade_dir',       dirname(__FILE__).'/');
   option('limonade_views_dir', dirname(__FILE__).'/limonade/views/');
   option('limonade_public_dir',dirname(__FILE__).'/limonade/public/');
@@ -1484,12 +1490,8 @@ function url_for($params = null)
   if(!filter_var($path , FILTER_VALIDATE_URL)) 
   {
     # it's a relative URL or an URL without a schema
-    $env = env();
-    # better for url rewrite
-    # TODO: needs to be testes in various cases (urL rewrite or note, in document root or not, with ? or not...)
-    $uri = request_uri();
-    $base_path = preg_replace('/'.preg_quote($uri, '/').'$/', '', rtrim($env['SERVER']['REQUEST_URI'], '/'));
-    $path = $base_path."/".$path;
+    $base_uri = option('base_uri');
+    $path = file_path($base_uri, $path);
   }
 
   return $path;
