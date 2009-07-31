@@ -1,31 +1,21 @@
 # TODO #
 
-- solving all opened tickets http://sofadesign.lighthouseapp.com/projects/29612-limonade/overview
 - more unit and functional tests
 - adding documentation about changes between 0.3 and 0.4
 - update README files with new features / changes
-- in run(), passing   to all functions that require it
+- in run(), passing to all functions that require it
 - implements stop_and_exit() call with register_shutdown_function
 - params function should be singular like option ?
 - adding a debug() helper
 - new redirect_to (support for https)
-- adding url_rewrite features
-- enhance url_for with url rewrite
 - add header X-Limonade-PHP: (lim version name); (cosmetic ;-)
 - use array_walk_recursive for unregister_globals
 - add a LIM_START_MEMORY with memory_get_usage()
 - add a simple helper to benchmark (execution time / memory)
-
-- adding HEAD HTTP support (#12 HTTP HEAD request results in a 500 response code)
 - add a render_partial function (shortcut for render, without the layout param...)
 - adding gzip option (http://fr.php.net/manual/en/zlib.configuration.php#ini.zlib.output-compression)
 - simple form helper with XSS/CSRF protection
-
-
 - remove examples/ and move it in an external depot
-- more examples
-
-
 - public API documentation:
     - tests: tag private functions
     - tests: describe in docblock header abstract definitions
