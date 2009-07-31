@@ -1753,6 +1753,7 @@ function redirect_to($params)
   # TODO make absolute uri
   if(!headers_sent())
 	{
+    $params = func_get_args();
     $uri = call_user_func_array('url_for', $params);
     stop_and_exit(false);
     header('Location: '.$uri);
