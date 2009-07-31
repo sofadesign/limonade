@@ -397,15 +397,16 @@ function run($env = null)
  * Stop and exit limonade application
  *
  * @access private 
+ * @param boolean exit or not
  * @return void
  */
-function stop_and_exit()
+function stop_and_exit($exit = true)
 {
   call_if_exists('before_exit');
   flash_sweep();
   if(defined('SID')) session_write_close();
   ob_end_clean(); // when request_is_head()
-  exit;
+  if($exit) exit;
 }
 
 /**
