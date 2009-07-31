@@ -126,6 +126,34 @@ if(get_magic_quotes_runtime()) set_magic_quotes_runtime(false);
 #    if you want to show errors before running app
 ini_set('display_errors', 0);
 
+## SETTING INTERNAL ROUTES _____________________________________________________
+
+dispatch(array("/_lim_css/*.css", array('_lim_css_filename')), 'render_limonade_css');
+  /**
+   * Internal controller that responds to route /_lim_css/*.css
+   *
+   * @access private
+   * @return string
+   */
+  function render_limonade_css()
+  {
+    option('views_dir', file_path(option('limonade_public_dir'), 'css'));
+    $fpath = file_path(params('_lim_css_filename').".css");
+    return css($fpath, null);
+  }
+
+dispatch(array("/_lim_public/**", array('_lim_public_file')), 'render_limonade_file');
+  /**
+   * Internal controller that responds to route /_lim_public/**
+   *
+   * @access private
+   * @return void
+   */
+  function render_limonade_file()
+  {
+    $fpath = file_path(option('limonade_public_dir'), params('_lim_public_file'));
+    return render_file($fpath, true);
+  }
 
 
 
@@ -326,56 +354,28 @@ function run($env = null)
     {
       halt(NOT_FOUND, "($request_method) $request_uri");
     }
-  }  
+  }
   
-  # 6. Set default routes used for default views
-  dispatch(array("/_lim_css/*.css", array('_lim_css_filename')), 'render_limonade_css');
-    /**
-     * Internal controller that responds to route /_lim_css/*.css
-     *
-     * @access private
-     * @return string
-     */
-    function render_limonade_css()
-    {
-      option('views_dir', file_path(option('limonade_public_dir'), 'css'));
-      $fpath = file_path(params('_lim_css_filename').".css");
-      return css($fpath);
-    }
-  
-  dispatch(array("/_lim_public/**", array('_lim_public_file')), 'render_limonade_file');
-    /**
-     * Internal controller that responds to route /_lim_public/**
-     *
-     * @access private
-     * @return void
-     */
-    function render_limonade_file()
-    {
-      $fpath = file_path(option('limonade_public_dir'), params('_lim_public_file'));
-      return render_file($fpath, true);
-    }
-  
-  # 7. Check request
+  # 6. Check request
   if($rm = request_method())
   {
     if(!request_method_is_allowed($rm))
       halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
     
-    # 5.1 Check matching route
+    # 6.1 Check matching route
     if($route = route_find($rm, request_uri()))
     {
       params($route['params']);
       
-      # 5.2 Load controllers dir
+      # 6.2 Load controllers dir
       require_once_dir(option('controllers_dir'));
       
       if(function_exists($route['function']))
       {
-        # 5.3 Call before function
+        # 6.3 Call before function
         call_if_exists('before');
         
-        # 5.4 Call matching controller function and output result
+        # 6.4 Call matching controller function and output result
         if($output = call_user_func($route['function']))
         {
           echo after(error_notices_render() . $output);
