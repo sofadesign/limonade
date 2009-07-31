@@ -139,7 +139,7 @@ dispatch(array("/_lim_css/*.css", array('_lim_css_filename')), 'render_limonade_
   {
     option('views_dir', file_path(option('limonade_public_dir'), 'css'));
     $fpath = file_path(params('_lim_css_filename').".css");
-    return css($fpath, null);
+    return css($fpath, null); // with no layout
   }
 
 dispatch(array("/_lim_public/**", array('_lim_public_file')), 'render_limonade_file');
