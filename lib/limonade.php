@@ -315,6 +315,7 @@ function run($env = null)
   option('views_dir',          $root_dir.'/views/');
   option('controllers_dir',    $root_dir.'/controllers/');
   option('lib_dir',            $root_dir.'/lib/');
+  option('error_views_dir',    option('limonade_views_dir'));
   option('env',                ENV_PRODUCTION);
   option('debug',              true);
   option('session',            LIM_SESSION_NAME); // true, false or the name of your session
@@ -640,7 +641,7 @@ function error_not_found_output($errno, $errstr, $errfile, $errline)
      */
     function not_found($errno, $errstr, $errfile=null, $errline=null)
     {
-      option('views_dir', option('limonade_views_dir'));
+      option('views_dir', option('error_views_dir'));
       $msg = h(rawurldecode($errstr));
       return html("<h1>Page not found:</h1><p><code>{$msg}</code></p>", error_layout());
     }
@@ -674,9 +675,11 @@ function error_server_error_output($errno, $errstr, $errfile, $errline)
     function server_error($errno, $errstr, $errfile=null, $errline=null)
     {
       $is_http_error = http_response_status_is_valid($errno);
-      $args = compact('errno', 'errstr', 'errfile', 'errline', 'is_http_error');	
-    	option('views_dir', option('limonade_views_dir'));
-    	return html('error.html.php', error_layout(), $args);
+      $args = compact('errno', 'errstr', 'errfile', 'errline', 'is_http_error');
+      option('views_dir', option('limonade_views_dir'));
+      $html = render('error.html.php', null, $args);	
+    	option('views_dir', option('error_views_dir'));
+    	return html($html, error_layout(), $args);
     }
   }
   return server_error($errno, $errstr, $errfile, $errline);
@@ -691,7 +694,11 @@ function error_server_error_output($errno, $errstr, $errfile, $errline)
 function error_layout($layout = false)
 {
   static $o_layout = 'default_layout.php';
-  if($layout !== false) $o_layout = $layout;
+  if($layout !== false)
+  {
+    option('error_views_dir', option('views_dir'));
+    $o_layout = $layout;
+  }
   return $o_layout;
 }
 
