@@ -1897,6 +1897,7 @@ function mime_type($ext = null)
     'cpt'     => 'application/mac-compactpro',
     'csh'     => 'application/x-csh',
     'css'     => 'text/css',
+    'csv'     => 'text/csv',
     'dcr'     => 'application/x-director',
     'dir'     => 'application/x-director',
     'djv'     => 'image/vnd.djvu',
@@ -2038,25 +2039,23 @@ function mime_type($ext = null)
   return is_null($ext) ? $types : $types[strtolower($ext)];
 }
 
-if(!function_exists('mime_content_type')) {
-  /**
-   * Detect MIME Content-type for a file
-   *
-   * @param string $filename Path to the tested file.
-   * @return string
-   */
-  function mime_content_type($filename)
-  {
-    $ext = strtolower(array_pop(explode('.', $filename)));
-    if($mime = mime_type($ext)) return $mime;
-    elseif (function_exists('finfo_open')) {
-        $finfo = finfo_open(FILEINFO_MIME);
-        $mime = finfo_file($finfo, $filename);
-        finfo_close($finfo);
-        return $mime;
-    }
-    else return 'application/octet-stream';
+/**
+ * Detect MIME Content-type for a file
+ *
+ * @param string $filename Path to the tested file.
+ * @return string
+ */
+function file_mime_content_type($filename)
+{
+  $ext = file_extension($filename); /* strtolower isn't necessary */
+  if($mime = mime_type($ext)) return $mime;
+  elseif (function_exists('finfo_open')) {
+      $finfo = finfo_open(FILEINFO_MIME);
+      $mime = finfo_file($finfo, $filename);
+      finfo_close($finfo);
+      return $mime;
   }
+  else return 'application/octet-stream';
 }
 
 
@@ -2132,7 +2131,7 @@ function file_extension($filename)
  */
 function file_is_text($filename)
 {
-	if($mime = mime_content_type($filename)) return substr($mime,0,5) == "text/";
+	if($mime = file_mime_content_type($filename)) return substr($mime,0,5) == "text/";
 	return null;
 }
 

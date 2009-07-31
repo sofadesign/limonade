@@ -16,5 +16,6 @@ test_suite('Limonade');
   require $basedir."router.php";
   require $basedir."request.php";
   require $basedir."main.php";
+  require $basedir."file.php";
   require $basedir."functional.php";
 end_test_suite();
