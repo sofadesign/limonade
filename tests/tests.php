@@ -65,5 +65,3 @@ test_case("Test");
    }
    
 end_test_case();
-
-?>

@@ -26,4 +26,3 @@ test_case("Output");
   
   
 end_test_case();
-?>

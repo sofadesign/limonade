@@ -226,5 +226,3 @@ test_case("Router");
    }
    
 end_test_case();
-
-?>

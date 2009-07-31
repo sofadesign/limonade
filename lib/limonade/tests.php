@@ -337,7 +337,3 @@ function test_request($url, $method="GET", $include_header=false) {
 
     return $response;
 }
-
-
-
-?>
