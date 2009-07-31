@@ -49,4 +49,24 @@ test_case("File");
      assert_false(file_is_text('my_file.jpg'));
    }
    
+   function test_file_is_binary()
+    {
+      assert_false(file_is_binary('my_file.txt'));
+      assert_false(file_is_binary('my_file.TXT'));
+      assert_false(file_is_binary('my_file.css'));
+      assert_false(file_is_binary('my_file.csv'));
+      assert_true(file_is_binary('my_file.jpg'));
+      assert_true(file_is_binary('my_file.swf'));
+    }
+   
+   function test_file_path()
+   {
+     $p = "/one/two/three";
+     assert_equal(file_path('/one','two','three'), $p);
+     assert_equal(file_path('/one','/two','three'), $p);
+     assert_equal(file_path('/one','two','///three'), $p);
+     assert_equal(file_path('/one','two','three/'), $p.'/');
+     assert_equal(file_path('/one','two','three//'), $p.'/');
+   }
+   
 end_test_case();
