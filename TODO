@@ -3,8 +3,10 @@
 - more unit and functional tests
 - adding documentation about changes between 0.3 and 0.4
 - update README files with new features / changes
-- in run(), passing to all functions that require it
+- in run(), passing $env to all functions that require it
 - implements stop_and_exit() call with register_shutdown_function
+- in call_if_exist(), using is_callable() instead of function_exists will allow calling objects methods <http://www.php.net/manual/en/function.is-callable.php>
+- deleting deprecated $GLOBALS['HTTP_SERVER_VARS'], $GLOBALS['HTTP_GET_VARS']... (<http://www.php.net/manual/fr/reserved.variables.post.php>...)
 - params function should be singular like option ?
 - adding a debug() helper
 - new redirect_to (support for https)
