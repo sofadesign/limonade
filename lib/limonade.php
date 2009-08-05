@@ -410,7 +410,6 @@ function run($env = null)
 function stop_and_exit($exit = true)
 {
   call_if_exists('before_exit');
-  
   $headers = headers_list();
   foreach($headers as $header)
   {
@@ -420,7 +419,6 @@ function stop_and_exit($exit = true)
       break;
     }
   }
-  
   if(defined('SID')) session_write_close();
   ob_end_clean(); // when request_is_head()
   if($exit) exit;
