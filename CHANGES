@@ -4,6 +4,7 @@
 
 * [FIXED] flash features: now works only with html output [#21 state:resolved]
 
+
 [2009-07-31: VERSION 0.4.1]
 
 * [NEW] support for HEAD requests [#12 state:resolved]
