@@ -410,7 +410,17 @@ function run($env = null)
 function stop_and_exit($exit = true)
 {
   call_if_exists('before_exit');
-  flash_sweep();
+  
+  $headers = headers_list();
+  foreach($headers as $header)
+  {
+    if(stripos($header, 'Content-Type: text/html') === 0)
+    {
+      flash_sweep();
+      break;
+    }
+  }
+  
   if(defined('SID')) session_write_close();
   ob_end_clean(); // when request_is_head()
   if($exit) exit;
