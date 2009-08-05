@@ -311,17 +311,40 @@ Vous pouvez l'utiliser pour gérer les options propres à Limonade mais aussi de
 Les options utilisées par Limonade ont par défaut les valeurs suivantes:
 
     option('root_dir',        $root_dir); // le dossier qui contient le fichier de lancement de l'application
-    option('limonade_dir',    dirname(__FILE__).'/'); // dossier contenant le fichier prinicipal limonade.php.
-    option('public_dir',      option('root_dir').'/public/');
-    option('views_dir',       option('root_dir').'/views/');
-    option('controllers_dir', option('root_dir').'/controllers/');
-    option('lib_dir',         option('root_dir').'/lib/');
-    option('env',             ENV_PRODUCTION);
-    option('debug',           true);
-    option('encoding',        'utf-8');
-    option('x-sendfile',      0); // 0: disabled, 
-                                // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
-                                // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
+    option('base_path',          $base_path);
+    option('base_uri',           $base_uri); // à spécifier si vous utiliser l'url rewriting.
+    option('limonade_dir',       dirname(__FILE__).'/'); // dossier contenant le fichier principal limonade.php
+    option('limonade_views_dir', dirname(__FILE__).'/limonade/views/');
+    option('limonade_public_dir',dirname(__FILE__).'/limonade/public/');
+    option('public_dir',         $root_dir.'/public/');
+    option('views_dir',          $root_dir.'/views/');
+    option('controllers_dir',    $root_dir.'/controllers/');
+    option('lib_dir',            $root_dir.'/lib/');
+    option('error_views_dir',    option('limonade_views_dir'));
+    option('env',                ENV_PRODUCTION);
+    option('debug',              true);
+    option('session',            LIM_SESSION_NAME); // true, false or the name of your session
+    option('encoding',           'utf-8');
+    option('x-sendfile',         0); // 0: disabled, 
+                                     // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
+                                     // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
+
+## Sessions ##
+
+Une session démarre automatiquement par défaut. Vous puvez ensuite accéder aux variable des session comme d'habitude avec le tableau `$_SESSION`.
+
+Vous pouvez désactiver les sessions avec l'option `session`
+
+⌘ [voir un exemple de code](http://gist.github.com/159327)
+
+### Flash ###
+
+Flash est une fonctionnalit particulière des sessions. Une valeur flash sera disponible pour la preochaine requête puis effacée. Cette fonctionnalité est particulièrement utile pour l'affiche des erreurs de retours après la soumission d'un formulaire ou pour notifier l'utilisateur du bon déroulement d'une action.
+
+* `flash($name, $value...)` définit une valeur flash pour la prochaine requête
+* dans les vues HTML, vous pouvez accéder aux valeurs flash disponible grâce au tableau `$flash` ou à la fonction `flash_now($name)`.
+
+⌘ [voir un exemple de code](http://gist.github.com/162680)
 
 ## Helpers ##
 
