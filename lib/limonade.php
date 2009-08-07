@@ -410,15 +410,19 @@ function run($env = null)
 function stop_and_exit($exit = true)
 {
   call_if_exists('before_exit');
+  $flash_sweep = true;
   $headers = headers_list();
   foreach($headers as $header)
   {
-    if(stripos($header, 'Content-Type: text/html') === 0)
+    // If a Content-Type header exists, flash_sweep only if is text/html
+    // Else if there's no Content-Type header, flash_sweep by default
+    if(stripos($header, 'Content-Type:') === 0)
     {
-      flash_sweep();
+      $flash_sweep = stripos($header, 'Content-Type: text/html') === 0;
       break;
     }
   }
+  if($flash_sweep) flash_sweep();
   if(defined('SID')) session_write_close();
   ob_end_clean(); // when request_is_head()
   if($exit) exit;
