@@ -424,7 +424,7 @@ function stop_and_exit($exit = true)
   }
   if($flash_sweep) flash_sweep();
   if(defined('SID')) session_write_close();
-  ob_end_clean(); // when request_is_head()
+  if(request_is_head()) ob_end_clean();
   if($exit) exit;
 }
 
