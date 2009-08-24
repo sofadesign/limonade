@@ -1505,6 +1505,8 @@ function url_for($params = null)
     $base_uri = option('base_uri');
     $path = file_path($base_uri, $path);
   }
+  
+  if(DIRECTORY_SEPARATOR != '/') $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
 
   return $path;
 }
