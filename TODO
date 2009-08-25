@@ -2,7 +2,6 @@
 
 - more unit and functional tests
 - adding documentation about changes between 0.3 and 0.4
-- update README files with new features / changes
 - in run(), passing $env to all functions that require it
 - implements stop_and_exit() call with register_shutdown_function
 - in call_if_exist(), using is_callable() instead of function_exists will allow calling objects methods <http://www.php.net/manual/en/function.is-callable.php>
@@ -29,13 +28,15 @@
 
 - create capture helpers `content_for($name) ... end_content_for()`. That will help sending content from views to layout
 - add routing support for dispatching to class methods: `dispatch('/hello/:name', 'Hello::who');`
-- add routing support for dispatching to lambdas (requires PHP 5.3.0):
+- add routing support for dispatching to lambdas/closures (requires PHP 5.3.0): `dispatch('/hello/:name', function(){ # ... });`.
 
-–
+> If you want to check whether you're dealing with a closure specifically and not a string or array callback you can do this:
 
-    dispatch('/hello/:name', function(){ 
-        // process data here 
-    });
+    <?php
+    $isAClosure = is_callable($thing) && is_object($thing);
+    ?>
+
+    
 
 - http caching
 - file caching
