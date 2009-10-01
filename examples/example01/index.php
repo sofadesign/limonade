@@ -40,6 +40,7 @@ dispatch('/are_you_ok/:name', 'are_you_ok');
       if(empty($name)) halt(NOT_FOUND, "Undefined name.");
 
     }
+    set('name', $name);
     return html("Are you ok $name ?");
   }
     
@@ -50,6 +51,7 @@ dispatch('/how_are_you/:name', 'how_are_you');
     if(empty($name)) halt(NOT_FOUND, "Undefined name.");
     # you can call an other controller function if you want
     if(strlen($name) < 4) return are_you_ok($name);
+    set('name', $name);
     return html("I hope you are fine, $name.");
   }
   
