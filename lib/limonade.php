@@ -452,7 +452,8 @@ function env($reset = null)
   {
     if(empty($GLOBALS['_SERVER']))
     {
-      // Fixing empty $GLOBALS['_SERVER'] bug http://sofadesign.lighthouseapp.com/projects/29612-limonade/tickets/29-env-is-empty
+      // Fixing empty $GLOBALS['_SERVER'] bug 
+      // http://sofadesign.lighthouseapp.com/projects/29612-limonade/tickets/29-env-is-empty
       $GLOBALS['_SERVER']  =& $_SERVER;
       $GLOBALS['_FILES']   =& $_FILES;
       $GLOBALS['_REQUEST'] =& $_REQUEST;
@@ -462,7 +463,7 @@ function env($reset = null)
     }
     
     $glo_names = array('SERVER', 'FILES', 'REQUEST', 'SESSION', 'ENV', 'COOKIE');
-      
+    
     $vars = array_merge($glo_names, request_methods());
     foreach($vars as $var)
     {
