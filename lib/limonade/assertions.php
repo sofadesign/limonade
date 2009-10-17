@@ -114,6 +114,7 @@ function assert_trigger_error($callable, $args = array(), $message = '<1> should
 
 function assert_header($response, $expected_name, $expected_value = null, $message = "expected header '%s' to be equal to '%s' but received '%s: %s'")
 {
+  test_run_assertion();
   # see assert_header in http://github.com/fnando/voodoo-test/blob/f3b0994ef138a6ba94d5e7cef6c1fb1720797a86/lib/assertions.php
   $headers = preg_split("/^\s*$/ms", $response);
   //var_dump($headers);    
