@@ -1,5 +1,8 @@
 # TODO #
 
+- improving unregister_globals 
+    - to avoid predefined variables (_SERVER, _REQUEST...) deletion
+    - to handle session globals by calling unregister_globals('_SESSION') after session start
 - more unit and functional tests
 - adding documentation about changes between 0.3 and 0.4
 - in run(), passing $env to all functions that require it
