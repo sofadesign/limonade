@@ -1342,7 +1342,8 @@ function render($content_or_func, $layout = '', $locals = array())
 	}
 	else
 	{
-	  $content = vsprintf($content_or_func, $vars);
+	  if(substr_count($content_or_func, '%') !== count($vars)) $content = $content_or_func;
+    else $content = vsprintf($content_or_func, $vars);
 	}
 
 	if(empty($layout)) return $content;
