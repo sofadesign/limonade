@@ -1,23 +1,40 @@
 [Changes since last revision]
 
-* [FIXED] Fix flash bug when redirect_to [#22 state:resolved]
-* [FIXED] In stop_and_exit(), ob_end_clean() only if request is HEAD [#24 state:resolved]
+[2009-10-17: VERSION 0.4.5]
+
+* [FIXED] notice that can occurs in render() when a % isn't necessarily a placeholder % caracter. [#32]
+* [FIXED] warning when require_once_dir calls an unknown dir [#31]
+* [FIXED] render_file() Content-type header [#27]
+* [FIXED] count assert_header assertion in tests
+* [NEW] Allow to use hash with url_for / redirect_to [#26]
+
+[2009-09-21: VERSION 0.4.4]
+
+* [FIXED] empty $GLOBALS['_SERVER'] bug with Apache/2.2.3, CentOS/5.2, 
+PHP/5.2.8 [#29]
+* [FIXED] unassigned variables in example01 (sanemat patch) [#33]
+
+[2009-08-07: VERSION 0.4.3]
+
+* [FIXED] fixing the DIRECTORY_SEPARATOR for windows server environments
+* [FIXED] In stop_and_exit(), ob_end_clean() only if request is HEAD [#24]
+* [FIXED] Fix flash bug when redirect_to [#22]
 
 [2009-07-31: VERSION 0.4.2]
 
-* [FIXED] flash features: now works only with html output [#21 state:resolved]
+* [FIXED] flash features: now works only with html output [#21]
 
 [2009-07-31: VERSION 0.4.1]
 
 * [NEW] support for HEAD requests [#12 state:resolved]
 * [FIXED] internal routes are at the begining of the lib so can't be bypassed [#13 state:resolved]
-* [FIXED] internal CSS we're renderred with a layout if defined [#14 state:solved]
+* [FIXED] internal CSS we're renderred with a layout if defined [#14]
 * [FIXED] bug in file_is_text
 * [CHANGED] removes mime_content_type compatibility function and add file_mime_content_type() [#15 state:resolved]
 * [NEW] Adding an $exit optional parameter to the stop_and_exit() function
 * [FIXED] Fixing flash bug while redirect_to [#16 state:resolved]
-* [FIXED] Fixing redirect_to bug with multiple parameters [#17 state:resolved]
-* [FIXED] Fixing bug setting an error_layout [#18 state:resolved]
+* [FIXED] Fixing redirect_to bug with multiple parameters [#17]
+* [FIXED] Fixing bug setting an error_layout [#18]
 * [FIXED] buggy url_for()
 * [NEW] url rewriting support by explictly setting option('base_uri')  
 

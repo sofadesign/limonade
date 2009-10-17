@@ -140,6 +140,32 @@ L'emplacement de ce dossier est modifiable grâce à l'option `controllers_dir`
 
     option('controllers_dir', dirname(__FILE__).'/other/dir/for/controllers');
 
+### Url rewriting ###
+
+Limonade supporte l'url rewriting depuis sa version 0.4.1
+
+Avec un fichier `.htaccess` dans le dossier racine de votre application:
+
+    <IfModule mod_rewrite.c>
+      Options +FollowSymlinks
+      Options +Indexes
+      RewriteEngine on
+      # RewriteBase /my_app/ # Si votre application est dans un sous-dossier
+
+      # test string is a valid files
+      RewriteCond %{SCRIPT_FILENAME} !-f
+      # test string is a valid directory
+      RewriteCond %{SCRIPT_FILENAME} !-d
+
+      RewriteRule ^(.*)$   index.php?/$1    [NC,L]
+    </IfModule>
+
+Et en renseignant explicitement `option('base_uri')` dans votre fonction configure():
+
+    option('base_uri', '/my_app'); # '/' ou identique à la valeur RewriteBase de votre .htaccess
+
+Vous apouvez accéder à votre site avec des urls de type `http://your.new-website.com/my/limonade/path` au lieu de `http://your.new-website.com/?/my/limonade/path`.
+
 
 ## Vues et templates ##
 
