@@ -21,7 +21,8 @@ Les fonctions mises à disposition par Limonade sont assimilables extrêmement r
 
 Ce document fournit un aperçu rapide mais complet des fonctionnalités  de Limonade.
 
-Pour plus d'informations, vous pouvez également consulter le [site](http://limonade.sofa-design/), les [exemples](http://limonade.sofa-design.net/examples.htm) et bien sûr le [code source](http://github.com/sofadesign/limonade/blob/master/lib/limonade.php) de Limonade, qui reste encore sa meilleure documentation.
+Pour plus d'informations, vous pouvez également consulter le [site](http://limonade.sofa-design/), 
+la [documentation de l'API publique ](http://limonade.sofa-design.net/api/),les [exemples](http://limonade.sofa-design.net/examples.htm) et bien sûr le [code source](http://github.com/sofadesign/limonade/blob/master/lib/limonade.php) de Limonade, qui reste encore sa meilleure documentation.
 
 Un [groupe de discussion](http://groups.google.fr/group/limonade) est également à disposition pour plus d'échanges.
 
