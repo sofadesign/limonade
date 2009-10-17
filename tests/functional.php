@@ -12,7 +12,7 @@ test_case("Functional");
    function test_functional_request()
    {
      $response =  test_request(TESTS_DOC_ROOT.'01-hello_world.php', 'GET', true);
-     echo $response;
+     //echo $response;
      assert_header($response, 'Content-type', 'text/html');
      
    }

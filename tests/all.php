@@ -18,4 +18,5 @@ test_suite('Limonade');
   require $basedir."main.php";
   require $basedir."file.php";
   require $basedir."functional.php";
+  require $basedir."output.php";
 end_test_suite();

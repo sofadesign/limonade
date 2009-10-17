@@ -1460,7 +1460,7 @@ function render_file($filename, $return = false)
   {
     $content_type = mime_type(file_extension($filename));
     $header = 'Content-type: '.$content_type;
-    if(file_is_text($filename)) $header .= 'charset='.strtolower(option('encoding'));
+    if(file_is_text($filename)) $header .= '; charset='.strtolower(option('encoding'));
     if(!headers_sent()) header($header);
     return file_read($filename, $return);
   }
