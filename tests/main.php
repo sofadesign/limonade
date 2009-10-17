@@ -130,6 +130,12 @@ test_case("Main");
      assert_length_of($files, 3);
      
      foreach($libs as $lib) assert_true(defined('TEST_LIB_'.strtoupper($lib)));
+     
+     assert_empty(require_once_dir($root.'/tests/data/'));
+     assert_true(is_array(require_once_dir($root.'/tests/data/')));
+     
+     assert_empty(require_once_dir($root.'/tests/data/unknown_dir'));
+     assert_true(is_array(require_once_dir($root.'/tests/data/unknown_dir')));
    }
    
    function test_main_value_or_default()
