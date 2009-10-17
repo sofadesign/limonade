@@ -150,6 +150,7 @@ test_case("Main");
      assert_equal(url_for('test'), '/test');
      assert_equal(url_for('test', 1, 2), '/test/1/2');
      assert_equal(url_for('one', 'two', 'three'), '/one/two/three');
+     assert_equal(url_for('my/hash#test'), '/my/hash#test');
      $site_url = 'http://limonade.sofa-design.net';
      assert_equal(url_for($site_url), $site_url);
      assert_equal(url_for($site_url, 'examples'), $site_url.'/examples');
