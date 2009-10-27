@@ -50,7 +50,7 @@ dispatch('/welcome/:name', 'welcome');
       break;
       
       case "david":
-      redirect(url_for('/'));
+      redirect_to('/');
       break;
       
       default:
