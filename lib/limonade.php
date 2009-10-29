@@ -307,21 +307,20 @@ function run($env = null)
    
   # 0. Set default configuration
   $root_dir  = dirname(app_file());
-  $base_path = dirname($env['SERVER']['SCRIPT_NAME']);
+  $base_path = dirname(file_path($env['SERVER']['SCRIPT_NAME']));
   $base_file = basename($env['SERVER']['SCRIPT_NAME']);
-  $base_uri  = $base_path . '/'
-             . ($base_file == 'index.php') ? '?' : $base_file.'?';
-  $ds = DIRECTORY_SEPARATOR;
+  $base_uri  = file_path($base_path, (($base_file == 'index.php') ? '?' : $base_file.'?'));
+  $lim_dir   = dirname(__FILE__);
   option('root_dir',           $root_dir);
   option('base_path',          $base_path);
   option('base_uri',           $base_uri); // set it manually if you use url_rewriting
-  option('limonade_dir',       dirname(__FILE__).$ds);
-  option('limonade_views_dir', dirname(__FILE__)."{$ds}limonade{$ds}views{$ds}");
-  option('limonade_public_dir',dirname(__FILE__)."{$ds}limonade{$ds}public{$ds}");
-  option('public_dir',         $root_dir."{$ds}public{$ds}");
-  option('views_dir',          $root_dir."{$ds}views{$ds}");
-  option('controllers_dir',    $root_dir."{$ds}controllers{$ds}");
-  option('lib_dir',            $root_dir."{$ds}lib{$ds}");
+  option('limonade_dir',       file_path($lim_dir));
+  option('limonade_views_dir', file_path($lim_dir, 'limonade', 'views'));
+  option('limonade_public_dir',file_path($lim_dir, 'limonade', 'public'));
+  option('public_dir',         file_path($root_dir, 'public'));
+  option('views_dir',          file_path($root_dir, 'views'));
+  option('controllers_dir',    file_path($root_dir, 'controllers'));
+  option('lib_dir',            file_path($root_dir, 'lib'));
   option('error_views_dir',    option('limonade_views_dir'));
   option('env',                ENV_PRODUCTION);
   option('debug',              true);
@@ -507,7 +506,7 @@ function app_file()
     $stacktrace = array_pop(debug_backtrace());
     $file = $stacktrace['file'];
   }
-  return $file;
+  return file_path($file);
 }
 
 
@@ -2135,7 +2134,8 @@ function file_read_chunked($filename, $retbytes = true)
 }
 
 /**
- * Create a file path by concatenation of given arguments
+ * Create a file path by concatenation of given arguments.
+ * Windows paths with backslash directory separators are normalized in *nix paths.
  *
  * @param string $path, ... 
  * @return string normalized path
@@ -2143,8 +2143,10 @@ function file_read_chunked($filename, $retbytes = true)
 function file_path($path)
 {
   $args = func_get_args();
-  $ds = DIRECTORY_SEPARATOR;
+  $ds = '/'; 
+  $win_ds = '\\';
   $n_path = count($args) > 1 ? implode($ds, $args) : $path;
+  if(strpos($n_path, $win_ds) !== false) $n_path = str_replace( $win_ds, $ds, $n_path );
   $n_path = preg_replace( '/'.preg_quote($ds, $ds).'{2,}'.'/', 
                           $ds, 
                           $n_path);
