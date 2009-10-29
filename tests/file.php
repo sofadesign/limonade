@@ -67,6 +67,7 @@ test_case("File");
      assert_equal(file_path('/one','two','///three'), $p);
      assert_equal(file_path('/one','two','three/'), $p.'/');
      assert_equal(file_path('/one','two','three//'), $p.'/');
+     assert_equal(file_path('/one', '\two', '\\three//'), $p.'/');
    }
    
 end_test_case();
