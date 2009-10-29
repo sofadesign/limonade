@@ -1,5 +1,8 @@
 [Changes since last revision]
 
+* [CHANGED] for IIS/Windows compatibility: file_path() normalizes paths in *nix way, even on windows (backslashes are converted in slashes, double slashes are replaced by one). Refactoring options paths in run() to fix paths on windows.
+* [FIXED] Removes php short open tags in default limonade views to be compatible with php5.3 default configuration (short_open_tags disabled)
+
 [2009-10-17: VERSION 0.4.5]
 
 * [FIXED] notice that can occurs in render() when a % isn't necessarily a placeholder % caracter. [#32]
