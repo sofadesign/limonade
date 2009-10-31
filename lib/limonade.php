@@ -1365,6 +1365,38 @@ function render_partial($content_or_func, $locals = array()) {
 }
 
 /**
+ * Starts capturing block of text
+ *
+ * Calling with params stops capturing (same as end_content_for())
+ *
+ * @param string $name
+ * @return void
+ */
+function content_for($name = null) {
+	static $_name = null;
+	if(is_null($name)) {
+		set($_name, ob_get_clean());
+		$_name = $name;	
+	} else {
+		$_name = $name;	
+		ob_start();
+	}
+}
+
+/**
+ * Stops capturing block of text
+ *
+ * Stops capturing block of text and puts the captured content
+ * to a variable (name is defined as first param of content_for())
+ * for later use in layouts. 
+ *
+ * @return void
+ */
+function end_content_for() {
+	content_for(null);
+}
+
+/**
  * Returns html output with proper http headers
  *
  * @param string $content_or_func 
