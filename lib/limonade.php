@@ -1352,6 +1352,19 @@ function render($content_or_func, $layout = '', $locals = array())
 }
 
 /**
+ * Returns a string to output
+ * 
+ * Shortcut to render with no layout.
+ *
+ * @param string $content_or_func 
+ * @param string $locals 
+ * @return string
+ */
+function render_partial($content_or_func, $locals = array()) {
+	return render($content_or_func, null, $locals);
+}
+
+/**
  * Returns html output with proper http headers
  *
  * @param string $content_or_func 

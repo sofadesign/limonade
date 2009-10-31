@@ -1,5 +1,6 @@
 # TODO #
 
+- improve render_partial to work as partials in Rails
 - improving unregister_globals 
     - to avoid predefined variables (_SERVER, _REQUEST...) deletion
     - to handle session globals by calling unregister_globals('_SESSION') after session start
@@ -15,7 +16,6 @@
 - use array_walk_recursive for unregister_globals
 - add a LIM_START_MEMORY with memory_get_usage()
 - add a simple helper to benchmark (execution time / memory)
-- add a render_partial function (shortcut for render, without the layout param...)
 - adding gzip option (http://fr.php.net/manual/en/zlib.configuration.php#ini.zlib.output-compression)
 - simple form helper with XSS/CSRF protection
 - remove examples/ and move it in an external depot
