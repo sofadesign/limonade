@@ -1635,7 +1635,7 @@ function flash_sweep()
 /**
  * Starts capturing block of text
  *
- * Calling with params stops capturing (same as end_content_for()).
+ * Calling without params stops capturing (same as end_content_for()).
  * After capturing the captured block is put into a variable
  * named $name for later use in layouts. If second parameter
  * is supplied, its content will be used instead of capturing
