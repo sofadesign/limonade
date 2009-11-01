@@ -29,16 +29,6 @@
 ## Later ##
 
 - add routing support for dispatching to class methods: `dispatch('/hello/:name', 'Hello::who');`
-- add routing support for dispatching to lambdas/closures (requires PHP 5.3.0): `dispatch('/hello/:name', function(){ # ... });`.
-
-> If you want to check whether you're dealing with a closure specifically and not a string or array callback you can do this:
-
-    <?php
-    $isAClosure = is_callable($thing) && is_object($thing);
-    ?>
-
-    
-
 - http caching
 - file caching
 - x-sender headers for serving static files directly thru Apache and Lighttpd

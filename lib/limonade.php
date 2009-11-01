@@ -379,7 +379,7 @@ function run($env = null)
       # 6.2 Load controllers dir
       require_once_dir(option('controllers_dir'));
       
-      if(function_exists($route['function']))
+      if(is_callable($route['function']))
       {
         # 6.3 Call before function
         call_if_exists('before');
