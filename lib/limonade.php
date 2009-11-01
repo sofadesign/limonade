@@ -1367,33 +1367,36 @@ function render_partial($content_or_func, $locals = array()) {
 /**
  * Starts capturing block of text
  *
- * Calling with params stops capturing (same as end_content_for())
+ * Calling with params stops capturing (same as end_content_for()).
+ * After capturing the captured block is put into a variable
+ * named $name for later use in layouts. If second parameter
+ * is supplied, its content will be used instead of capturing
+ * a block of text.
  *
  * @param string $name
+ * @param string $content
  * @return void
  */
-function content_for($name = null) {
+function content_for($name = null, $content = null) {
 	static $_name = null;
-	if(is_null($name)) {
+	if(is_null($name) && !is_null($_name)) {
 		set($_name, ob_get_clean());
-		$_name = $name;	
-	} else {
+		$_name = null;	
+	} elseif(!is_null($name) && !isset($content)) {
 		$_name = $name;	
 		ob_start();
+	} elseif(isset($name, $content)) {
+		set($name, $content);
 	}
 }
 
 /**
  * Stops capturing block of text
  *
- * Stops capturing block of text and puts the captured content
- * to a variable (name is defined as first param of content_for())
- * for later use in layouts. 
- *
  * @return void
  */
 function end_content_for() {
-	content_for(null);
+	content_for();
 }
 
 /**
