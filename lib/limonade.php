@@ -1365,41 +1365,6 @@ function render_partial($content_or_func, $locals = array()) {
 }
 
 /**
- * Starts capturing block of text
- *
- * Calling with params stops capturing (same as end_content_for()).
- * After capturing the captured block is put into a variable
- * named $name for later use in layouts. If second parameter
- * is supplied, its content will be used instead of capturing
- * a block of text.
- *
- * @param string $name
- * @param string $content
- * @return void
- */
-function content_for($name = null, $content = null) {
-	static $_name = null;
-	if(is_null($name) && !is_null($_name)) {
-		set($_name, ob_get_clean());
-		$_name = null;	
-	} elseif(!is_null($name) && !isset($content)) {
-		$_name = $name;	
-		ob_start();
-	} elseif(isset($name, $content)) {
-		set($name, $content);
-	}
-}
-
-/**
- * Stops capturing block of text
- *
- * @return void
- */
-function end_content_for() {
-	content_for();
-}
-
-/**
  * Returns html output with proper http headers
  *
  * @param string $content_or_func 
@@ -1665,6 +1630,41 @@ function flash_sweep()
     $fkey = LIM_SESSION_FLASH_KEY;
     $_SESSION[$fkey] = flash();
   }
+}
+
+/**
+ * Starts capturing block of text
+ *
+ * Calling with params stops capturing (same as end_content_for()).
+ * After capturing the captured block is put into a variable
+ * named $name for later use in layouts. If second parameter
+ * is supplied, its content will be used instead of capturing
+ * a block of text.
+ *
+ * @param string $name
+ * @param string $content
+ * @return void
+ */
+function content_for($name = null, $content = null) {
+	static $_name = null;
+	if(is_null($name) && !is_null($_name)) {
+		set($_name, ob_get_clean());
+		$_name = null;	
+	} elseif(!is_null($name) && !isset($content)) {
+		$_name = $name;	
+		ob_start();
+	} elseif(isset($name, $content)) {
+		set($name, $content);
+	}
+}
+
+/**
+ * Stops capturing block of text
+ *
+ * @return void
+ */
+function end_content_for() {
+	content_for();
 }
 
 
