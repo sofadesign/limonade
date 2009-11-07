@@ -81,9 +81,9 @@ test_case("Main");
    
    function test_main_app_file()
    {
-     $app_file = app_file();
+     $app_file = strtolower(app_file());
      $env = env();
-     assert_equal($app_file, $env['SERVER']['PWD'].'/'.$env['SERVER']['PHP_SELF']);
+     assert_equal($app_file, strtolower($env['SERVER']['PWD'].'/'.$env['SERVER']['PHP_SELF']));
    }
    
    function test_main_call_if_exists()
