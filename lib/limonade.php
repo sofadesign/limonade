@@ -1357,7 +1357,7 @@ function render($content_or_func, $layout = '', $locals = array())
  * @param string $locals 
  * @return string
  */
-function render_partial($content_or_func, $locals = array())
+function partial($content_or_func, $locals = array())
 {
   return render($content_or_func, null, $locals);
 }
