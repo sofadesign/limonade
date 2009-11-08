@@ -19,11 +19,60 @@ test_case("Output");
   
   function test_output_render()
   {
-    $response =  test_request(URL_FOR_OUTPUT_TEST.'/render0', 'GET');
-    assert_equal($response, "Lorem ipsum dolor sit amet.");
+    $lorem = "Lorem ipsum dolor sit amet.";
+    $q_lorem = preg_quote($lorem);
     
+    # Testing standard rendering with sprint string
+    assert_equal(render($lorem), $lorem);
+    assert_equal(render($lorem, null, array('unused')), $lorem);
+    assert_equal(render("Lorem %s dolor sit amet.", null, array('ipsum')), $lorem);
+    assert_equal(render("Lorem %s dolor sit amet.", null, array('var1' => 'ipsum')), $lorem);
+    
+    $response =  test_request(URL_FOR_OUTPUT_TEST.'/render0', 'GET');
+    assert_equal($response, $lorem);
     $response =  test_request(URL_FOR_OUTPUT_TEST.'/render1', 'GET');
-    assert_equal($response, "Lorem % ipsum dolor sit amet.");
+    assert_equal($response, $lorem);
+    
+    # Testing rendering with a view (inline function case)
+    $view = '_test_output_html_hello_world';
+    $html = render($view);
+    assert_match("/Hello World/", $html);
+    assert_no_match("/$q_lorem/", $html);
+    $html = render($view, null, array($lorem));
+    assert_no_match("/$q_lorem/", $html);
+    $html = render($view, null, array('lorem' => $lorem));
+    assert_match("/$q_lorem/", $html);
+    
+    # Testing layout option
+    $layout  = '_test_output_html_my_layout';
+    $html    = render($lorem, $layout);
+    assert_match("/$q_lorem/", $html);
+    assert_match("/<title>Page title<\/title>/", $html);
+    
+    # Testing layout + view (inline function case)
+    $html = render($view, $layout);
+    assert_match("/<title>Page title<\/title>/", $html);
+    assert_match("/Hello World/", $html);
+    assert_no_match("/$q_lorem/", $html);
+    $html = render($view, $layout, array('lorem' => $lorem));
+    assert_match("/<title>Page title<\/title>/", $html);
+    assert_match("/Hello World/", $html);
+    assert_match("/$q_lorem/", $html);
+    
+    # Testing layout + view (template files case)
+    $views_dir = dirname(__FILE__) . '/apps/views/';
+    option('views_dir', $views_dir);
+
+    $view      = 'hello_world.html.php';
+    $layout    = 'layouts/default.html.php';
+    $html = render($view, $layout);
+    assert_match("/<title>Page title<\/title>/", $html);
+    assert_match("/Hello World/", $html);
+    assert_no_match("/$q_lorem/", $html);
+    $html = render($view, $layout, array('lorem' => $lorem));
+    assert_match("/<title>Page title<\/title>/", $html);
+    assert_match("/Hello World/", $html);
+    assert_match("/$q_lorem/", $html);
   }
   
   function test_output_html()
@@ -43,6 +92,23 @@ test_case("Output");
     assert_header($response, 'Content-type', 'text/html; charset='.option('encoding'));
   }
   
-  
-  
 end_test_case();
+
+
+# Views and Layouts
+
+function _test_output_html_my_layout($vars){ extract($vars);?> 
+<html>
+<head>
+	<title>Page title</title>
+</head>
+<body>
+	<?=$content?>
+</body>
+</html>
+<?}
+
+function _test_output_html_hello_world($vars){ extract($vars);?> 
+<p>Hello World</p>
+<?if(isset($lorem)):?><p><?=$lorem?></p><?endif;?>
+<?}

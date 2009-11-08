@@ -11,8 +11,7 @@ function test_render0()
 dispatch('/render1', 'test_render1');
 function test_render1()
 {
-  restore_error_handler();
-  return render("Lorem % ipsum dolor sit amet.");
+  return render("Lorem %s dolor sit amet.", null, array('ipsum'));
 }
 
 dispatch('/text', 'text_file');
