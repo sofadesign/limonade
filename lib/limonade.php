@@ -385,7 +385,7 @@ function run($env = null)
         call_if_exists('before');
         
         # 6.4 Call matching controller function and output result
-        if($output = call_user_func($route['function']))
+        if($output = call_user_func_array($route['function'], array_values($route['params'])))
         {
           echo after(error_notices_render() . $output);
         }
