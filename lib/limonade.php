@@ -118,7 +118,7 @@ if (get_magic_quotes_gpc())
   ini_set('magic_quotes_gpc', 0);
 }
 
-if(get_magic_quotes_runtime()) set_magic_quotes_runtime(false);
+if(function_exists('set_magic_quotes_runtime') && get_magic_quotes_runtime()) set_magic_quotes_runtime(false);
 
 # C. Disable error display
 #    by default, no error reporting; it will be switched on later in run().
