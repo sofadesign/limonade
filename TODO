@@ -1,6 +1,7 @@
 # TODO #
 
-- testing calling static/instance methods from dispatch functions, with native php callback array('MyClass', 'myCallbackMethod') / array($obj, 'myCallbackMethod') (used in is_callable and call_user_func)
+- testing calling static/instance methods + lambdas from dispatch functions, with native php callback (see <http://limonade.tumblr.com/post/247098505/hidden-features>).
+- Adding documentation about dispatch callback (see blog post <http://limonade.tumblr.com/post/247098505/hidden-features>)
 - adding datashaman commits
 - write tests for partial()
 - refactor partial()
