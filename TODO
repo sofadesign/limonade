@@ -2,21 +2,19 @@
 
 - testing calling static/instance methods + lambdas from dispatch functions, with native php callback (see <http://limonade.tumblr.com/post/247098505/hidden-features>).
 - Adding documentation about dispatch callback (see blog post <http://limonade.tumblr.com/post/247098505/hidden-features>)
-- adding datashaman commits
 - write tests for partial()
 - refactor partial()
 - partial() write small doc (README) and examples
 - write tests for content_for()
 - refactor content_for()
 - content_for() write small doc (README) and examples
+- in run(), passing $env to all functions that require it
 - improving unregister_globals 
     - to avoid predefined variables (_SERVER, _REQUEST...) deletion
     - to handle session globals by calling unregister_globals('_SESSION') after session start
-- more unit and functional tests
-- in run(), passing $env to all functions that require it
 - implements stop_and_exit() call with register_shutdown_function
-- in call_if_exist(), using is_callable() instead of function_exists will allow calling objects methods <http://www.php.net/manual/en/function.is-callable.php>
-- deleting deprecated $GLOBALS['HTTP_SERVER_VARS'], $GLOBALS['HTTP_GET_VARS']... (<http://www.php.net/manual/fr/reserved.variables.post.php>...)
+- deleting deprecated ['HTTP_SERVER_VARS'], ['HTTP_GET_VARS']... (<http://www.php.net/manual/fr/reserved.variables.post.php>...)
+- implement user agent detection option in routing
 - params function should be singular like option ?
 - adding a debug() helper
 - new redirect_to (support for https)
@@ -32,11 +30,14 @@
     - tests: describe in docblock header abstract definitions
     - add links in header/welcome page(blank.tpl): project web site (clic on logo?), README, github
 
+## And always ##
+
+- more unit and functional tests
+
 
 
 ## Later ##
 
-- add routing support for dispatching to class methods: `dispatch('/hello/:name', 'Hello::who');`
 - http caching
 - file caching
 - x-sender headers for serving static files directly thru Apache and Lighttpd
@@ -44,6 +45,5 @@
 
 ## Think about it ##
 
-- adding an options array to dispatch functions. Perhaps for supporting user agent detection, language detection or something like that ?
 - make post, put and delete params accessible with the params() function
     (take care of possible conflict with a route param: by default override get params, but raise an error notice). Really useful ?
