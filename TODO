@@ -1,6 +1,6 @@
 # TODO #
 
-- testing calling static/instance methods + lambdas from dispatch functions, with native php callback (see <http://limonade.tumblr.com/post/247098505/hidden-features>).
+- testing calling lambdas from dispatch functions, with native php callback (see <http://limonade.tumblr.com/post/247098505/hidden-features>).
 - Adding documentation about dispatch callback (see blog post <http://limonade.tumblr.com/post/247098505/hidden-features>)
 - write tests for partial()
 - refactor partial()
@@ -21,7 +21,7 @@
 - add header X-Limonade-PHP: (lim version name); (cosmetic ;-)
 - use array_walk_recursive for unregister_globals
 - add a LIM_START_MEMORY with memory_get_usage()
-- add a simple helper to benchmark (execution time / memory)
+- add a simple helper for benchmarking (execution time / memory)
 - adding gzip option (http://fr.php.net/manual/en/zlib.configuration.php#ini.zlib.output-compression)
 - simple form helper with XSS/CSRF protection
 - remove examples/ and move it in an external depot
