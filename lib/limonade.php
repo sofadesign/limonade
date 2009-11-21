@@ -1040,7 +1040,7 @@ function dispatch($path_or_array, $function, $params = array())
  * Add a GET route. Also automatically defines a HEAD route.
  *
  * @param string $path_or_array 
- * @param string $function 
+ * @param string $function
  * @return void
  */
 function dispatch_get($path_or_array, $function, $params = array())
@@ -1092,7 +1092,7 @@ function dispatch_delete($path_or_array, $function, $params = array())
  * Return all routes
  * 
  * @access private
- * @param string $method 
+ * @param string $method
  * @param string $path_or_array 
  * @param string $func
  * @return array
@@ -1111,7 +1111,7 @@ function route()
       $method        = $args[0];
       $path_or_array = $args[1];
       $func          = $args[2];
-      $params        = @$args[3];
+      $params        = $nargs > 3 ? $args[3] : array();
 
       $routes[] = route_build($method, $path_or_array, $func, $params);
     }
