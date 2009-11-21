@@ -91,6 +91,24 @@ test_case("Main");
      assert_empty(call_if_exists("unknown_function"));
      assert_equal(call_if_exists("count", array(1,2,3)), 3);
      assert_length_of(call_if_exists("array_merge", array(1,2,3), array(4,5,6)), 6);
+     
+     class TestCallIfExists
+     {
+       public function test($value=1)
+       {
+         return $value * 10;
+       }
+       
+       static public function testStatic($value=1)
+       {
+         return $value * 20;
+       }
+     }
+     
+     $obj = new TestCallIfExists();
+     assert_equal(call_if_exists(array($obj, 'test'), 3), 30);
+     assert_equal(call_if_exists(array('TestCallIfExists', 'testStatic'), 3), 60);
+     assert_equal(call_if_exists('TestCallIfExists::testStatic', 3), 60);
    }
    
    function test_main_define_unless_exists()
