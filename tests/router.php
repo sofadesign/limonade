@@ -150,20 +150,36 @@ test_case("Router");
      
      $r = route("get", "/index", "my_func");
      assert_length_of($r, 1);
-     assert_length_of($r[0], 4);
+     assert_length_of($r[0], 5);
      assert_equal($r[0]["method"], "GET");
      assert_equal($r[0]["pattern"], "#^/index(?:/*?)?$#i");
      assert_empty($r[0]["names"]);
      assert_equal($r[0]["function"], "my_func");
+     assert_empty($r[0]["options"]);
      
      $r = route("put", "/blog/:id", "my_update_func");
      assert_length_of($r, 2);
-     assert_length_of($r[1], 4);
+     assert_length_of($r[1], 5);
      assert_equal($r[1]["method"], "PUT");
      assert_match($r[1]["pattern"], "/blog/102");
      assert_length_of($r[1]["names"], 1);
      assert_equal($r[1]["names"][0], "id");
      assert_equal($r[1]["function"], "my_update_func");
+     assert_empty($r[1]["options"]);
+     
+     $r = route("post", "/blog/:id", "my_post_func", array('params' => array('extra' => 10)));
+     assert_length_of($r[2], 5);
+     assert_equal($r[2]["method"], "POST");
+     assert_match($r[2]["pattern"], "/blog/102");
+     assert_length_of($r[2]["names"], 1);
+     assert_equal($r[2]["names"][0], "id");
+     assert_equal($r[2]["function"], "my_post_func");
+     assert_not_empty($r[2]["options"]);
+     assert_not_empty($r[2]["options"]['params']);
+     assert_equal($r[2]["options"]['params']['extra'], 10);
+     
+     $r = route("get", "/blog/:id", "my_get_func", array('params' => array('id' => 10)));
+     assert_match($r[2]["pattern"], "/blog/102");
    }
    
    function test_router_find_route()
@@ -222,6 +238,28 @@ test_case("Router");
      
      $r = route_find("GET", "/list/120");
      assert_equal($r["function"], "my_list_func");
+     
+     /* testing parameterized functions */
+     $extra_p   = array(123, 'id' => 123, 'name' => 'abc');
+     
+               route( "get", "/no/cat/:id", "my_p_func");
+               route( "get", "/with/cat/:id", "my_p_func", array('params' => $extra_p));
+     $routes = route( "get", "/indexed/cat/*", "my_p_func", array('params' => $extra_p));
+     
+     $r = route_find("GET", "/no/cat/21");
+     assert_equal($r["function"], "my_p_func");
+     assert_equal($r["params"]["id"], 21);
+     
+     $r = route_find("GET", "/with/cat/21");
+     assert_equal($r["function"], "my_p_func");
+     assert_equal($r["params"]["id"], 21);
+     assert_equal($r["params"]["name"], "abc");
+     
+     $r = route_find("GET", "/indexed/cat/21");
+     assert_equal($r["function"], "my_p_func");
+     assert_equal($r["params"][0], 21);
+     assert_equal($r["params"]["id"], 123);
+     assert_equal($r["params"]["name"], "abc");
      
    }
    
