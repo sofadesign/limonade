@@ -1702,7 +1702,10 @@ function end_content_for()
 /**
  * Calls a function if exists
  *
- * @param string $func the function name
+ * @param callback $func a function stored in a string variable, 
+ *   or an object and the name of a method within the object
+ *   See {@link http://php.net/manual/en/language.pseudo-types.php#language.types.callback php documentation}
+ *   to learn more about callbacks.
  * @param mixed $arg,.. (optional)
  * @return mixed
  */
@@ -1710,7 +1713,7 @@ function call_if_exists($func)
 {
   $args = func_get_args();
   $func = array_shift($args);
-  if(function_exists($func)) return call_user_func_array($func, $args);
+  if(is_callable($func)) return call_user_func_array($func, $args);
   return;
 }
 
