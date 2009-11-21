@@ -1027,7 +1027,7 @@ function request_uri($env = null)
 # ============================================================================ #
  
 /**
- * an alias of dispatch_get
+ * An alias of {@link dispatch_get()}
  *
  * @return void
  */
@@ -1041,6 +1041,7 @@ function dispatch($path_or_array, $function, $options = array())
  *
  * @param string $path_or_array 
  * @param string $function
+ * @param array $options (optional). See {@link route()} for available options.
  * @return void
  */
 function dispatch_get($path_or_array, $function, $options = array())
@@ -1053,7 +1054,8 @@ function dispatch_get($path_or_array, $function, $options = array())
  * Add a POST route
  *
  * @param string $path_or_array 
- * @param string $function 
+ * @param string $function
+ * @param array $options (optional). See {@link route()} for available options.
  * @return void
  */
 function dispatch_post($path_or_array, $function, $options = array())
@@ -1065,7 +1067,8 @@ function dispatch_post($path_or_array, $function, $options = array())
  * Add a PUT route
  *
  * @param string $path_or_array 
- * @param string $function 
+ * @param string $function
+ * @param array $options (optional). See {@link route()} for available options.
  * @return void
  */
 function dispatch_put($path_or_array, $function, $options = array())
@@ -1077,7 +1080,8 @@ function dispatch_put($path_or_array, $function, $options = array())
  * Add a DELETE route
  *
  * @param string $path_or_array 
- * @param string $function 
+ * @param string $function
+ * @param array $options (optional). See {@link route()} for available options.
  * @return void
  */
 function dispatch_delete($path_or_array, $function, $options = array())
@@ -1091,10 +1095,12 @@ function dispatch_delete($path_or_array, $function, $options = array())
  * Delete all routes if null is passed as a unique argument
  * Return all routes
  * 
+ * @see route_build()
  * @access private
- * @param string $method
- * @param string $path_or_array 
- * @param string $func
+ * @param string $method 
+ * @param string|array $path_or_array 
+ * @param callback $func
+ * @param array $options (optional)
  * @return array
  */
 function route()
@@ -1134,10 +1140,16 @@ function route_reset()
  * Build a route and return it
  *
  * @access private
- * @param string $method 
- * @param string $path_or_array 
- * @param string $func
- * @return array
+ * @param string $method allowed http method (one of those returned by {@link request_methods()})
+ * @param string|array $path_or_array 
+ * @param callback $func callback function called when route is found. It can be
+ *   a function, an object method, a static method or a closure.
+ *   See {@link http://php.net/manual/en/language.pseudo-types.php#language.types.callback php documentation}
+ *   to learn more about callbacks.
+ * @param array $options (optional). Available options: 
+ *   - 'params' key with an array of parameters: for parametrized routes.
+ *     those parameters will be merged with routes parameters.
+ * @return array array with keys "method", "pattern", "names", "function", "options"
  */
 function route_build($method, $path_or_array, $func, $options = array())
 {
