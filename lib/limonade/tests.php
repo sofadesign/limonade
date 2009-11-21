@@ -332,6 +332,7 @@ function test_request($url, $method="GET", $include_header=false) {
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_HEADER, $include_header);
     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+    if($method == 'POST') curl_setopt($curl, CURLOPT_POST, 1);
     $response = curl_exec($curl);
     curl_close($curl);
 
