@@ -1031,9 +1031,9 @@ function request_uri($env = null)
  *
  * @return void
  */
-function dispatch($path_or_array, $function, $params = array())
+function dispatch($path_or_array, $function, $options = array())
 {
-  dispatch_get($path_or_array, $function, $params);
+  dispatch_get($path_or_array, $function, $options);
 }
 
 /**
@@ -1043,10 +1043,10 @@ function dispatch($path_or_array, $function, $params = array())
  * @param string $function
  * @return void
  */
-function dispatch_get($path_or_array, $function, $params = array())
+function dispatch_get($path_or_array, $function, $options = array())
 {
-  route("GET", $path_or_array, $function, $params);
-  route("HEAD", $path_or_array, $function, $params);
+  route("GET", $path_or_array, $function, $options);
+  route("HEAD", $path_or_array, $function, $options);
 }
 
 /**
@@ -1056,9 +1056,9 @@ function dispatch_get($path_or_array, $function, $params = array())
  * @param string $function 
  * @return void
  */
-function dispatch_post($path_or_array, $function, $params = array())
+function dispatch_post($path_or_array, $function, $options = array())
 {
-  route("POST", $path_or_array, $function, $params);
+  route("POST", $path_or_array, $function, $options);
 }
 
 /**
@@ -1068,9 +1068,9 @@ function dispatch_post($path_or_array, $function, $params = array())
  * @param string $function 
  * @return void
  */
-function dispatch_put($path_or_array, $function, $params = array())
+function dispatch_put($path_or_array, $function, $options = array())
 {
-  route("PUT", $path_or_array, $function, $params);
+  route("PUT", $path_or_array, $function, $options);
 }
 
 /**
@@ -1080,9 +1080,9 @@ function dispatch_put($path_or_array, $function, $params = array())
  * @param string $function 
  * @return void
  */
-function dispatch_delete($path_or_array, $function, $params = array())
+function dispatch_delete($path_or_array, $function, $options = array())
 {
-  route("DELETE", $path_or_array, $function, $params);
+  route("DELETE", $path_or_array, $function, $options);
 }
 
 
@@ -1111,9 +1111,9 @@ function route()
       $method        = $args[0];
       $path_or_array = $args[1];
       $func          = $args[2];
-      $params        = $nargs > 3 ? $args[3] : array();
+      $options       = $nargs > 3 ? $args[3] : array();
 
-      $routes[] = route_build($method, $path_or_array, $func, $params);
+      $routes[] = route_build($method, $path_or_array, $func, $options);
     }
   }
   return $routes;
@@ -1139,7 +1139,7 @@ function route_reset()
  * @param string $func
  * @return array
  */
-function route_build($method, $path_or_array, $func, $params = array())
+function route_build($method, $path_or_array, $func, $options = array())
 {
   $method = strtoupper($method);
   if(!in_array($method, request_methods())) 
@@ -1231,7 +1231,7 @@ function route_build($method, $path_or_array, $func, $params = array())
                 "pattern"      => $pattern,
                 "names"        => $names,
                 "function"     => $func,
-                "params"       => $params     );
+                "options"      => $options  );
 }
 
 /**
@@ -1241,7 +1241,7 @@ function route_build($method, $path_or_array, $func, $params = array())
  *
  * @access private
  * @param string $method 
- * @param string $path 
+ * @param string $path
  * @return array,false
  */
 function route_find($method, $path)
@@ -1252,7 +1252,8 @@ function route_find($method, $path)
   {
     if($method == $route["method"] && preg_match($route["pattern"], $path, $matches))
     {
-      $params = $route["params"];
+      $options = $route["options"];
+      $params = array_key_exists('params', $options) ? $options["params"] : array();
       if(count($matches) > 1)
       {
         array_shift($matches);
