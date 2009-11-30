@@ -1768,7 +1768,9 @@ function require_once_dir($path, $pattern = "*.php")
   if($path[strlen($path) - 1] != "/") $path .= "/";
   $filenames = glob($path.$pattern);
   if(!is_array($filenames)) $filenames = array();
+  ob_start();
   foreach($filenames as $filename) require_once $filename;
+  ob_end_clean();
   return $filenames;
 }
 
