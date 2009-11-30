@@ -1,5 +1,7 @@
 # TODO #
 
+- adding autoload_controller feature
+autoload_controller($route['function']);
 - adding contributors/thanks in AUTHORS
 - testing calling lambdas from dispatch functions, with native php callback (see <http://limonade.tumblr.com/post/247098505/hidden-features>).
 - Adding documentation about dispatch callback (see blog post <http://limonade.tumblr.com/post/247098505/hidden-features>) (remember that controller function args must be in the same order as route params!)
