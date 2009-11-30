@@ -1,7 +1,9 @@
 # TODO #
 
+- adding contributors/thanks in AUTHORS
 - testing calling lambdas from dispatch functions, with native php callback (see <http://limonade.tumblr.com/post/247098505/hidden-features>).
-- Adding documentation about dispatch callback (see blog post <http://limonade.tumblr.com/post/247098505/hidden-features>)
+- Adding documentation about dispatch callback (see blog post <http://limonade.tumblr.com/post/247098505/hidden-features>) (remember that controller function args must be in the same order as route params!)
+- in route() functions, replace "function" name with "callback" name (example: in route_build() returned array)
 - write tests for partial()
 - refactor partial()
 - partial() write small doc (README) and examples
@@ -44,6 +46,23 @@
 
 
 ## Think about it ##
+- adding optional renderers (markdown, haml, textile, tenjin, phptal…)
+
+    if(class_exists('Haml'))
+    {
+        function haml($str, $layout=null, $vars=array())
+        {
+            #…
+        }
+    }
+    else
+    { 
+        function haml($str, $layout=null, vars=array())
+        {
+            trigger_error(__FUNCTION__ . '(): Haml lib is required to use haml rendering.',
+                E_USER_WARNING)
+        }
+    }
 
 - make post, put and delete params accessible with the params() function
     (take care of possible conflict with a route param: by default override get params, but raise an error notice). Really useful ?
