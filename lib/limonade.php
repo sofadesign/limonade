@@ -1468,6 +1468,7 @@ function render_file($filename, $return = false)
   // {
   //   
   // }
+  $filename = str_replace('../', '', $filename);
   if(file_exists($filename))
   {
     $content_type = mime_type(file_extension($filename));
