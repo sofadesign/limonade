@@ -1,7 +1,11 @@
 # TODO #
 
+- [#36] using $_SERVER["SERVER_PROTOCOL"]: implement and make tests
 - adding autoload_controller feature
-autoload_controller($route['function']);
+autoload_controller(['function']);
+- adding support for special characters in routes (rawurldecode)(suggested by Zncdr)
+- improve security in render_file with a safe_dir option
+- update Limonade codename (in french now)
 - adding contributors/thanks in AUTHORS
 - testing calling lambdas from dispatch functions, with native php callback (see <http://limonade.tumblr.com/post/247098505/hidden-features>).
 - Adding documentation about dispatch callback (see blog post <http://limonade.tumblr.com/post/247098505/hidden-features>) (remember that controller function args must be in the same order as route params!)
