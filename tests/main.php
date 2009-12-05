@@ -178,6 +178,7 @@ test_case("Main");
      assert_equal(url_for(''), '/');
      assert_equal(url_for('/'), '/');
      assert_equal(url_for('test'), '/test');
+     assert_equal(url_for('mañana'), '/'.rawurlencode(mañana));
      assert_equal(url_for('test', 1, 2), '/test/1/2');
      assert_equal(url_for('one', 'two', 'three'), '/one/two/three');
      assert_equal(url_for('my/hash#test'), '/my/hash#test');

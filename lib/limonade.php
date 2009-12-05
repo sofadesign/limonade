@@ -1012,7 +1012,7 @@ function request_uri($env = null)
   {
     $uri = '/' . $uri; # add a leading slash
   }
-  return $uri;
+  return rawurldecode($uri);
 }
 
 

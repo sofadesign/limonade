@@ -142,6 +142,10 @@ test_case("Router");
       assert_equal   ($r["names"][1], "second");
       assert_equal   ($r["names"][2], "lazy");
       assert_equal   ($r["names"][3], "route");
+      
+      /* testing a route with special characters */
+      $r = route_build("GET","/mañana/:when", 'get_index');
+      assert_match   ($r["pattern"], "/mañana/tomorrow");
    }
    
    function test_router_route()
@@ -260,6 +264,17 @@ test_case("Router");
      assert_equal($r["params"][0], 21);
      assert_equal($r["params"]["id"], 123);
      assert_equal($r["params"]["name"], "abc");
+     
+     /* testing route with special characters */
+     route( "get", "/mañana/:when", "my_special_func");
+     $r = route_find("GET", "/mañana/123");
+     assert_equal($r["function"], "my_special_func");
+     assert_equal($r["params"]["when"], 123);
+     
+     $r = route_find("GET", "/mañana/après demain");
+     assert_equal($r["function"], "my_special_func");
+     assert_equal($r["params"]["when"], "après demain");
+     
      
    }
    
