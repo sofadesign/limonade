@@ -1,6 +1,7 @@
 # TODO #
 
-- [#36] using $_SERVER["SERVER_PROTOCOL"]: implement and make tests
+- adding support for extra GET variables in all url styles like in rails (http://groups.google.fr/group/limonade/browse_thread/thread/f9402fb0a3b1f65c)
+- - [#36] using _SERVER["SERVER_PROTOCOL"]: implement and make tests
 - adding autoload_controller feature
 autoload_controller(['function']);
 - adding support for special characters in routes (rawurldecode)(suggested by Zncdr)
