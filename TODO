@@ -21,7 +21,6 @@ autoload_controller(['function']);
 - improving unregister_globals 
     - to avoid predefined variables (_SERVER, _REQUEST...) deletion
     - to handle session globals by calling unregister_globals('_SESSION') after session start
-- implements stop_and_exit() call with register_shutdown_function
 - deleting deprecated ['HTTP_SERVER_VARS'], ['HTTP_GET_VARS']... (<http://www.php.net/manual/fr/reserved.variables.post.php>...)
 - implement user agent detection option in routing
 - params function should be singular like option ?
