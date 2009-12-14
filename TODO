@@ -29,7 +29,6 @@ autoload_controller(['function']);
 - add header X-Limonade-PHP: (lim version name); (cosmetic ;-)
 - use array_walk_recursive for unregister_globals
 - add a simple helper for benchmarking (execution time / memory)
-- adding gzip option (http://fr.php.net/manual/en/zlib.configuration.php#ini.zlib.output-compression)
 - simple form helper with XSS/CSRF protection
 - remove examples/ and move it in an external depot
 - public API documentation:

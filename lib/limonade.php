@@ -327,6 +327,7 @@ function run($env = null)
   option('debug',              true);
   option('session',            LIM_SESSION_NAME); // true, false or the name of your session
   option('encoding',           'utf-8');
+  option('gzip',               false);
   option('x-sendfile',         0); // 0: disabled, 
                                    // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
                                    // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
@@ -341,6 +342,12 @@ function run($env = null)
 
   # 2. Set user configuration
   call_if_exists('configure');
+  
+  # 2.1 Set gzip compression if defined
+  if(is_bool(option('gzip')) && option('gzip'))
+  {
+    ini_set('zlib.output_compression', '1');
+  }
 
   # 3. Loading libs
   require_once_dir(option('lib_dir'));
