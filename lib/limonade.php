@@ -1698,6 +1698,25 @@ function end_content_for()
   content_for();
 }
 
+/**
+ * Shows current memory and execution time of the application.
+ * 
+ * @access public
+ * @return array
+ */
+function benchmark()
+{
+  $current_mem_usage = memory_get_usage();
+  $execution_time = microtime() - LIM_START_MICROTIME;
+  
+  return array(
+    'current_memory' => $current_mem_usage,
+    'start_memory' => LIM_START_MEMORY,
+    'average_memory' => (LIM_START_MEMORY + $current_mem_usage) / 2,
+    'execution_time' => $execution_time
+  );
+}
+
 
 
 

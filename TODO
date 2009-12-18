@@ -28,7 +28,6 @@ autoload_controller(['function']);
 - new redirect_to (support for https)
 - add header X-Limonade-PHP: (lim version name); (cosmetic ;-)
 - use array_walk_recursive for unregister_globals
-- add a simple helper for benchmarking (execution time / memory)
 - simple form helper with XSS/CSRF protection
 - remove examples/ and move it in an external depot
 - public API documentation:
