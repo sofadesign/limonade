@@ -130,6 +130,9 @@ function html_my_layout($vars){ extract($vars);?>
 	</p>
 </body>
 </html>
+<!--
+<?php print_r(benchmark()); ?>
+-->
 <?}
 
 

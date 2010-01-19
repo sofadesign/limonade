@@ -327,16 +327,27 @@ function run($env = null)
   option('debug',              true);
   option('session',            LIM_SESSION_NAME); // true, false or the name of your session
   option('encoding',           'utf-8');
+  option('gzip',               false);
   option('x-sendfile',         0); // 0: disabled, 
                                    // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
                                    // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
 
-  # 1. Set error handling
+  # 1. Set handlers
+  # 1.1 Set error handling
   ini_set('display_errors', 1);
   set_error_handler('error_handler_dispatcher', E_ALL ^ E_NOTICE);
+  
+  # 1.2 Register shutdown function
+  register_shutdown_function('stop_and_exit');
 
   # 2. Set user configuration
   call_if_exists('configure');
+  
+  # 2.1 Set gzip compression if defined
+  if(is_bool(option('gzip')) && option('gzip'))
+  {
+    ini_set('zlib.output_compression', '1');
+  }
 
   # 3. Loading libs
   require_once_dir(option('lib_dir'));
@@ -390,7 +401,6 @@ function run($env = null)
         {
           echo after(error_notices_render() . $output);
         }
-        stop_and_exit();
       }
       else halt(SERVER_ERROR, "Routing error: undefined function '{$route['function']}'", $route);      
     }
@@ -623,7 +633,6 @@ function error_handler_dispatcher($errno, $errstr, $errfile, $errline)
       }
     }
     echo error_default_handler($errno, $errstr, $errfile, $errline);
-    stop_and_exit();
   }
 }
 
@@ -1687,6 +1696,25 @@ function content_for($name = null, $content = null)
 function end_content_for()
 {
   content_for();
+}
+
+/**
+ * Shows current memory and execution time of the application.
+ * 
+ * @access public
+ * @return array
+ */
+function benchmark()
+{
+  $current_mem_usage = memory_get_usage();
+  $execution_time = microtime() - LIM_START_MICROTIME;
+  
+  return array(
+    'current_memory' => $current_mem_usage,
+    'start_memory' => LIM_START_MEMORY,
+    'average_memory' => (LIM_START_MEMORY + $current_mem_usage) / 2,
+    'execution_time' => $execution_time
+  );
 }
 
 
