@@ -1,16 +1,19 @@
 # TODO #
 
+- in debug output, formating debug_backtrace to be me readable (like debug_backtrace output but with extra informations that can be toggled)
+- #36, explicit HTTP/1.1
+- adding tests with special characters for request_uri
+- complete CHANGES file
 - adding support for extra GET variables in all url styles like in rails (http://groups.google.fr/group/limonade/browse_thread/thread/f9402fb0a3b1f65c)
 - - [#36] using _SERVER["SERVER_PROTOCOL"]: implement and make tests
 - adding autoload_controller feature
 autoload_controller(['function']);
-- adding support for special characters in routes (rawurldecode)(suggested by Zncdr)
 - improve security in render_file with a safe_dir option
 - update Limonade codename (in french now)
 - adding contributors/thanks in AUTHORS
 - testing calling lambdas from dispatch functions, with native php callback (see <http://limonade.tumblr.com/post/247098505/hidden-features>).
 - Adding documentation about dispatch callback (see blog post <http://limonade.tumblr.com/post/247098505/hidden-features>) (remember that controller function args must be in the same order as route params!)
-- in route() functions, replace "function" name with "callback" name (example: in route_build() returned array)
+- in route() functions, replace "function" name with "callback" name (example: in route_build() returned array). Enhanced use of callback pseudo-type instead of functions names
 - write tests for partial()
 - refactor partial()
 - partial() write small doc (README) and examples
@@ -27,7 +30,7 @@ autoload_controller(['function']);
 - params function should be singular like option ?
 - adding a debug() helper
 - new redirect_to (support for https)
-- add header X-Limonade-PHP: (lim version name); (cosmetic ;-)
+- add header X-Limonade-PHP: (lim version name) or X-Powered-By: LimonadePHP… ; (cosmetic ;-)
 - use array_walk_recursive for unregister_globals
 - add a simple helper for benchmarking (execution time / memory)
 - adding gzip option (http://fr.php.net/manual/en/zlib.configuration.php#ini.zlib.output-compression)
@@ -45,6 +48,11 @@ autoload_controller(['function']);
 
 
 ## Later ##
+
+Documentation:
+
+- reformat code comments in order to use Natural docs (http://www.naturaldocs.org/)
+
 
 - http caching
 - file caching
