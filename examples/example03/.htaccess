@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks
+    Options +Indexes
+    RewriteEngine on
+
+
+    # test string is a valid files
+    RewriteCond %{SCRIPT_FILENAME} !-f
+    # test string is a valid directory
+    RewriteCond %{SCRIPT_FILENAME} !-d
+    
+    RewriteRule ^.*$ index.php [L]
+</IfModule>

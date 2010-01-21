@@ -394,7 +394,7 @@ function run($env = null)
       if(is_callable($route['function']))
       {
         # 6.3 Call before function
-        call_if_exists('before');
+        call_if_exists('before', $route);
 
         # 6.4 Call matching controller function and output result
         if($output = call_user_func_array($route['function'], array_values($route['params'])))
@@ -402,7 +402,8 @@ function run($env = null)
           echo after(error_notices_render() . $output);
         }
       }
-      else halt(SERVER_ERROR, "Routing error: undefined function '{$route['function']}'", $route);      
+      else halt(SERVER_ERROR, "Routing error: undefined function '{\
+        ['function']}'", $route);      
     }
     else route_missing($rm, request_uri());
 
