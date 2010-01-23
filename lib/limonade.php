@@ -402,8 +402,7 @@ function run($env = null)
           echo after(error_notices_render() . $output);
         }
       }
-      else halt(SERVER_ERROR, "Routing error: undefined function '{\
-        ['function']}'", $route);      
+      else halt(SERVER_ERROR, "Routing error: undefined function '{$route['function']}'", $route);      
     }
     else route_missing($rm, request_uri());
 
