@@ -1,5 +1,6 @@
 # TODO #
 
+- doc before($route)
 - in debug output, formating debug_backtrace to be me readable (like debug_backtrace output but with extra informations that can be toggled)
 - #36, explicit HTTP/1.1
 - adding tests with special characters for request_uri
