@@ -1,14 +1,13 @@
 # TODO #
 
+- explain autoload_controller() in README
 - doc before($route)
 - in debug output, formating debug_backtrace to be me readable (like debug_backtrace output but with extra informations that can be toggled)
 - #36, explicit HTTP/1.1
 - adding tests with special characters for request_uri
 - complete CHANGES file
 - adding support for extra GET variables in all url styles like in rails (http://groups.google.fr/group/limonade/browse_thread/thread/f9402fb0a3b1f65c)
-- - [#36] using _SERVER["SERVER_PROTOCOL"]: implement and make tests
-- adding autoload_controller feature
-autoload_controller(['function']);
+- [#36] using _SERVER["SERVER_PROTOCOL"]: implement and make tests
 - improve security in render_file with a safe_dir option
 - update Limonade codename (in french now)
 - adding contributors/thanks in AUTHORS
