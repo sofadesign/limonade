@@ -19,6 +19,26 @@ function configure()
 {
   return;
 }
+
+/**
+ * Called in run() just after the route matching, in order to load controllers. 
+ * If not specfied, the default function is called:
+ * 
+ * <code>
+ * function autoload_controller($callback)
+ * {
+ *   require_once_dir(option('controllers_dir'));
+ * }
+ * </code>
+ * 
+ *
+ * @param string $callback the callback deined in matching route
+ * @return void
+ */
+function autoload_controller($callback)
+{
+  return;
+}
  
 /**
  * Called before each request.

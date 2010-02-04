@@ -171,6 +171,7 @@ dispatch(array("/_lim_public/**", array('_lim_public_file')), 'render_limonade_f
 ## ABSTRACTS ___________________________________________________________________
 
 # function configure(){}
+# function autoload_controller(){}
 # function before(){}
 # function after(){}
 # function not_found(){}
@@ -389,7 +390,14 @@ function run($env = null)
       params($route['params']);
 
       # 6.2 Load controllers dir
-      require_once_dir(option('controllers_dir'));
+      if(!function_exists('autoload_controller'))
+      {
+        function autoload_controller($callback)
+        {
+          require_once_dir(option('controllers_dir'));
+        }
+      }
+      autoload_controller($route['function']);
 
       if(is_callable($route['function']))
       {
