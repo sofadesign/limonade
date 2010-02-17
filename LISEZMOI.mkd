@@ -44,7 +44,7 @@ Dans Limonade, les routes associent une méthode HTTP et un masque de recherche 
             // Create something
         }
         
-    dispatch_update('/', 'my_update_function'); 
+    dispatch_put('/', 'my_update_function'); 
         function my_update_function()
         {
             // Update something
