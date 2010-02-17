@@ -2,7 +2,7 @@
 
 Limonade is a PHP micro framework for rapid web development and prototyping.
 
-It's inspired by frameworks like [Sinatra](http://www.sinatrarb.com/) or [Camping](http://github.com/why/camping/tree/master) in Ruby, or [Orbit](http://orbit.luaforge.net/) in Lua. It aims to be simple, lightweight and extremly flexible.
+It's inspired by frameworks like [Sinatra](http://www.sinatrarb.com/) or [Camping](http://github.com/camping/camping) in Ruby, or [Orbit](http://orbit.luaforge.net/) in Lua. It aims to be simple, lightweight and extremly flexible.
 
 Limonade provides functions that complete the PHP basic set, while keeping consistency with native functions and sitting up on them.
 
