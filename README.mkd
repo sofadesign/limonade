@@ -297,16 +297,24 @@ Output is temporized so that it can easily handle large files.
 
 You can define a `before` function that will be executed before each request. This is very useful to define a default layout or passing common variables to the templates
 
-    function before()
+    function before($route)
     {
         layout('default_layout.php');
         set('site_title', 'My Website');
     }
 
+The current matching route is also passed to the before function, so you can test it. It's an array as returned by the internal `route_find` function, with those values: 
+
+* `method` (HTTP method)
+* `pattern` (regexp pattern)
+* `names` (params names)
+* `function` (callback)
+* `options` (route options)
+* `params` (current params)
 
 An `after` output filter is also available. It's executed after each request and can apply a transformation to the output (except for `render_file` outputs  which are sent directly to the output buffer).
 
-    function after($output){
+    function after($output, $route){
         $config = array('indent' => TRUE,
     	                'output-xhtml' => TRUE,
     	                'wrap' => 200);
@@ -314,6 +322,8 @@ An `after` output filter is also available. It's executed after each request and
     	$tidy = tidy_parse_string($output, $config, option('encoding'));
     	return $tidy->cleanRepair();
     }
+    
+The current executed route is also available for `after` function.
 
 ## Configuration ##
 

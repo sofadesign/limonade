@@ -10,8 +10,11 @@ function configure()
   option('debug', true);
 }
 
-function before()
+function before($route)
 {
+  header("X-LIM-route-function: ".$route['function']);
+  header("X-LIM-route-params: ".json_encode($route['params']));
+  header("X-LIM-route-options: ".json_encode($route['options']));
   layout('html_my_layout'); # setting default html layout
   //error_layout('html_my_layout');
 }

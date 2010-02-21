@@ -285,7 +285,7 @@ La sortie est temporisée afin de prendre en charge aisément des fichiers de gr
 
 Vous pouvez définir une fonction `before` qui sera executée avant chaque requête. Cela s'avère très utile pour définir un layout par défaut ou des variables à passer aux templates
 
-    function before()
+    function before($route)
     {
         layout('default_layout.php');
         set('site_title', 'My Website');
@@ -293,7 +293,7 @@ Vous pouvez définir une fonction `before` qui sera executée avant chaque requ�
 
 Un filtre de sortie `after` est également disponible. Il est exécuté après chaque requête et permet d'appliquer une transformation à la sortie (sauf pour les sorties `render_file` qui sont envoyées directement au tampon de sortie).
 
-    function after($output){
+    function after($output, $route){
         $config = array('indent' => TRUE,
     	                'output-xhtml' => TRUE,
     	                'wrap' => 200);

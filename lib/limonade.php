@@ -407,7 +407,7 @@ function run($env = null)
         # 6.4 Call matching controller function and output result
         if($output = call_user_func_array($route['function'], array_values($route['params'])))
         {
-          echo after(error_notices_render() . $output);
+          echo after(error_notices_render() . $output, $route);
         }
       }
       else halt(SERVER_ERROR, "Routing error: undefined function '{$route['function']}'", $route);      
@@ -1272,7 +1272,9 @@ function route_build($method, $path_or_array, $func, $options = array())
  * @access private
  * @param string $method 
  * @param string $path
- * @return array,false
+ * @return array,false route array has same keys as route returned by 
+ *  {@link route_build()} ("method", "pattern", "names", "function", "options")
+ *  + the processed "params" key
  */
 function route_find($method, $path)
 {

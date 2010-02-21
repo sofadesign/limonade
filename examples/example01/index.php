@@ -6,8 +6,9 @@ function configure()
   option('env', ENV_DEVELOPMENT);
 }
 
-function before()
+function before($route)
 {
+  header("X-LIM-route-function: ".$route['function']);
   layout('html_my_layout');
 }
 
@@ -81,10 +82,13 @@ dispatch('/*.jpg/:size', 'image_show_jpeg_only');
     render_file($filename);
   }
 
-function after($output)
+function after($output, $route)
 {
   $time = number_format( (float)substr(microtime(), 0, 10) - LIM_START_MICROTIME, 6);
-  $output .= "<!-- page rendered in $time sec., on ".date(DATE_RFC822)."-->";
+  $output .= "\n<!-- page rendered in $time sec., on ".date(DATE_RFC822)." -->\n";
+  $output .= "<!-- for route\n";
+  $output .= print_r($route, true);
+  $output .= "-->";
   return $output;
 }
 

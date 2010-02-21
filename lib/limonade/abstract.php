@@ -46,9 +46,11 @@ function autoload_controller($callback)
  * to the templates.
  *
  * @abstract this function might be redefined by user
+ * @param array() $route array (like returned by {@link route_build()},
+ *   with keys "method", "pattern", "names", "function", "options")
  * @return void 
  */
-function before()
+function before($route)
 {
   
 }
@@ -61,9 +63,11 @@ function before()
  *
  * @abstract this function might be redefined by user
  * @param string $output 
+ * @param array() $route array (like returned by {@link route_find()},
+ *   with keys "method", "pattern", "names", "function", "params", "options")
  * @return string 
  */
-function after($output)
+function after($output, $route)
 {
   # Call functions...
   # .. modifies $output...
