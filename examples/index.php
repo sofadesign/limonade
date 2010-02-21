@@ -15,6 +15,7 @@
   <li><a href="example01/">example 01: Hello World!</a></li>
   <li><a href="example02/">example 02: errors</a></li>
   <li><a href="example03/">example 03: routes with options, and conditional before function</a></li>
+  <li><a href="example04/">example 04: autorendering example</a></li>
   <li><a href="urlrewrite/"> Url Rewriting with Limonade.</a></li>
 </ul>
 </body>
