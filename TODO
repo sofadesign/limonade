@@ -1,5 +1,7 @@
 # TODO #
 
+- #38 !!! `flash_now` and `flash` should return null when getting an undefined flash var, not all flash vars. This behaviour will allow to test flash var presence `if($test = flash_now('test')){…}`
+- adding autorender() in abstract.php
 - testing and documenting autorendering features
 - adding an option('display_errors'); by default ini_set('display_errors', 0) in production env, but enabled if env is dev (unless matching option is enabled)
 - explain autoload_controller() in README
