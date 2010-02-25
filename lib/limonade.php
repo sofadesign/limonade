@@ -1610,7 +1610,8 @@ function flash($name = null, $value = null)
   {
     $messages[$name] = count($args) > 1 ? $args : $args[0];
   }
-  if(array_key_exists($name, $messages)) return $messages[$name];
+  if(!array_key_exists($name, $messages)) return null;
+  else return $messages[$name];
   return $messages;
 }
 
@@ -1645,7 +1646,8 @@ function flash_now($name = null, $value = null)
   {
     $messages[$name] = count($args) > 1 ? $args : $args[0];
   }
-  if(array_key_exists($name, $messages)) return $messages[$name];
+  if(!array_key_exists($name, $messages)) return null;
+  else return $messages[$name];
   return $messages;
 }
 
