@@ -1479,7 +1479,7 @@ function txt($content_or_func, $layout = '', $locals = array())
  */
 function json($data, $json_option = 0)
 {
-  if(!headers_sent()) header('Content-Type: application/x-javascript; charset='.strtolower(option('encoding')));
+  if(!headers_sent()) header('Content-Type: application/json; charset='.strtolower(option('encoding')));
   return version_compare(PHP_VERSION, '5.3.0', '>=') ? json_encode($data, $json_option) : json_encode($data);
 }
 
