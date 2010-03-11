@@ -1014,11 +1014,7 @@ function request_uri($env = null)
   	      }
   	    }
   	  }
-  	  
   	  $uri = $path_info;
-  	  var_dump($_GET);
-  	  var_dump($path_info);
-  	  var_dump($uri);
   	}
   	// No PATH_INFO?... What about QUERY_STRING?
   	elseif (trim($query_string, '/') != '')
