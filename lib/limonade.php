@@ -1557,8 +1557,11 @@ function render_file($filename, $return = false)
 
 /**
  * Returns an url composed of params joined with /
+ * A param can be a string or an array.
+ * If param is an array, its members will be added at the end of the return url
+ * as GET parameters "&key=value".
  *
- * @param string $params,... 
+ * @param string or array $param1, $param2 ... 
  * @return string
  */ 
 function url_for($params = null)
