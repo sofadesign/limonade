@@ -1543,16 +1543,12 @@ function url_for($params = null)
 {
   $paths  = array();
   $params = func_get_args();
-  $first  = true;
   foreach($params as $param)
   {
-    if($first)
+    if(filter_var($param , FILTER_VALIDATE_URL))
     {
-      if(filter_var($param , FILTER_VALIDATE_URL))
-      {
-        $paths[] = $param;
-        continue;
-      }
+      $paths[] = $param;
+      continue;
     }
     $p = explode('/',$param);
     foreach($p as $v)
