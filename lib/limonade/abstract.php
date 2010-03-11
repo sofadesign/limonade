@@ -146,3 +146,19 @@ function before_render($content_or_func, $layout, $locals, $view_path)
   # transform $content_or_func, $layout, $locals or $view_path…
   return array($content_or_func, $layout, $locals, $view_path);
 }
+
+
+/**
+ * Called only if option('autorender') is enabled and rendering $output is_null,
+ * like in a controller with no return statement.
+ *
+ * @abstract this function might be defined by user
+ * @param array() $route array (like returned by {@link route_build()},
+ *   with keys "method", "pattern", "names", "function", "options")
+ * @return string
+ */
+function autorender($route)
+{
+  # process output depending on $route
+  return $output;
+}

@@ -1,7 +1,7 @@
 # TODO #
 
 - explain before_render() in README
-- adding autorender() in abstract.php
+- explain autorender() in README
 - testing and documenting autorendering features
 - adding an option('display_errors'); by default ini_set('display_errors', 0) in production env, but enabled if env is dev (unless matching option is enabled)
 - explain autoload_controller() in README
