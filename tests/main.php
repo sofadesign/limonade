@@ -179,7 +179,7 @@ test_case("Main");
      assert_equal(url_for(''), '/');
      assert_equal(url_for('/'), '/');
      assert_equal(url_for('test'), '/test');
-     assert_equal(url_for('mañana'), '/'.rawurlencode(mañana));
+     assert_equal(url_for('mañana'), '/'.rawurlencode("mañana"));
      assert_equal(url_for('test', 1, 2), '/test/1/2');
      assert_equal(url_for('one', 'two', 'three'), '/one/two/three');
      assert_equal(url_for('my/hash#test'), '/my/hash#test');
@@ -190,8 +190,11 @@ test_case("Main");
      assert_equal(url_for($ssite_url), $ssite_url);
      
      $url = url_for('test', array('p1' => 'lorem', 'p2' => 'ipsum'));
-     var_dump($url);
-     assert_equal($url,'/test&p1=lorem&p2=ipsum');
+     assert_equal($url,'/test&amp;p1=lorem&amp;p2=ipsum');
+     $url = url_for('test', array(0 => 'lorem', 'p2' => 1));
+     assert_equal($url,'/test&amp;0=lorem&amp;p2=1');
+     $url = url_for('test', array('p1' => 'mañana'));
+     assert_equal($url,'/test&amp;p1='.rawurlencode("mañana"));
    }
    
 end_test_case();
