@@ -1005,6 +1005,13 @@ function request_uri($env = null)
   	elseif (trim($query_string, '/') != '')
   	{
   	  $uri = $query_string;
+  	  $get = $_GET;
+  	  if(count($get) > 0)
+  	  {
+  	    # exclude get vars
+  	    $first = array_shift(array_keys($get));
+  	    if(strpos($query_string, $first) === 0) $uri = $first;
+  	  }
   	}
   	elseif(array_key_exists('REQUEST_URI', $env['SERVER']) && !empty($env['SERVER']['REQUEST_URI']))
   	{
@@ -1543,8 +1550,14 @@ function url_for($params = null)
 {
   $paths  = array();
   $params = func_get_args();
+  $GET_params = array();
   foreach($params as $param)
   {
+    if(is_array($param))
+    {
+      $GET_params = array_merge($GET_params, $param);
+      continue;
+    }
     if(filter_var($param , FILTER_VALIDATE_URL))
     {
       $paths[] = $param;
@@ -1558,6 +1571,13 @@ function url_for($params = null)
   }
 
   $path = rtrim(implode('/', $paths), '/');
+  
+  if(!empty($GET_params))
+  {
+    foreach($GET_params as $k => $v)
+      $path .= '&amp;' . rawurlencode($k) . '=' . rawurlencode($v);
+  }
+  
   
   if(!filter_var($path , FILTER_VALIDATE_URL)) 
   {

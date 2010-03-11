@@ -188,6 +188,10 @@ test_case("Main");
      assert_equal(url_for($site_url, 'examples'), $site_url.'/examples');
      $ssite_url = 'https://limonade.sofa-design.net';
      assert_equal(url_for($ssite_url), $ssite_url);
+     
+     $url = url_for('test', array('p1' => 'lorem', 'p2' => 'ipsum'));
+     var_dump($url);
+     assert_equal($url,'/test&p1=lorem&p2=ipsum');
    }
    
 end_test_case();
