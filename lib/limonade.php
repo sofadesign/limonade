@@ -1896,6 +1896,7 @@ function status($code = 500)
 /**
  * Http redirection
  *
+ * @param int $http_code HTTP code for redirection
  * @param string $params,... 
  * @return void
  */
@@ -1911,6 +1912,9 @@ function redirect_to($params)
   if(!headers_sent())
   {
     $params = func_get_args();
+	if (is_numeric($params[0])) {
+		status(array_shift($params));
+	}
     $uri = call_user_func_array('url_for', $params);
     stop_and_exit(false);
     header('Location: '.$uri);
