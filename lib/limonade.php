@@ -1929,9 +1929,17 @@ function status($code = 500)
 
 /**
  * Http redirection
- *
- * @param int $http_code HTTP code for redirection
- * @param string $params,... 
+ * 
+ * Same use as {@link url_for()}
+ * By default HTTP status code is 302, but a different code can be specified
+ * with a status key in array parameter.
+ * 
+ * <code>
+ * redirecto('new','url'); # 302 HTTP_MOVED_TEMPORARILY by default
+ * redirecto('new','url', array('status' => HTTP_MOVED_PERMANENTLY));
+ * </code>
+ * 
+ * @param string or array $param1, $param2... 
  * @return void
  */
 function redirect_to($params)
@@ -1945,13 +1953,25 @@ function redirect_to($params)
   # TODO make absolute uri
   if(!headers_sent())
   {
+    $status = HTTP_MOVED_TEMPORARILY; # default for a redirection in PHP
     $params = func_get_args();
-	if (is_numeric($params[0])) {
-		status(array_shift($params));
-	}
-    $uri = call_user_func_array('url_for', $params);
+    $n_params = array();
+    # extract status param if exists
+    foreach($params as $param)
+    {
+      if(is_array($param))
+      {
+        if(array_key_exists('status', $param))
+        {
+          $status = $param['status'];
+          unset($param['status']);
+        }
+      }
+      $n_params[] = $param;
+    }
+    $uri = call_user_func_array('url_for', $n_params);
     stop_and_exit(false);
-    header('Location: '.$uri);
+    header('Location: '.$uri, true, $status);
     exit;
   }
 }
