@@ -128,3 +128,21 @@ function before_exit()
 {
   
 }
+
+/**
+ * Rendering prefilter
+ * Useful if you want to transform your views before rendering.
+ *
+ * @abstract this function might be redefined by user
+ * @param string $content_or_func a function, a file in current views dir or a string
+ * @param string $layout 
+ * @param array $locals 
+ * @param array $view_path (by default <code>file_path(option('views_dir'),$content_or_func);</code>)
+ * @return array with, in order, $content_or_func, $layout, $locals vars
+ *  and the calculated $view_path
+ */
+function before_render($content_or_func, $layout, $locals, $view_path)
+{
+  # transform $content_or_func, $layout, $locals or $view_path…
+  return array($content_or_func, $layout, $locals, $view_path);
+}

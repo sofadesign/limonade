@@ -92,6 +92,41 @@ test_case("Output");
     assert_header($response, 'Content-type', 'text/html; charset='.option('encoding'));
   }
   
+  function test_output_before_filter()
+  {
+    function before_render($content_or_func, $layout, $locals, $view_path)
+    {
+      if(is_callable($content_or_func))
+      {
+
+      }
+      elseif(file_exists($view_path) && !array_key_exists('content', $locals))
+      {
+        // a view file but not a layout
+        $view_path = file_path(option('views_dir'), basename($content_or_func, ".html.php") . "_filtered.html.php");
+      }
+      else
+      {
+        # it's a string
+        $content_or_func .= "∞FILTERED∞";
+      }
+
+      return array($content_or_func, $layout, $locals, $view_path);
+    }
+    $lorem = "Lorem ipsum dolor sit amet.";
+    $html  = render("Lorem %s dolor sit amet.", null, array('ipsum'));
+    assert_match("/$lorem∞FILTERED∞/", $html);
+    
+    $views_dir = dirname(__FILE__) . '/apps/views/';
+    option('views_dir', $views_dir);
+    $view   = 'hello_world.html.php';
+    $layout = 'layouts/default.html.php';
+    $html = render($view, $layout, array('lorem' => $lorem));
+    assert_match("/FILTERED/i", $html);
+    assert_match("/$lorem/", $html);
+    
+  }
+  
 end_test_case();
 
 

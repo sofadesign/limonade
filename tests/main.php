@@ -140,10 +140,11 @@ test_case("Main");
      ob_clean();
     
      $lib = $root.'/lib';
-     $limonade = $lib.'/limonade';
-     
-     $files = require_once_dir($limonade);
-     assert_not_empty($files);
+     // pb because it loads abstract.php that conflict with tests that use abstracts
+     // $limonade = $lib.'/limonade';
+     // 
+     // $files = require_once_dir($limonade);
+     // assert_not_empty($files);
      
      $tests_lib = $root.'/tests/data/lib0';
      $libs = array('a', 'b', 'c');

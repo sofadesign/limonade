@@ -1321,7 +1321,7 @@ function route_find($method, $path)
 /**
  * Returns a string to output
  * 
- * It might use a a template file or function, a formatted string (like {@link sprintf()}).
+ * It might use a template file, a function, or a formatted string (like {@link sprintf()}).
  * It could be embraced by a layout or not.
  * Local vars can be passed in addition to variables made available with the {@link set()}
  * function.
@@ -1337,6 +1337,10 @@ function render($content_or_func, $layout = '', $locals = array())
   $content_or_func = array_shift($args);
   $layout = count($args) > 0 ? array_shift($args) : layout();
   $view_path = file_path(option('views_dir'),$content_or_func);
+  
+  if(function_exists('before_render'))
+    list($content_or_func, $layout, $locals, $view_path) = before_render($content_or_func, $layout, $locals, $view_path);    
+  
   $vars = array_merge(set(), $locals);
 
   $flash = flash_now();
