@@ -404,6 +404,11 @@ See sources or api for more about all available helpers.
 
 You can use the `url_for` function for rendering limonade urls. They will be well formed whatever the folder in the document root your application is installed on your web server.
 
+    # with option('base_uri', '?')
+    url_for('one', 'two', 'three'); # returns ?/one/two/three
+    url_for('one', 'two', array('page' => 1)); # returns ?/one/two&amp;page=2
+    
+
 If you want to use url rewriting, you need to set explicitly the `base_uri` option ( default is `/your_file_path/?`)
 
 
