@@ -999,7 +999,26 @@ function request_uri($env = null)
   	// Note: some servers seem to have trouble with getenv() so we'll test it two ways
   	if (trim($path_info, '/') != '' && $path_info != "/".$app_file)
   	{
+  	  if(strpos($path_info, '&') !== 0)
+  	  {
+    	  # exclude GET params
+  	    $params = explode('&', $path_info);
+  	    $path_info = array_shift($params);
+  	    # populate $_GET
+  	    foreach($params as $param)
+  	    {
+  	      if(strpos($param, '=') > 0)
+  	      {
+  	        list($k, $v) = explode('=', $param);
+  	        $_GET[$k] = $v;
+  	      }
+  	    }
+  	  }
+  	  
   	  $uri = $path_info;
+  	  var_dump($_GET);
+  	  var_dump($path_info);
+  	  var_dump($uri);
   	}
   	// No PATH_INFO?... What about QUERY_STRING?
   	elseif (trim($query_string, '/') != '')
@@ -1008,7 +1027,7 @@ function request_uri($env = null)
   	  $get = $_GET;
   	  if(count($get) > 0)
   	  {
-  	    # exclude get vars
+  	    # exclude GET params
   	    $first = array_shift(array_keys($get));
   	    if(strpos($query_string, $first) === 0) $uri = $first;
   	  }
