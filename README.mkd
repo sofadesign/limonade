@@ -495,7 +495,7 @@ In addition to the common `NOT_FOUND` and `SERVER_ERROR` errors displays, Limona
 
 ## More ##
 
-* [Limonade web site](http://limonade.sofa-design.net/)
+* [Limonade web site](http://www.limonade-php.net/)
 * [Issue tracking / release planning](http://sofadesign.lighthouseapp.com/projects/29612-limonade/overview)
 * [Support / Discussions](http://groups.google.fr/group/limonade)
 
