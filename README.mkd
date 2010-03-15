@@ -22,8 +22,8 @@ Limonade is easy to learn and provides everything that you can expect from a mod
 
 This document provides a quick but comprehensive guide of Limonade features.
 
-For more informations, you can see the [website](http://limonade.sofa-design.net/), 
-[public API documentation](http://limonade.sofa-design.net/api/), [examples](http://limonade.sofa-design.net/examples.htm), and of course the [source code](http://github.com/sofadesign/limonade/blob/master/lib/limonade.php) which is still the best documentation.
+For more informations, you can see the [website](http://www.limonade-php.net/), 
+[public API documentation](http://www.limonade-php.net/api/), [examples](http://www.limonade-php.net/examples.htm), and of course the [source code](http://github.com/sofadesign/limonade/blob/master/lib/limonade.php) which is still the best documentation.
 
 A [discussion group](http://groups.google.fr/group/limonade) is also available for more exchanges.
 
