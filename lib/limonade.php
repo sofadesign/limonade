@@ -1010,7 +1010,7 @@ function request_uri($env = null)
   	      if(strpos($param, '=') > 0)
   	      {
   	        list($k, $v) = explode('=', $param);
-  	        $_GET[$k] = $v;
+  	        $env['GET'][$k] = $v;
   	      }
   	    }
   	  }
@@ -1020,7 +1020,7 @@ function request_uri($env = null)
   	elseif (trim($query_string, '/') != '')
   	{
   	  $uri = $query_string;
-  	  $get = $_GET;
+  	  $get = $env['GET'];
   	  if(count($get) > 0)
   	  {
   	    # exclude GET params
