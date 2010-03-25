@@ -1,5 +1,6 @@
 # TODO #
 
+- explain controllers return output in README
 - explain before_render() in README
 - explain autorender() in README
 - testing and documenting autorendering features

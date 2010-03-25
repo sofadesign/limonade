@@ -201,7 +201,7 @@ Variables may also be passed directly:
             return render('Hello %s!'); // returns 'Hello John!' because params('name') was empty. Else it would have return params('name') value.
         }
     
-    
+As you can notice, final output is returned by your controller. So remember to explicitly return your view in your controller with the `return` keyword! *(This remark will be particularly helpful for rubyists ;-) )*
     
     
 
@@ -228,7 +228,7 @@ Formatted string can be used like with  [`sprintf`](http://php.net/manual/functi
 
     set('num', 5);
     set('tree');
-    render('There are %d monkeys in the %s') // returns 'There are 5 monkeys in the tree'
+    return render('There are %d monkeys in the %s') // returns 'There are 5 monkeys in the tree'
 
 It's also possible to provide a function name as a template. By this way, we can for example produce a single file application.
 
@@ -241,7 +241,7 @@ It's also possible to provide a function name as a template. By this way, we can
     // in a request handling function
     set('title', 'Hello!');
     set('msg', 'There are 100 monkeys in the Chennai and bangalore');
-    render('html_message');
+    return render('html_message');
 
 ### HTML Templates ###
 
