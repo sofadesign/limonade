@@ -996,47 +996,47 @@ function request_uri($env = null)
     $query_string =  isset($env['SERVER']['QUERY_STRING']) ? $env['SERVER']['QUERY_STRING'] : @getenv('QUERY_STRING');
 
     // Is there a PATH_INFO variable?
-  	// Note: some servers seem to have trouble with getenv() so we'll test it two ways
-  	if (trim($path_info, '/') != '' && $path_info != "/".$app_file)
-  	{
-  	  if(strpos($path_info, '&') !== 0)
-  	  {
-    	  # exclude GET params
-  	    $params = explode('&', $path_info);
-  	    $path_info = array_shift($params);
-  	    # populate $_GET
-  	    foreach($params as $param)
-  	    {
-  	      if(strpos($param, '=') > 0)
-  	      {
-  	        list($k, $v) = explode('=', $param);
-  	        $env['GET'][$k] = $v;
-  	      }
-  	    }
-  	  }
-  	  $uri = $path_info;
-  	}
-  	// No PATH_INFO?... What about QUERY_STRING?
-  	elseif (trim($query_string, '/') != '')
-  	{
-  	  $uri = $query_string;
-  	  $get = $env['GET'];
-  	  if(count($get) > 0)
-  	  {
-  	    # exclude GET params
-  	    $first = array_shift(array_keys($get));
-  	    if(strpos($query_string, $first) === 0) $uri = $first;
-  	  }
-  	}
-  	elseif(array_key_exists('REQUEST_URI', $env['SERVER']) && !empty($env['SERVER']['REQUEST_URI']))
-  	{
-  	  $request_uri = rtrim(rawurldecode($env['SERVER']['REQUEST_URI']), '?/').'/';
-  	  $base_path = $env['SERVER']['SCRIPT_NAME'];
+    // Note: some servers seem to have trouble with getenv() so we'll test it two ways
+    if (trim($path_info, '/') != '' && $path_info != "/".$app_file)
+    {
+      if(strpos($path_info, '&') !== 0)
+      {
+        # exclude GET params
+        $params = explode('&', $path_info);
+        $path_info = array_shift($params);
+        # populate $_GET
+        foreach($params as $param)
+        {
+          if(strpos($param, '=') > 0)
+          {
+            list($k, $v) = explode('=', $param);
+            $env['GET'][$k] = $v;
+          }
+        }
+      }
+      $uri = $path_info;
+    }
+    // No PATH_INFO?... What about QUERY_STRING?
+    elseif (trim($query_string, '/') != '')
+    {
+      $uri = $query_string;
+      $get = $env['GET'];
+      if(count($get) > 0)
+      {
+        # exclude GET params
+        $first = array_shift(array_keys($get));
+        if(strpos($query_string, $first) === 0) $uri = $first;
+      }
+    }
+    elseif(array_key_exists('REQUEST_URI', $env['SERVER']) && !empty($env['SERVER']['REQUEST_URI']))
+    {
+      $request_uri = rtrim(rawurldecode($env['SERVER']['REQUEST_URI']), '?/').'/';
+      $base_path = $env['SERVER']['SCRIPT_NAME'];
 
       if($request_uri."index.php" == $base_path) $request_uri .= "index.php";
-  	  $uri = str_replace($base_path, '', $request_uri);
-  	}
-  	elseif($env['SERVER']['argc'] > 1 && trim($env['SERVER']['argv'][1], '/') != '')
+      $uri = str_replace($base_path, '', $request_uri);
+    }
+    elseif($env['SERVER']['argc'] > 1 && trim($env['SERVER']['argv'][1], '/') != '')
     {
       $uri = $env['SERVER']['argv'][1];
     }
