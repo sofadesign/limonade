@@ -117,7 +117,7 @@ function test_route11()
 dispatch_post('/route11', 'test_route11post');
 function test_route11post()
 {
-  header('Content-length: 4');
+  //header('Content-length: 4');
   return "POST";
 }
 

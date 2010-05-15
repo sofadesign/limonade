@@ -74,7 +74,6 @@ test_case("Functional");
      $response =  test_request($path.'route11', 'GET');
      assert_equal($response, 'GET');
      $response =  test_request($path.'route11', 'POST');
-     var_dump($response);
      assert_equal($response, 'POST');
      $response =  test_request($path.'route11', 'PUT');
      assert_equal($response, 'PUT');
@@ -87,5 +86,38 @@ test_case("Functional");
      $response =  test_request($path.'unknown_route', 'GET');
      assert_match('/Page not found/', $response);     
      
+   }
+   
+   function test_functional_errors()
+   {
+     $path = TESTS_DOC_ROOT.'04-errors.php/';
+     $response =  test_request($path.'no-error', 'GET', true);
+     assert_status($response, 200);
+     $response =  test_request($path.'unknow____url', 'GET', true);
+     assert_status($response, 404);
+     $response =  test_request($path.'not_found', 'GET', true);
+     assert_status($response, 404);
+     $response =  test_request($path.'server_error', 'GET', true);
+     assert_status($response, 500);
+     
+     $response =  test_request($path.'halt', 'GET', true);
+     assert_status($response, 500);
+     assert_no_match("/This shouldn't be outputed/", $response);
+     
+     $response =  test_request($path.'trigger_error', 'GET', true);
+     assert_status($response, 500);
+     assert_no_match("/This shouldn't be outputed/", $response);
+     
+     $response =  test_request($path.'trigger_error/E_USER_WARNING', 'GET', true);
+     assert_status($response, 200);
+     assert_no_match("/This should be seen/", $response);
+     
+     $response =  test_request($path.'trigger_error/E_USER_NOTICE', 'GET', true);
+     assert_status($response, 200);
+     assert_no_match("/This should be seen/", $response);
+     
+     $response =  test_request($path.'halt1234', 'GET', true);
+     assert_status($response, 501);
+     assert_match("/A personnal error #1234/", $response);
    }
 end_test_case();

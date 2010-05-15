@@ -46,7 +46,9 @@ test_case("Test");
       global $val;
       assert_null($val);
       $val = 400;
-      assert_equal(&$val, 10, '$val should be 10, not 400');
+      assert_true(true); // run before_each_assert_in_test() first
+      // so now 
+      assert_equal($val, 10, '$val should be 10, not 400');
    }
 
    function test_test_trigger_error()

@@ -183,10 +183,13 @@ test_case("Main");
      assert_equal(url_for('test', 1, 2), '/test/1/2');
      assert_equal(url_for('one', 'two', 'three'), '/one/two/three');
      assert_equal(url_for('my/hash#test'), '/my/hash#test');
-     $site_url = 'http://limonade.sofa-design.net';
+     $site_url = 'http://www.limonade-php.net';
+     assert_true((bool) filter_var_url($site_url));
+     
      assert_equal(url_for($site_url), $site_url);
+     //var_dump(url_for($site_url, 'examples'));
      assert_equal(url_for($site_url, 'examples'), $site_url.'/examples');
-     $ssite_url = 'https://limonade.sofa-design.net';
+     $ssite_url = 'https://www.limonade-php.net';
      assert_equal(url_for($ssite_url), $ssite_url);
      
      $url = url_for('test', array('p1' => 'lorem', 'p2' => 'ipsum'));
