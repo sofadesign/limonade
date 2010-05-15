@@ -1577,7 +1577,7 @@ function url_for($params = null)
       $GET_params = array_merge($GET_params, $param);
       continue;
     }
-    if(filter_var($param , FILTER_VALIDATE_URL))
+    if(filter_var_url($param))
     {
       $paths[] = $param;
       continue;
@@ -1598,7 +1598,7 @@ function url_for($params = null)
   }
   
   
-  if(!filter_var($path , FILTER_VALIDATE_URL)) 
+  if(!filter_var_url($path)) 
   {
     # it's a relative URL or an URL without a schema
     $base_uri = option('base_uri');
@@ -2441,6 +2441,24 @@ if(!function_exists('array_replace'))
   }
 }
 
+if(PHP_VERSION == '5.2.13' || PHP_VERSION == '5.3.2')
+{
+  # There is a bug with filter_var($site_url , FILTER_VALIDATE_URL); 
+  # http://www.mail-archive.com/php-bugs@lists.php.net/msg134778.html
+  function filter_var_url($str)
+  {
+    $regexp = '@^http(s)?://[-[:alnum:]]+\.[-[:alnum:]]+\.[a-zA-Z]{2,4}(:[0-9]+)?(.*)?$@';
+    $options = array( "options" => array("regexp" => $regexp ));
+    return filter_var($str, FILTER_VALIDATE_REGEXP, $options);
+  }
+}
+else
+{
+  function filter_var_url($str)
+  {
+    return filter_var($str, FILTER_VALIDATE_URL);
+  }
+}
 
 
 
