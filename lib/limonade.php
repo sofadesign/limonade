@@ -2271,12 +2271,16 @@ function file_mime_content_type($filename)
   if($mime = mime_type($ext)) return $mime;
   elseif (function_exists('finfo_open'))
   {
-    $finfo = finfo_open(FILEINFO_MIME);
-    $mime = finfo_file($finfo, $filename);
-    finfo_close($finfo);
-    return $mime;
+    if($finfo = finfo_open(FILEINFO_MIME))
+    {
+      if($mime = finfo_file($finfo, $filename))
+      {
+        finfo_close($finfo);
+        return $mime;        
+      }
+    }
   }
-  else return 'application/octet-stream';
+  return 'application/octet-stream';
 }
 
 
