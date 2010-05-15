@@ -1024,7 +1024,8 @@ function request_uri($env = null)
       if(count($get) > 0)
       {
         # exclude GET params
-        $first = array_shift(array_keys($get));
+        $keys  = array_keys($get);
+        $first = array_shift($keys);
         if(strpos($query_string, $first) === 0) $uri = $first;
       }
     }
