@@ -627,9 +627,15 @@ function error_handler_dispatcher($errno, $errstr, $errfile, $errline)
   else
   {
     # Other errors will stop application
-    $handlers = error();
+    static $handlers = array();
+    if(empty($handlers))
+    {
+      error(E_LIM_PHP, 'error_default_handler');
+      $handlers = error();
+    }
+    
     $is_http_err = http_response_status_is_valid($errno);
-    foreach($handlers as $handler)
+    while($handler = array_shift($handlers))
     {
       $e = is_array($handler['errno']) ? $handler['errno'] : array($handler['errno']);
       while($ee = array_shift($e))
@@ -641,7 +647,6 @@ function error_handler_dispatcher($errno, $errstr, $errfile, $errline)
         }
       }
     }
-    echo error_default_handler($errno, $errstr, $errfile, $errline);
   }
 }
 
