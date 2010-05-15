@@ -1,5 +1,14 @@
 # TODO #
 
+- in route() functions, replace "function" name with "callback" name (example: in route_build() returned array). Enhanced use of callback pseudo-type instead of functions names.
+- adding abstracts (for handling enhanced callback controllers)
+    - route_callback_[controller_]exists()
+    - route_callback_[controller_]create()
+    - route_callback_[controller_]call()
+- in README, make a chapter about "callback controllers" after routes.
+- in README, replace "controller functions" mentions with "callback controller"
+- testing calling lambdas from dispatch functions, with native php callback (see <http://limonade.tumblr.com/post/247098505/hidden-features>).
+- Adding documentation about dispatch callback (see blog post <http://limonade.tumblr.com/post/247098505/hidden-features>) (remember that controller function args must be in the same order as route params!)
 - explain controllers return output in README
 - explain before_render() in README
 - explain autorender() in README
@@ -15,9 +24,6 @@
 - improve security in render_file with a safe_dir option
 - update Limonade codename (in french now)
 - adding contributors/thanks in AUTHORS
-- testing calling lambdas from dispatch functions, with native php callback (see <http://limonade.tumblr.com/post/247098505/hidden-features>).
-- Adding documentation about dispatch callback (see blog post <http://limonade.tumblr.com/post/247098505/hidden-features>) (remember that controller function args must be in the same order as route params!)
-- in route() functions, replace "function" name with "callback" name (example: in route_build() returned array). Enhanced use of callback pseudo-type instead of functions names
 - write tests for partial()
 - refactor partial()
 - partial() write small doc (README) and examples
