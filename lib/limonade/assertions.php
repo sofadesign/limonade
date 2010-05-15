@@ -161,10 +161,13 @@ function assert_header($response, $expected_name, $expected_value = null, $messa
   return assert("true; //");
 }
 
-function assert_response($response, $expected_status, $message)
+function assert_status($response, $expected_status, $message = "expected status code to be equal to '%s' but received '%s'")
 {
-  // if (preg_match('/HTTP\/(\d+\.\d+)\s+(\d+)/i', $header_line, $matches)) {
-  //     $this->_http_version = $matches[1];
-  //     $this->_response_code = $matches[2];
-  // }
+  $lines = explode('\n', trim($response));
+  if (preg_match('/HTTP\/(\d+\.\d+)\s+(\d+)/i', $lines[0], $matches))
+  {
+      $status = $matches[2];
+      return assert('$expected_status == $status; //'.sprintf($message, $expected_status, $status));
+  }
+  return assert("false; //no status code returned in this response string");
 }
