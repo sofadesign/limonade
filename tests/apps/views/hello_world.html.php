@@ -1,2 +1,2 @@
 <p>Hello World</p>
-<?if(isset($lorem)):?><p><?=$lorem?></p><?endif;?>
+<?php if(isset($lorem)):?><p><?php echo $lorem; ?></p><?php endif; ?>

@@ -150,5 +150,5 @@ function _test_output_html_my_layout($vars){ extract($vars);?>
 
 function _test_output_html_hello_world($vars){ extract($vars);?> 
 <p>Hello World</p>
-<?php if(isset($lorem)):?><p><?=$lorem?></p><?php endif;?>
+<?php if(isset($lorem)): ?><p><?php echo $lorem?></p><?php endif;?>
 <?php }
