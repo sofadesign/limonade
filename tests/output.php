@@ -9,7 +9,6 @@ test_case("Output");
   {
     env(null);
     option('encoding', 'utf-8');
-    
   }
   
   function test_output_layout()
@@ -129,7 +128,7 @@ test_case("Output");
   
   function test_output_autorender()
   {
-    $response =  test_request(TESTS_DOC_ROOT.'02-outputs.php/autorender', 'GET');
+    $response = test_request(TESTS_DOC_ROOT.'02-outputs.php/autorender', 'GET');
     assert_equal($response, 'AUTORENDERED OUTPUT for empty_controller');
   }
   
@@ -144,12 +143,12 @@ function _test_output_html_my_layout($vars){ extract($vars);?>
 	<title>Page title</title>
 </head>
 <body>
-	<?=$content?>
+	<?php echo $content ?>
 </body>
 </html>
-<?}
+<?php }
 
 function _test_output_html_hello_world($vars){ extract($vars);?> 
 <p>Hello World</p>
-<?if(isset($lorem)):?><p><?=$lorem?></p><?endif;?>
-<?}
+<?php if(isset($lorem)):?><p><?=$lorem?></p><?php endif;?>
+<?php }
