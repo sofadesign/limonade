@@ -295,6 +295,8 @@ Output is temporized so that it can easily handle large files.
 
 ## Before and after request ##
 
+### Before ###
+
 You can define a `before` function that will be executed before each request. This is very useful to define a default layout or passing common variables to the templates
 
     function before($route)
@@ -302,6 +304,7 @@ You can define a `before` function that will be executed before each request. Th
         layout('default_layout.php');
         set('site_title', 'My Website');
     }
+
 
 The current matching route is also passed to the before function, so you can test it. It's an array as returned by the internal `route_find` function, with those values: 
 
@@ -311,6 +314,8 @@ The current matching route is also passed to the before function, so you can tes
 * `function` (callback)
 * `options` (route options)
 * `params` (current params)
+
+### After ###
 
 An `after` output filter is also available. It's executed after each request and can apply a transformation to the output (except for `render_file` outputs  which are sent directly to the output buffer).
 
@@ -324,6 +329,29 @@ An `after` output filter is also available. It's executed after each request and
     }
     
 The current executed route is also available for `after` function.
+
+### Autorender ###
+
+You can define your own `autorender` function to make automatic rendering  depending on current matching route. It will be executed if your controller returns a null output.
+
+    dispatch('/', 'hello');
+    function hello()
+    {
+        # process some stuff...
+        set('name', 'Bob');
+        
+        # but don't return anything
+        # ( like if you were ending this function with return null; )
+    }
+    
+    function autorender($route)
+    {
+        $view = $route['function'] . ".html.php";
+        return html($view);
+    }
+    
+In this example, when url `/` is called, `hello()` is executed and then `autorender()` renders the matching `hello.html.php` view.
+
 
 ## Configuration ##
 

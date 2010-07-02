@@ -127,6 +127,12 @@ test_case("Output");
     
   }
   
+  function test_output_autorender()
+  {
+    $response =  test_request(TESTS_DOC_ROOT.'02-outputs.php/autorender', 'GET');
+    assert_equal($response, 'AUTORENDERED OUTPUT for empty_controller');
+  }
+  
 end_test_case();
 
 
