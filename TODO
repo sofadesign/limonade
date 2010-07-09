@@ -1,5 +1,6 @@
 # TODO #
 
+- add a flash_keep() function like in rails (http://guides.rubyonrails.org/action_controller_overview.html#the-flash)
 - in route() functions, replace "function" name with "callback" name (example: in route_build() returned array). Enhanced use of callback pseudo-type instead of functions names.
 - adding abstracts (for handling enhanced callback controllers)
     - route_callback_[controller_]exists()
@@ -13,6 +14,12 @@
 - explain before_render() in README
 - explain autorender() in README
 - testing and documenting autorendering features
+- write tests for partial()
+- refactor partial()
+- partial() write small doc (README) and examples
+- write tests for content_for()
+- refactor content_for()
+- content_for() write small doc (README) and examples
 - adding an option('display_errors'); by default ini_set('display_errors', 0) in production env, but enabled if env is dev (unless matching option is enabled)
 - explain autoload_controller() in README
 - in debug output, formating debug_backtrace to be me readable (like debug_backtrace output but with extra informations that can be toggled)
@@ -24,12 +31,6 @@
 - improve security in render_file with a safe_dir option
 - update Limonade codename (in french now)
 - adding contributors/thanks in AUTHORS
-- write tests for partial()
-- refactor partial()
-- partial() write small doc (README) and examples
-- write tests for content_for()
-- refactor content_for()
-- content_for() write small doc (README) and examples
 - in run(), passing $env to all functions that require it
 - improving unregister_globals 
     - to avoid predefined variables (_SERVER, _REQUEST...) deletion
