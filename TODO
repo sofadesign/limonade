@@ -13,7 +13,6 @@
 - Adding documentation about dispatch callback (see blog post <http://limonade.tumblr.com/post/247098505/hidden-features>) (remember that controller function args must be in the same order as route params!)
 - explain controllers return output in README
 - explain before_render() in README
-- explain autorender() in README
 - testing and documenting autorendering features
 - write tests for partial()
 - refactor partial()
