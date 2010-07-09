@@ -26,4 +26,14 @@ function jpeg_file()
   return render_file(dirname(dirname(__FILE__)).'/data/deer.jpg');
 }
 
+dispatch('/autorender', 'empty_controller');
+function empty_controller()
+{
+
+}
+
+function autorender($route){
+  return "AUTORENDERED OUTPUT for ".$route['function'];
+}
+
 run(); 

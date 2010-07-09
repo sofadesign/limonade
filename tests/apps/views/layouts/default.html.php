@@ -3,6 +3,6 @@
 	<title>Page title</title>
 </head>
 <body>
-	<?=$content?>
+	<?php echo $content?>
 </body>
 </html>

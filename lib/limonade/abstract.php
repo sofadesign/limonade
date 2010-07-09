@@ -149,7 +149,7 @@ function before_render($content_or_func, $layout, $locals, $view_path)
 
 
 /**
- * Called only if option('autorender') is enabled and rendering $output is_null,
+ * Called only if rendering $output is_null,
  * like in a controller with no return statement.
  *
  * @abstract this function might be defined by user

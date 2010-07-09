@@ -1,6 +1,7 @@
 # TODO #
 
 - add a flash_keep() function like in rails (http://guides.rubyonrails.org/action_controller_overview.html#the-flash)
+- Add instructions about running tests
 - in route() functions, replace "function" name with "callback" name (example: in route_build() returned array). Enhanced use of callback pseudo-type instead of functions names.
 - adding abstracts (for handling enhanced callback controllers)
     - route_callback_[controller_]exists()
