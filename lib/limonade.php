@@ -170,14 +170,20 @@ dispatch(array("/_lim_public/**", array('_lim_public_file')), 'render_limonade_f
  
 ## ABSTRACTS ___________________________________________________________________
 
-# function configure(){}
-# function autoload_controller(){}
-# function before(){}
-# function after(){}
-# function not_found(){}
-# function server_error(){}
-# function route_missing(){}
-# function before_exit(){}
+# Abstract methods that might be redefined by user:
+#
+# - function configure(){}
+# - function autoload_controller($callback){}
+# - function before($route){}
+# - function after($output, $route){}
+# - function not_found($errno, $errstr, $errfile=null, $errline=null){}
+# - function server_error($errno, $errstr, $errfile=null, $errline=null){}
+# - function route_missing($request_method, $request_uri){}
+# - function before_exit(){}
+# - function before_render($content_or_func, $layout, $locals, $view_path){}
+# - function autorender($route){}
+#
+# See abstract.php for more details.
 
 
 ## MAIN PUBLIC FUNCTIONS _______________________________________________________
