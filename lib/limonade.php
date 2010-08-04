@@ -864,8 +864,61 @@ function error_http_status($errno)
   return http_response_status($code);
 }
 
+                                     # # #
 
 
+
+
+# ============================================================================ #
+#    3. CONTENT NEGOCIATION                                                    #
+# ============================================================================ #
+
+
+/**
+* Check if the _Accept_ header is present, and includes the given `type`.
+*
+* When the _Accept_ header is not present `true` is returned. Otherwise
+* the given `type` is matched by an exact match, and then subtypes. You
+* may pass the subtype such as "html" which is then converted internally
+* to "text/html" using the mime lookup table.
+*
+* @param string $type
+* @param string $env 
+* @return bool
+*/
+
+function request_accepts($type, $env = null)
+{
+  if(is_null($env)) $env = env();
+  $accept = array_key_exists('HTTP_ACCEPT', $env['SERVER']) ? $env['SERVER']['HTTP_ACCEPT'] : null;
+  if(!$accept || $accept === '*/*')
+  {
+    return true ;
+  }
+  else if($type)
+  {
+    // Allow "html" vs "text/html" etc
+    if(!strpos($type, '/'))
+    {
+      $type = mime_type($type) ;
+    }
+    // Check if we have a direct match
+    if(strpos($accept, $type) > -1)
+    {
+      return true ; 
+    }
+    // Check if we have type/*  
+    else{
+      $type_parts = explode('/', $type) ; 
+      $type = $type_parts[0].'/*';
+      return (strpos($accept, $type) > -1) ;
+    }
+  }
+  else
+  {
+    return false ; 
+  }
+}
 
                                      # # #
 
@@ -873,7 +926,7 @@ function error_http_status($errno)
 
 
 # ============================================================================ #
-#    3. REQUEST                                                                #
+#    4. REQUEST                                                                #
 # ============================================================================ #
  
 /**
@@ -1077,7 +1130,7 @@ function request_uri($env = null)
 
 
 # ============================================================================ #
-#    4. ROUTER                                                                 #
+#    5. ROUTER                                                                 #
 # ============================================================================ #
  
 /**
@@ -1351,7 +1404,7 @@ function route_find($method, $path)
 
 
 # ============================================================================ #
-#    OUTPUT AND RENDERING                                                      #
+#    6. OUTPUT AND RENDERING                                                   #
 # ============================================================================ #
 
 /**
@@ -1566,7 +1619,7 @@ function render_file($filename, $return = false)
 
 
 # ============================================================================ #
-#    5. HELPERS                                                                #
+#    7. HELPERS                                                                #
 # ============================================================================ #
 
 /**
@@ -1797,7 +1850,7 @@ function benchmark()
 
 
 # ============================================================================ #
-#    6. UTILS                                                                  #
+#    8. UTILS                                                                  #
 # ============================================================================ #
  
 /**
@@ -2171,6 +2224,7 @@ function mime_type($ext = null)
     'jpeg'    => 'image/jpeg',
     'jpg'     => 'image/jpeg',
     'js'      => 'application/x-javascript',
+    'json'    => 'application/json',
     'kar'     => 'audio/midi',
     'latex'   => 'application/x-latex',
     'lha'     => 'application/octet-stream',

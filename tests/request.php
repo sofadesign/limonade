@@ -51,6 +51,39 @@ test_case("Request");
      assert_trigger_error('request_method', array($env));
      assert_false(request_method());
    }
+
+   
+   function test_request_accepts()
+   {
+     $env = env();
+
+     $env['SERVER']['HTTP_ACCEPT'] = null;
+     assert_true(request_accepts('text/plain'));
+
+     $env['SERVER']['HTTP_ACCEPT'] = 'text/html';
+     assert_true(request_accepts('html'));
+
+     $env['SERVER']['HTTP_ACCEPT'] = 'text/*; application/json';     
+     assert_true(request_accepts('html'));
+     assert_true(request_accepts('text/html'));
+     assert_true(request_accepts('text/plain'));
+     assert_true(request_accepts('application/json'));
+     
+     assert_false(request_accepts('image/png'));
+     assert_false(request_accepts('png'));
+     
+     assert_true(defined('TESTS_DOC_ROOT'), "Undefined 'TESTS_DOC_ROOT' constant");
+     
+     $response =  test_request(TESTS_DOC_ROOT.'05-content_negociation.php', 'GET', false, array(), array("Accept: image/png"));
+     assert_equal("Oops", $response);
+     
+     $response =  test_request(TESTS_DOC_ROOT.'05-content_negociation.php', 'GET', false, array(), array("Accept: text/html"));
+     assert_equal("<h1>HTML</h1>", $response);
+     
+     $response =  test_request(TESTS_DOC_ROOT.'05-content_negociation.php', 'GET', false, array(), array("Accept: application/json"));
+     assert_equal("json", $response);
+   }
+   
    
    function test_request_uri()
    {
