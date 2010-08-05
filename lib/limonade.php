@@ -1598,7 +1598,7 @@ function url_for($params = null)
     $p = explode('/',$param);
     foreach($p as $v)
     {
-      if(!empty($v)) $paths[] = str_replace('%23', '#', rawurlencode($v));
+      if($v != "") $paths[] = str_replace('%23', '#', rawurlencode($v));
     }
   }
 
