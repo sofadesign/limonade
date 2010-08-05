@@ -1604,20 +1604,27 @@ function url_for($params = null)
 
   $path = rtrim(implode('/', $paths), '/');
   
-  if(!empty($GET_params))
-  {
-    foreach($GET_params as $k => $v)
-      $path .= '&amp;' . rawurlencode($k) . '=' . rawurlencode($v);
-  }
-  
-  
   if(!filter_var_url($path)) 
   {
     # it's a relative URL or an URL without a schema
     $base_uri = option('base_uri');
     $path = file_path($base_uri, $path);
   }
-
+  
+  if(!empty($GET_params))
+  {
+    $is_first_qs_param = true;
+    $path_as_no_question_mark = strpos($path, '?') === false;
+      
+    foreach($GET_params as $k => $v)
+    {
+      $qs_separator = $is_first_qs_param && $path_as_no_question_mark ? 
+                        '?' : '&amp;'; 
+      $path .= $qs_separator . rawurlencode($k) . '=' . rawurlencode($v);
+      $is_first_qs_param = false;
+    }
+  }
+  
   if(DIRECTORY_SEPARATOR != '/') $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
 
   return $path;

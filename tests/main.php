@@ -192,12 +192,17 @@ test_case("Main");
      $ssite_url = 'https://www.limonade-php.net';
      assert_equal(url_for($ssite_url), $ssite_url);
      
+     option('base_uri', '?');
      $url = url_for('test', array('p1' => 'lorem', 'p2' => 'ipsum'));
-     assert_equal($url,'/test&amp;p1=lorem&amp;p2=ipsum');
+     assert_equal($url,'?/test&amp;p1=lorem&amp;p2=ipsum');
      $url = url_for('test', array(0 => 'lorem', 'p2' => 1));
-     assert_equal($url,'/test&amp;0=lorem&amp;p2=1');
+     assert_equal($url,'?/test&amp;0=lorem&amp;p2=1');
      $url = url_for('test', array('p1' => 'mañana'));
-     assert_equal($url,'/test&amp;p1='.rawurlencode("mañana"));
+     assert_equal($url,'?/test&amp;p1='.rawurlencode("mañana"));
+
+     option('base_uri', '/api');
+     $url = url_for('test', array('p1' => 'lorem', 'p2' => 'ipsum'));
+     assert_equal($url,'/api/test?p1=lorem&amp;p2=ipsum');
    }
    
 end_test_case();
