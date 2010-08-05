@@ -890,7 +890,7 @@ function request_method($env = null)
     $m = strtoupper($env['POST']['_method']);
   if(!in_array(strtoupper($m), request_methods()))
   {
-    trigger_error("'$m' request method is unkown or unavailable.", E_USER_WARNING);
+    trigger_error("'$m' request method is unknown or unavailable.", E_USER_WARNING);
     $m = false;
   }
   return $m;
