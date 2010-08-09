@@ -7,11 +7,11 @@ dispatch('/', 'content_negociation');
 function content_negociation()
 {
   //return var_dump($_SERVER['HTTP_ACCEPT']);
-  if(request_accepts('json'))
+  if(http_ua_accepts('json'))
   {
     return "json" ;
   }
-  else if (request_accepts('html'))
+  else if (http_ua_accepts('html'))
   {
     return "<h1>HTML</h1>" ;
   }

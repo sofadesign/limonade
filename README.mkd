@@ -520,6 +520,10 @@ In addition to the common `NOT_FOUND` and `SERVER_ERROR` errors displays, Limona
     
 `E_LIM_PHP` means all PHP errors (sended by PHP or raised by the user through [`trigger_error`](http://php.net/manual/function.trigger-error.php) function).
 
+## Other useful functions ##
+
+Limonade also provides a useful set of functions that can help you managing files, HTTP… For more about those utilities, see the [source code](http://github.com/sofadesign/limonade/blob/master/lib/limonade.php) at section **7. UTILS**.
+
 ## Testing ##
 
 [TODO]

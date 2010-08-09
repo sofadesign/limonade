@@ -870,63 +870,7 @@ function error_http_status($errno)
 
 
 # ============================================================================ #
-#    3. CONTENT NEGOCIATION                                                    #
-# ============================================================================ #
-
-
-/**
-* Check if the _Accept_ header is present, and includes the given `type`.
-*
-* When the _Accept_ header is not present `true` is returned. Otherwise
-* the given `type` is matched by an exact match, and then subtypes. You
-* may pass the subtype such as "html" which is then converted internally
-* to "text/html" using the mime lookup table.
-*
-* @param string $type
-* @param string $env 
-* @return bool
-*/
-
-function request_accepts($type, $env = null)
-{
-  if(is_null($env)) $env = env();
-  $accept = array_key_exists('HTTP_ACCEPT', $env['SERVER']) ? $env['SERVER']['HTTP_ACCEPT'] : null;
-  if(!$accept || $accept === '*/*')
-  {
-    return true ;
-  }
-  else if($type)
-  {
-    // Allow "html" vs "text/html" etc
-    if(!strpos($type, '/'))
-    {
-      $type = mime_type($type) ;
-    }
-    // Check if we have a direct match
-    if(strpos($accept, $type) > -1)
-    {
-      return true ; 
-    }
-    // Check if we have type/*  
-    else{
-      $type_parts = explode('/', $type) ; 
-      $type = $type_parts[0].'/*';
-      return (strpos($accept, $type) > -1) ;
-    }
-  }
-  else
-  {
-    return false ; 
-  }
-}
-
-                                     # # #
-
-
-
-
-# ============================================================================ #
-#    4. REQUEST                                                                #
+#    3. REQUEST                                                                #
 # ============================================================================ #
  
 /**
@@ -1130,7 +1074,7 @@ function request_uri($env = null)
 
 
 # ============================================================================ #
-#    5. ROUTER                                                                 #
+#    4. ROUTER                                                                 #
 # ============================================================================ #
  
 /**
@@ -1404,7 +1348,7 @@ function route_find($method, $path)
 
 
 # ============================================================================ #
-#    6. OUTPUT AND RENDERING                                                   #
+#    5. OUTPUT AND RENDERING                                                   #
 # ============================================================================ #
 
 /**
@@ -1619,7 +1563,7 @@ function render_file($filename, $return = false)
 
 
 # ============================================================================ #
-#    7. HELPERS                                                                #
+#    6. HELPERS                                                                #
 # ============================================================================ #
 
 /**
@@ -1850,7 +1794,7 @@ function benchmark()
 
 
 # ============================================================================ #
-#    8. UTILS                                                                  #
+#    7. UTILS                                                                  #
 # ============================================================================ #
  
 /**
@@ -2155,6 +2099,42 @@ function http_response_status_is_valid($num)
 function http_response_status_code($num)
 {
   if($str = http_response_status($num)) return "HTTP/1.1 $num $str";
+}
+
+/**
+ * Check if the _Accept_ header is present, and includes the given `type`.
+ *
+ * When the _Accept_ header is not present `true` is returned. Otherwise
+ * the given `type` is matched by an exact match, and then subtypes. You
+ * may pass the subtype such as "html" which is then converted internally
+ * to "text/html" using the mime lookup table.
+ *
+ * @param string $type
+ * @param string $env 
+ * @return bool
+ */
+function http_ua_accepts($type, $env = null)
+{
+  if(is_null($env)) $env = env();
+  $accept = array_key_exists('HTTP_ACCEPT', $env['SERVER']) ? $env['SERVER']['HTTP_ACCEPT'] : null;
+  
+  if(!$accept || $accept === '*/*') return true;
+  
+  if($type)
+  {
+    // Allow "html" vs "text/html" etc
+    if(!strpos($type, '/')) $type = mime_type($type);
+    
+    // Check if we have a direct match
+    if(strpos($accept, $type) > -1) return true;
+    
+    // Check if we have type/*  
+    $type_parts = explode('/', $type); 
+    $type = $type_parts[0].'/*';
+    return (strpos($accept, $type) > -1);
+  }
+  
+  return false; 
 }
 
 ## FILE utils  _________________________________________________________________

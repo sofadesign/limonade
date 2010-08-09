@@ -110,4 +110,5 @@ test_suite('Limonade');
   require $basedir."file.php";
   require $basedir."functional.php";
   require $basedir."output.php";
+  require $basedir."http.php";
 end_test_suite();
