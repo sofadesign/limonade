@@ -1,5 +1,7 @@
 # TODO #
 
+- add documentation for `initialize` hook and add it to abstracts
+- removing php shorttags in example to enhance compatibility
 - add a flash_keep() function like in rails (http://guides.rubyonrails.org/action_controller_overview.html#the-flash)
 - Add instructions about running tests
 - in route() functions, replace "function" name with "callback" name (example: in route_build() returned array). Enhanced use of callback pseudo-type instead of functions names.
@@ -40,10 +42,6 @@
 - params function should be singular like option ?
 - adding a debug() helper
 - new redirect_to (support for https)
-- add header X-Limonade-PHP: (lim version name) or X-Powered-By: LimonadePHP… ; (cosmetic ;-)
-- use array_walk_recursive for unregister_globals
-- simple form helper with XSS/CSRF protection
-- remove examples/ and move it in an external depot
 - public API documentation:
     - tests: tag private functions
     - tests: describe in docblock header abstract definitions
@@ -53,7 +51,19 @@
 
 - more unit and functional tests
 
+## Lemons ##
 
+- simple form helper with XSS/CSRF protection 
+    - package <http://github.com/sofadesign/vincent-helye.com/blob/master/app/lib/lemon_security.php>
+    - add documentation and example
+- simple form helper that handle put method
+- authentication
+    - package  <http://github.com/sofadesign/vincent-helye.com/blob/master/app/lib/lemon_auth.php>
+    - add documentation and example
+
+- http_cache
+    - package <http://github.com/sofadesign/vincent-helye.com/blob/master/app/lib/http_cache.php>
+    - add documentation and example
 
 ## Later ##
 
@@ -65,6 +75,8 @@ Documentation:
 - http caching
 - file caching
 - x-sender headers for serving static files directly thru Apache and Lighttpd
+- use array_walk_recursive for unregister_globals
+
 
 
 ## Think about it ##

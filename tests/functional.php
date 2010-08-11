@@ -14,6 +14,9 @@ test_case("Functional");
      $response =  test_request(TESTS_DOC_ROOT.'01-hello_world.php', 'GET', true);
      //echo $response;
      assert_header($response, 'Content-type', 'text/html');
+     
+     $response =  test_request(TESTS_DOC_ROOT.'03-routing.php/route0', 'GET', true);
+     assert_header($response, 'X-Limonade', LIM_NAME);
    }
    
    function test_functional_routing()

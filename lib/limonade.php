@@ -56,8 +56,9 @@
  * Limonade version
  */
 define('LIMONADE',              '0.5.0');
+define('LIM_NAME',              'Fresh_and_Minty_Limonade_App');
 define('LIM_START_MICROTIME',   (float)substr(microtime(), 0, 10));
-define('LIM_SESSION_NAME',      'Fresh_and_Minty_Limonade_App');
+define('LIM_SESSION_NAME',      LIM_NAME);
 define('LIM_SESSION_FLASH_KEY', '_lim_flash_messages');
 define('LIM_START_MEMORY',      memory_get_usage());
 define('E_LIM_HTTP',            32768);
@@ -334,6 +335,7 @@ function run($env = null)
   option('debug',              true);
   option('session',            LIM_SESSION_NAME); // true, false or the name of your session
   option('encoding',           'utf-8');
+  option('signature',          LIM_NAME); // X-Limonade header value or false to hide it
   option('gzip',               false);
   option('x-sendfile',         0); // 0: disabled, 
                                    // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
@@ -355,6 +357,9 @@ function run($env = null)
   {
     ini_set('zlib.output_compression', '1');
   }
+  
+  # 2.2 Set X-Limonade header
+  if($signature = option('signature')) header("X-Limonade: $signature");
 
   # 3. Loading libs
   require_once_dir(option('lib_dir'));
