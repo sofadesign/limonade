@@ -2504,23 +2504,21 @@ if(!function_exists('array_replace'))
   }
 }
 
-if(PHP_VERSION == '5.2.13' || PHP_VERSION == '5.3.2')
+/**
+ * Check if a string is an url
+ *
+ * This implementation no longer requires 
+ * {@link http://www.php.net/manual/en/book.filter.php the filter extenstion}, 
+ * so it will improve compatibility with older PHP versions.
+ *
+ * @param string $str 
+ * @return false, str   the string if true, false instead
+ */
+function filter_var_url($str)
 {
-  # There is a bug with filter_var($site_url , FILTER_VALIDATE_URL); 
-  # http://www.mail-archive.com/php-bugs@lists.php.net/msg134778.html
-  function filter_var_url($str)
-  {
-    $regexp = '@^http(s)?://[-[:alnum:]]+\.[-[:alnum:]]+\.[a-zA-Z]{2,4}(:[0-9]+)?(.*)?$@';
-    $options = array( "options" => array("regexp" => $regexp ));
-    return filter_var($str, FILTER_VALIDATE_REGEXP, $options);
-  }
-}
-else
-{
-  function filter_var_url($str)
-  {
-    return filter_var($str, FILTER_VALIDATE_URL);
-  }
+  $regexp = '@^https?://([-[:alnum:]]+\.)+[a-zA-Z]{2,6}(:[0-9]+)?(.*)?$@';
+  $options = array( "options" => array("regexp" => $regexp ));
+  return preg_match($regexp, $str) ? $str : false;
 }
 
 

@@ -186,8 +186,14 @@ test_case("Main");
      assert_equal(url_for('one', '', 'three'), '/one/three');
      assert_equal(url_for('one', null, 'three'), '/one/three');
      assert_equal(url_for('my/hash#test'), '/my/hash#test');
+     
      $site_url = 'http://www.limonade-php.net';
      assert_true((bool) filter_var_url($site_url));
+     assert_true((bool) filter_var_url('http://example.com'));
+     assert_true((bool) filter_var_url('http://example.com:2000/'));
+     assert_true((bool) filter_var_url('https://www.example.com:2000'));
+     assert_true((bool) filter_var_url('http://test.example.com/?var1=true&var2=34'));
+     assert_false(filter_var_url('not an url'));
      
      assert_equal(url_for($site_url), $site_url);
      //var_dump(url_for($site_url, 'examples'));
