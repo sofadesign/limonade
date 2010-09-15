@@ -255,6 +255,12 @@ La fonction `css` permet de rendre un template de la même manière que `render`
 
     css('screen.css.php');
 
+### Templates JS ###
+
+La fonction `js` permet de rendre un template de la même manière que `render`. Une en-tête HTTP précise le `Content-type` adéquat (`application/javascript`) et l'encodage défini dans les options (utf8 par défaut).
+
+    js('app.js.php');
+
 ### Templates TXT ###
 
 La fonction `txt` permet de rendre un template de la même manière que `render`. Une en-tête HTTP précise le `Content-type` adéquat (`text/plain`) et l'encodage défini dans les options (utf8 par défaut).

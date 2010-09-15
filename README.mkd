@@ -267,6 +267,13 @@ A header specifies the proper HTTP `Content-type` (`text/css`) and encoding sett
 
     css('screen.css.php');
 
+### Templates JS ###
+
+`js` function is used in the same way as `render`.
+A header specifies the proper HTTP `Content-type` (`application/javascript`) and encoding setting defined through options (utf8 by default).
+
+    js('app.js.php');
+
 ### Templates TXT ###
 
 `txt` function is used in the same way as `render`.

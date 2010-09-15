@@ -1498,6 +1498,21 @@ function css($content_or_func, $layout = '', $locals = array())
 }
 
 /**
+ * Returns javacript output with proper http headers
+ *
+ * @param string $content_or_func 
+ * @param string $layout 
+ * @param string $locals 
+ * @return string
+ */
+function js($content_or_func, $layout = '', $locals = array())
+{
+  if(!headers_sent()) header('Content-Type: application/javascript; charset='.strtolower(option('encoding')));
+  $args = func_get_args();
+  return call_user_func_array('render', $args);
+}
+
+/**
  * Returns txt output with proper http headers
  *
  * @param string $content_or_func 
