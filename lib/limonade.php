@@ -333,6 +333,7 @@ function run($env = null)
   option('error_views_dir',    option('limonade_views_dir'));
   option('env',                ENV_PRODUCTION);
   option('debug',              true);
+  option('show_settings',      false);
   option('session',            LIM_SESSION_NAME); // true, false or the name of your session
   option('encoding',           'utf-8');
   option('signature',          LIM_NAME); // X-Limonade header value or false to hide it
