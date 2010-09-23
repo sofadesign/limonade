@@ -1891,6 +1891,43 @@ function require_once_dir($path, $pattern = "*.php", $prevents_output = true)
   return $filenames;
 }
 
+/**
+ * Dumps a variable into inspectable format
+ *
+ * @param anything $var the variable to debug
+ * @param bool $output_as_html sets whether to wrap output in <pre> tags. default: true
+ * @return string the variable with output
+ */
+function debug($var, $output_as_html = true)
+{ 
+  if ( is_null($var) ) { return '<span class="null-value">[NULL]</span>'; };
+  $out = '';
+  switch ($var) 
+  { 
+    case empty($var):
+      $out = '[empty value]';
+      break;
+    
+    case is_array($var):
+      $out = var_export($var, true);
+      break;
+    
+    case is_object($var):
+      $out = var_export($var, true);
+      break;
+      
+    case is_string($var):
+      $out = $var;
+      break;
+    
+    default:
+      $out = var_export($var, true);
+      break;
+  }
+  if ($output_as_html) { $out = h($out);  }
+  return "<pre>\n" . $out ."</pre>";
+}
+
 
 ## HTTP utils  _________________________________________________________________
 
