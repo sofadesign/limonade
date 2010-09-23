@@ -1929,6 +1929,32 @@ function debug($var, $output_as_html = true)
 }
 
 
+/**
+ * Provides debugging output of all system settings, enabling easy inspection of
+ * all current values and settings.
+ * 
+ * Depends on option('show_settings') being set and true, else outputs simple HTML comment.
+ * 
+ * @return string the html output displaying all the settings.
+ */
+
+function show_settings_output()
+{ 
+  if ( option('show_settings') ) 
+  { 
+    $c_view_dir = option('views_dir'); // keep for restore after render
+    option('views_dir', option('limonade_views_dir'));
+    $o = render('_settings.html.php', null);
+    option('views_dir', $c_view_dir); // restore current views dir
+    return $o;
+  }
+  else
+  { 
+    return "<!-- option(show_settings) disabled -->";
+  }
+}
+
+
 ## HTTP utils  _________________________________________________________________
 
 
