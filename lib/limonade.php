@@ -2156,7 +2156,8 @@ function http_response_status_is_valid($num)
  */
 function http_response_status_code($num)
 {
-  if($str = http_response_status($num)) return "HTTP/1.1 $num $str";
+  $protocole = empty($_SERVER["SERVER_PROTOCOL"]) ? "HTTP/1.1" : $_SERVER["SERVER_PROTOCOL"];
+  if($str = http_response_status($num)) return "$protocole $num $str";
 }
 
 /**

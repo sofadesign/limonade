@@ -4,6 +4,13 @@ if(!defined('LIMONADE')){$h="HTTP/1.0 401 Unauthorized";header($h);die($h);}// S
 test_case("HTTP");
    test_case_describe("Testing limonade HTTP utils functions.");
    
+   function test_http_response_status_code()
+   {
+     $response =  test_request(TESTS_DOC_ROOT.'02-outputs.php/render0', 'GET', true);
+     assert_match("/HTTP\/1\./", $response);
+     assert_status($response, 200);
+   }
+   
    function test_http_ua_accepts()
    {
      $env = env();
