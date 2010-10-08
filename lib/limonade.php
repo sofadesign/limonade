@@ -56,7 +56,7 @@
  * Limonade version
  */
 define('LIMONADE',              '0.5.0');
-define('LIM_NAME',              'Fresh_and_Minty_Limonade_App');
+define('LIM_NAME',              'Un grand cru qui sait se faire attendre.');
 define('LIM_START_MICROTIME',   (float)substr(microtime(), 0, 10));
 define('LIM_SESSION_NAME',      LIM_NAME);
 define('LIM_SESSION_FLASH_KEY', '_lim_flash_messages');

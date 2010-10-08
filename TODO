@@ -31,11 +31,8 @@
 - adding support for extra GET variables in all url styles like in rails (http://groups.google.fr/group/limonade/browse_thread/thread/f9402fb0a3b1f65c)
 - [#36] using _SERVER["SERVER_PROTOCOL"]: implement and make tests
 - improve security in render_file with a safe_dir option
-- update Limonade codename (in french now)
+
 - adding contributors/thanks in AUTHORS
-- in run(), passing $env to all functions that require it
-
-
 - new redirect_to (support for https)
 - public API documentation:
     - tests: tag private functions
