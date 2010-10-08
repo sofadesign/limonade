@@ -391,15 +391,15 @@ function run($env = null)
   call_if_exists('initialize');
 
   # 6. Check request
-  if($rm = request_method())
+  if($rm = request_method($env))
   {
-    if(request_is_head()) ob_start(); // then no output
+    if(request_is_head($env)) ob_start(); // then no output
 
     if(!request_method_is_allowed($rm))
       halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
 
     # 6.1 Check matching route
-    if($route = route_find($rm, request_uri()))
+    if($route = route_find($rm, request_uri($env)))
     {
       params($route['params']);
 
@@ -425,7 +425,7 @@ function run($env = null)
       }
       else halt(SERVER_ERROR, "Routing error: undefined function '{$route['function']}'", $route);      
     }
-    else route_missing($rm, request_uri());
+    else route_missing($rm, request_uri($env));
 
   }
   else halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
