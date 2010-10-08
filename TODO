@@ -1,7 +1,7 @@
 # TODO #
 
-- add documentation for `initialize` hook and add it to abstracts
-- removing php shorttags in example to enhance compatibility
+- in README, add a section about hooks and user defined functions 
+- removing php shortags in example to enhance compatibility
 - add a flash_keep() function like in rails (http://guides.rubyonrails.org/action_controller_overview.html#the-flash)
 - Add instructions about running tests
 - in route() functions, replace "function" name with "callback" name (example: in route_build() returned array). Enhanced use of callback pseudo-type instead of functions names.
@@ -34,13 +34,8 @@
 - update Limonade codename (in french now)
 - adding contributors/thanks in AUTHORS
 - in run(), passing $env to all functions that require it
-- improving unregister_globals 
-    - to avoid predefined variables (_SERVER, _REQUEST...) deletion
-    - to handle session globals by calling unregister_globals('_SESSION') after session start
-- deleting deprecated ['HTTP_SERVER_VARS'], ['HTTP_GET_VARS']... (<http://www.php.net/manual/fr/reserved.variables.post.php>...)
-- implement user agent detection option in routing
-- params function should be singular like option ?
-- adding a debug() helper
+
+
 - new redirect_to (support for https)
 - public API documentation:
     - tests: tag private functions
@@ -51,21 +46,10 @@
 
 - more unit and functional tests
 
-## Lemons ##
-
-- simple form helper with XSS/CSRF protection 
-    - package <http://github.com/sofadesign/vincent-helye.com/blob/master/app/lib/lemon_security.php>
-    - add documentation and example
-- simple form helper that handle put method
-- authentication
-    - package  <http://github.com/sofadesign/vincent-helye.com/blob/master/app/lib/lemon_auth.php>
-    - add documentation and example
-
-- http_cache
-    - package <http://github.com/sofadesign/vincent-helye.com/blob/master/app/lib/http_cache.php>
-    - add documentation and example
 
 ## Later ##
+
+- implement user agent detection option in routing
 
 Documentation:
 
@@ -100,3 +84,6 @@ Documentation:
 
 - make post, put and delete params accessible with the params() function
     (take care of possible conflict with a route param: by default override get params, but raise an error notice). Really useful ?
+- deleting deprecated ['HTTP_SERVER_VARS'], ['HTTP_GET_VARS']... (<http://www.php.net/manual/fr/reserved.variables.post.php>...)
+- params function should be singular like option ?
+

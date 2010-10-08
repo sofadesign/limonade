@@ -174,6 +174,7 @@ dispatch(array("/_lim_public/**", array('_lim_public_file')), 'render_limonade_f
 # Abstract methods that might be redefined by user:
 #
 # - function configure(){}
+# - function initialize(){}
 # - function autoload_controller($callback){}
 # - function before($route){}
 # - function after($output, $route){}

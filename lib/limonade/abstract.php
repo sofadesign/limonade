@@ -9,13 +9,25 @@
  */
  
 /**
- * It will be called when app is launched (at the begining og the run function).
+ * It will be called when app is launched (at the begining of the run function).
  * You can define options inside it, a connection to a database ...
  *
  * @abstract this function might be redefined by user
  * @return void 
  */
 function configure()
+{
+  return;
+}
+
+/**
+ * Called in run() just after session start, and before checking request method
+ * and output buffer start.  
+ *
+ * @abstract this function might be redefined by user
+ * @return void 
+ */
+function initialize()
 {
   return;
 }
