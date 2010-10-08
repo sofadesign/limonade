@@ -56,9 +56,9 @@
  * Limonade version
  */
 define('LIMONADE',              '0.5.0');
-define('LIM_NAME',              'Un grand cru qui sait se faire attendre.');
+define('LIM_NAME',              'Un grand cru qui sait se faire attendre');
 define('LIM_START_MICROTIME',   (float)substr(microtime(), 0, 10));
-define('LIM_SESSION_NAME',      LIM_NAME);
+define('LIM_SESSION_NAME',      'LIMONADE'.str_replace('.','x',LIMONADE));
 define('LIM_SESSION_FLASH_KEY', '_lim_flash_messages');
 define('LIM_START_MEMORY',      memory_get_usage());
 define('E_LIM_HTTP',            32768);

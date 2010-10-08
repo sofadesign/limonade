@@ -19,6 +19,19 @@ test_case("Functional");
      assert_header($response, 'X-Limonade', LIM_NAME);
    }
    
+   function test_functional_session()
+   {
+     $response =  test_request(TESTS_DOC_ROOT.'06-session.php/', 'GET', false);
+     // In http://www.php.net/manual/en/function.session-name.php:
+     //
+     // > The session name references the session id in cookies and URLs. It
+     //   should contain only alphanumeric characters; it should be short and
+     //   descriptive (i.e. for users with enabled cookie warnings). If name is
+     //   specified, the name of the current session is changed to its value.
+     assert_true(ctype_alnum($response));
+     assert_equal($response, "LIMONADE".str_replace('.', 'x', LIMONADE));
+   }
+   
    function test_functional_routing()
    {
      $path = TESTS_DOC_ROOT.'03-routing.php/';
