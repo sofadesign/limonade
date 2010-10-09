@@ -101,8 +101,26 @@ test_case("Functional");
      /* undefined route */
      $response =  test_request($path.'unknown_route', 'GET');
      assert_match('/Page not found/', $response);     
-     
    }
+   
+   function test_functional_params()
+   {
+     $path = TESTS_DOC_ROOT.'08-params.php';
+     $response =  test_request($path, 'GET');
+     assert_equal($response, 'HELLO');
+     
+     $response =  test_request($path.'?/&sort=asc', 'GET');
+     assert_match('/sort=asc/', $response);
+     
+     $response =  test_request($path.'/books/fr', 'GET');
+     assert_equal($response, 'lang=fr');
+     
+     $response =  test_request($path.'?uri=books/fr&sort=asc&page=2', 'GET');
+     var_dump($response);
+     assert_match('/sort=asc/', $response);
+     assert_match('/page=2/', $response);
+   }
+   
    
    function test_functional_errors()
    {
