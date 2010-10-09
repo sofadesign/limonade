@@ -136,4 +136,51 @@ test_case("Functional");
      assert_status($response, 501);
      assert_match("/A personnal error #1234/", $response);
    }
+   
+   function test_functional_flash()
+   {
+     $path = TESTS_DOC_ROOT.'07-flash.php/';
+     
+     $ch = curl_init(); 
+     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); 
+     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE); 
+     curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE); 
+     curl_setopt($ch, CURLOPT_HEADER, 0); 
+     curl_setopt($ch, CURLOPT_COOKIEFILE, "cookiefile"); 
+     curl_setopt($ch, CURLOPT_COOKIEJAR, "cookiefile"); 
+     curl_setopt($ch, CURLOPT_COOKIE, session_name() . '=' . session_id()); 
+     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); 
+
+     curl_setopt($ch, CURLOPT_URL, $path); 
+     $response  = curl_exec($ch); 
+     assert_no_match("/ON DISPLAY/", $response);
+     
+     curl_setopt($ch, CURLOPT_URL, $path.'two'); 
+     $response  = curl_exec($ch); 
+     assert_match("/ON DISPLAY 2/", $response);
+
+     curl_setopt($ch, CURLOPT_URL, $path.'three'); 
+     $response  = curl_exec($ch); 
+     assert_match("/ON DISPLAY 3/", $response);
+
+     curl_setopt($ch, CURLOPT_URL, $path.'four'); 
+     $response  = curl_exec($ch); 
+     assert_match("/ON DISPLAY 4/", $response);
+     assert_match("/NO FLASH MESSAGE ON NEXT PAGE/", $response);
+
+     curl_setopt($ch, CURLOPT_URL, $path.'five'); 
+     $response  = curl_exec($ch); 
+     assert_match("/REDIRECTED FROM INDEX FIVE/", $response);
+     assert_match("/ON DISPLAY 6/", $response);
+
+     curl_setopt($ch, CURLOPT_URL, $path.'six'); 
+     $response  = curl_exec($ch);
+     assert_no_match("/ON DISPLAY/", $response);
+
+     curl_setopt($ch, CURLOPT_URL, $path.'two'); 
+     $response  = curl_exec($ch); 
+     assert_no_match("/ON DISPLAY/", $response);
+
+     curl_close($ch);
+   }
 end_test_case();
