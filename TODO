@@ -22,20 +22,18 @@
 - write tests for content_for()
 - refactor content_for()
 - content_for() write small doc (README) and examples
-- adding an option('display_errors'); by default ini_set('display_errors', 0) in production env, but enabled if env is dev (unless matching option is enabled)
-- explain autoload_controller() in README
-- in debug output, formating debug_backtrace to be me readable (like debug_backtrace output but with extra informations that can be toggled)
-- adding tests with special characters for request_uri
 - complete CHANGES file
-- adding support for extra GET variables in all url styles like in rails (http://groups.google.fr/group/limonade/browse_thread/thread/f9402fb0a3b1f65c)
 
 - improve security in render_file with a safe_dir option
 - adding contributors/thanks in AUTHORS
 - new redirect_to (support for https)
+- adding an option('display_errors'); by default ini_set('display_errors', 0) in production env, but enabled if env is dev (unless matching option is enabled)
+- in debug output, formating debug_backtrace to be me readable (like debug_backtrace output but with extra informations that can be toggled)
 - public API documentation:
     - tests: tag private functions
     - tests: describe in docblock header abstract definitions
     - add links in header/welcome page(blank.tpl): project web site (clic on logo?), README, github
+
 
 ## And always ##
 
@@ -45,6 +43,7 @@
 ## Later ##
 
 - implement user agent detection option in routing
+
 
 Documentation:
 

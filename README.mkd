@@ -145,6 +145,21 @@ Functions called by routes can be written anywhere before the execution of the  
 This folder location can be set with the `controllers_dir` option.
 
     option('controllers_dir', dirname(__FILE__).'/other/dir/for/controllers');
+    
+
+You can also define `autoload_controller` function to load controllers in your own way:
+
+    function autoload_controller($callback) 
+    { 
+       # If $callback, the callback function defined in matching route, 
+       # begins with 'admin_', then we load controllers from
+       # the admin sub-directory in the controllers directory.
+       # Else we load controllers the normal way from 'controllers_dir'.
+       
+       $path = option('controllers_dir'); 
+       if(strpos($callback, "admin_") === 0) $path = file_path($path, 'admin'); 
+       require_once_dir($path); 
+    }
 
 ### Url rewriting ###
 
