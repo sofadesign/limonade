@@ -1,16 +1,12 @@
 # TODO #
 
-- in README, add a section about hooks and user defined functions 
-- removing php shortags in example to enhance compatibility
-- add a flash_keep() function like in rails (http://guides.rubyonrails.org/action_controller_overview.html#the-flash)
-- Add instructions about running tests
+
+## Goals for next releases ##
+
+### 0.5 ###
+
+- complete CHANGES file
 - in route() functions, replace "function" name with "callback" name (example: in route_build() returned array). Enhanced use of callback pseudo-type instead of functions names.
-- adding abstracts (for handling enhanced callback controllers)
-    - route_callback_[controller_]exists()
-    - route_callback_[controller_]create()
-    - route_callback_[controller_]call()
-- in README, make a chapter about "callback controllers" after routes.
-- in README, replace "controller functions" mentions with "callback controller"
 - testing calling lambdas from dispatch functions, with native php callback (see <http://limonade.tumblr.com/post/247098505/hidden-features>).
 - Adding documentation about dispatch callback (see blog post <http://limonade.tumblr.com/post/247098505/hidden-features>) (remember that controller function args must be in the same order as route params!)
 - explain controllers return output in README
@@ -22,43 +18,81 @@
 - write tests for content_for()
 - refactor content_for()
 - content_for() write small doc (README) and examples
-- complete CHANGES file
+- removing php shortags in example to enhance compatibility
 
-- improve security in render_file with a safe_dir option
+
+### 0.5.1 ###
+
+- cleanup documentation
+  - put everything in the github wiki
+  - add a Getting Started section
+  - make the README hyper-simplified; acts as a resume, lits of features +  and a table of content
+  - remove reference to html API: no time to maintain it and source code is enough. Maybe we can simply use a two-columns documentation generated with something like http://rtomayko.github.com/rocco/ ?
+- in README, make a chapter about "callback controllers" after routes.
+- in README, replace "controller functions" mentions with "callback controller"
+- Add instructions about running tests
 - adding contributors/thanks in AUTHORS
+
+
+### 0.6 ###
+
+- in README, add a section about hooks and user defined functions
+- add file controller feature
+  - a controller can be a file if controller callback string ending with '.php'
+  - this allow to push direcly the procedural code of the controller in a file, without declaring a controller function
+  - it end with a return, like a normal controller
+  - code is loaded in a container function when route is built, just before execution 
+  
+    function controller_loader($file)
+    {
+       return include $file;
+    }
+  
+  
+- adding abstracts (for handling enhanced callback controllers)
+    - route_callback_[controller_]exists()
+    - route_callback_[controller_]create()
+    - route_callback_[controller_]call()
+- add a flash_keep() function like in rails (http://guides.rubyonrails.org/action_controller_overview.html#the-flash)
+- in debug output, formating debug_backtrace to be me readable (like debug_backtrace output but with extra informations that can be toggled). Using show_settings view by kematzy ? http://github.com/kematzy/limonade/commit/02ad17260912757b73ff809acad8e970efafc4b4
+- improve security in render_file with a safe_dir option
 - new redirect_to (support for https)
-- adding an option('display_errors'); by default ini_set('display_errors', 0) in production env, but enabled if env is dev (unless matching option is enabled)
-- in debug output, formating debug_backtrace to be me readable (like debug_backtrace output but with extra informations that can be toggled)
-- public API documentation:
-    - tests: tag private functions
-    - tests: describe in docblock header abstract definitions
-    - add links in header/welcome page(blank.tpl): project web site (clic on logo?), README, github
 
 
-## And always ##
+### 0.7 ###
 
-- more unit and functional tests
+#### Adding option() setters functions
+
+- useful for filtering option value before storing it
+- setter function name is based on the name of the option. Example: for option('debug'), setter is option_debug($value)
+- if setter doesn't exist, we store directly option value, else we use the value returned by the setter
+  
+#### Adding callbacks to option() setting
+
+- useful to call some actions after setting an option
+- callback is based on the name of the option. Example: for option('debug'), callback is option_debug_callback($value)
+  
+#### Adding support for handling php settings with option() function
+
+- this will help have more consistency, and setting php options at the begining of the run
+- all options that begins with `php_` are mapped with ini_set() options in read and write
+- adding an option('php_display_errors'); by default ini_set('display_errors', 0) in production env, but enabled if env is dev (unless matching option is enabled)
+- a default callback `php_display_errors` will be there to set correct limonade debug level
 
 
-## Later ##
+### 0.8 ###
 
-- implement user agent detection option in routing
-
-
-Documentation:
-
-- reformat code comments in order to use Natural docs (http://www.naturaldocs.org/)
+- Zestify Limonade
+  - refactor main dipatching loop
+  - allow zest response return in controllers
 
 
-- http caching
-- file caching
-- x-sender headers for serving static files directly thru Apache and Lighttpd
-- use array_walk_recursive for unregister_globals
+### 0.9 ###
 
-
-
-## Think about it ##
-- adding optional renderers (markdown, haml, textile, tenjin, phptal…)
+- improve new Zest based Limonade
+- templates engines: improve rendering features to allow easy use of alternate renderers
+  - have a look at http://github.com/rtomayko/tilt
+  - adding optional renderers (markdown, haml, textile, tenjin, phptal…)
 
     if(class_exists('Haml'))
     {
@@ -75,6 +109,46 @@ Documentation:
                 E_USER_WARNING)
         }
     }
+  - optional auto-detection of the engine to use depending on templates extension (.html.haml…)
+
+
+### 1.0 ###
+
+- contextual help in development environment:
+  - describe how routing works, how to create a controller...
+  - suggest solutions on errors
+  - on blank page, tell about the missing return in controller (common mistake...) ?
+
+- tests
+- documentation
+- tests
+- documentation
+- tests
+- …
+- release ;-)
+
+
+
+## And always ##
+
+- more unit and functional tests
+
+
+## Later ##
+
+- implement user agent detection option in routing
+
+
+Documentation:
+
+- reformat code comments in order to use Natural docs (http://www.naturaldocs.org/) ?
+- http caching
+- file caching
+- x-sender headers for serving static files directly thru Apache and Lighttpd
+
+
+
+## Think about it ##
 
 - make post, put and delete params accessible with the params() function
     (take care of possible conflict with a route param: by default override get params, but raise an error notice). Really useful ?
