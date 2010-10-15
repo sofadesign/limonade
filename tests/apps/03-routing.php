@@ -42,6 +42,12 @@ $obj = new MyController(10);
 dispatch('/route2', array($obj, 'method'));
 dispatch('/route3', array('MyController', 'staticMethod'));
 dispatch('/route4', 'MyController::staticMethod');
+if(version_compare(PHP_VERSION, '5.3.0') >= 0)
+{
+  dispatch('/route-lambda', function(){
+    return 'LAMBDA CALL';
+  });
+}
 
 /* parameterized routes */
 dispatch('/route5', 'test_route5', array('params' => array('type' => 'human')));
@@ -132,6 +138,8 @@ function test_route11delete()
 {
   return "DELETE";
 }
+
+
 
 
 

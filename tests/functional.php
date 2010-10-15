@@ -46,6 +46,12 @@ test_case("Functional");
      $response =  test_request($path.'route4', 'GET');
      assert_equal($response, 20);
      
+     if(version_compare(PHP_VERSION, '5.3.0') >= 0)
+     {
+       $response =  test_request($path.'route-lambda', 'GET');
+       assert_equal($response, 'LAMBDA CALL');
+     }
+     
      $response =  test_request($path.'route5', 'GET');
      assert_equal($response, 'human');
      $response =  test_request($path.'route5b', 'GET');
@@ -116,7 +122,6 @@ test_case("Functional");
      assert_equal($response, 'lang=fr');
      
      $response =  test_request($path.'?uri=books/fr&sort=asc&page=2', 'GET');
-     var_dump($response);
      assert_match('/sort=asc/', $response);
      assert_match('/page=2/', $response);
    }
