@@ -134,16 +134,19 @@ function route_missing($request_method, $request_uri)
  * Called before stoppping and exiting application.
  *
  * @abstract this function might be redefined by user
+ * @param boolean exit or not
  * @return void 
  */
-function before_exit()
+function before_exit($exit)
 {
   
 }
 
 /**
- * Rendering prefilter
+ * Rendering prefilter.
  * Useful if you want to transform your views before rendering.
+ * The first three parameters are the same as those provided 
+ * to the `render` function.
  *
  * @abstract this function might be redefined by user
  * @param string $content_or_func a function, a file in current views dir or a string

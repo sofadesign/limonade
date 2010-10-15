@@ -6,8 +6,6 @@
 ### 0.5 ###
 
 - complete CHANGES file
-- explain controllers return output in README
-- explain before_render() in README
 - testing and documenting autorendering features
 - write tests for partial()
 - refactor partial()
@@ -25,15 +23,13 @@
   - add a Getting Started section
   - make the README hyper-simplified; acts as a resume, lits of features +  and a table of content
   - remove reference to html API: no time to maintain it and source code is enough. Maybe we can simply use a two-columns documentation generated with something like http://rtomayko.github.com/rocco/ ?
-- in README, make a chapter about "callback controllers" after routes.
-- in README, replace "controller functions" mentions with "callback controller"
 - Add instructions about running tests
 - adding contributors/thanks in AUTHORS
 
 
 ### 0.6 ###
 
-- in README, add a section about hooks and user defined functions
+- in README, complete the section about hooks and user defined functions
 - add file controller feature
   - a controller can be a file if controller callback string ending with '.php'
   - this allow to push direcly the procedural code of the controller in a file, without declaring a controller function

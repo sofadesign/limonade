@@ -440,7 +440,7 @@ function run($env = null)
  */
 function stop_and_exit($exit = true)
 {
-  call_if_exists('before_exit');
+  call_if_exists('before_exit', $exit);
   $flash_sweep = true;
   $headers = headers_list();
   foreach($headers as $header)
