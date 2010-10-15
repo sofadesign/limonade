@@ -44,7 +44,7 @@ function initialize()
  * </code>
  * 
  *
- * @param string $callback the callback deined in matching route
+ * @param string $callback the callback defined in matching route
  * @return void
  */
 function autoload_controller($callback)
@@ -59,7 +59,7 @@ function autoload_controller($callback)
  *
  * @abstract this function might be redefined by user
  * @param array() $route array (like returned by {@link route_build()},
- *   with keys "method", "pattern", "names", "function", "options")
+ *   with keys "method", "pattern", "names", "callback", "options")
  * @return void 
  */
 function before($route)
@@ -76,7 +76,7 @@ function before($route)
  * @abstract this function might be redefined by user
  * @param string $output 
  * @param array() $route array (like returned by {@link route_find()},
- *   with keys "method", "pattern", "names", "function", "params", "options")
+ *   with keys "method", "pattern", "names", "callback", "params", "options")
  * @return string 
  */
 function after($output, $route)
@@ -166,7 +166,7 @@ function before_render($content_or_func, $layout, $locals, $view_path)
  *
  * @abstract this function might be defined by user
  * @param array() $route array (like returned by {@link route_build()},
- *   with keys "method", "pattern", "names", "function", "options")
+ *   with keys "method", "pattern", "names", "callback", "options")
  * @return string
  */
 function autorender($route)

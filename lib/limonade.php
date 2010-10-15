@@ -411,19 +411,19 @@ function run($env = null)
           require_once_dir(option('controllers_dir'));
         }
       }
-      autoload_controller($route['function']);
+      autoload_controller($route['callback']);
 
-      if(is_callable($route['function']))
+      if(is_callable($route['callback']))
       {
         # 6.3 Call before function
         call_if_exists('before', $route);
 
         # 6.4 Call matching controller function and output result
-        $output = call_user_func_array($route['function'], array_values($route['params']));
+        $output = call_user_func_array($route['callback'], array_values($route['params']));
         if(is_null($output)) $output = call_if_exists('autorender', $route);
         echo after(error_notices_render() . $output, $route);
       }
-      else halt(SERVER_ERROR, "Routing error: undefined function '{$route['function']}'", $route);      
+      else halt(SERVER_ERROR, "Routing error: undefined function '{$route['callback']}'", $route);      
     }
     else route_missing($rm, request_uri($env));
 
@@ -1088,62 +1088,62 @@ function request_uri($env = null)
  *
  * @return void
  */
-function dispatch($path_or_array, $function, $options = array())
+function dispatch($path_or_array, $callback, $options = array())
 {
-  dispatch_get($path_or_array, $function, $options);
+  dispatch_get($path_or_array, $callback, $options);
 }
 
 /**
  * Add a GET route. Also automatically defines a HEAD route.
  *
  * @param string $path_or_array 
- * @param string $function
+ * @param string $callback
  * @param array $options (optional). See {@link route()} for available options.
  * @return void
  */
-function dispatch_get($path_or_array, $function, $options = array())
+function dispatch_get($path_or_array, $callback, $options = array())
 {
-  route("GET", $path_or_array, $function, $options);
-  route("HEAD", $path_or_array, $function, $options);
+  route("GET", $path_or_array, $callback, $options);
+  route("HEAD", $path_or_array, $callback, $options);
 }
 
 /**
  * Add a POST route
  *
  * @param string $path_or_array 
- * @param string $function
+ * @param string $callback
  * @param array $options (optional). See {@link route()} for available options.
  * @return void
  */
-function dispatch_post($path_or_array, $function, $options = array())
+function dispatch_post($path_or_array, $callback, $options = array())
 {
-  route("POST", $path_or_array, $function, $options);
+  route("POST", $path_or_array, $callback, $options);
 }
 
 /**
  * Add a PUT route
  *
  * @param string $path_or_array 
- * @param string $function
+ * @param string $callback
  * @param array $options (optional). See {@link route()} for available options.
  * @return void
  */
-function dispatch_put($path_or_array, $function, $options = array())
+function dispatch_put($path_or_array, $callback, $options = array())
 {
-  route("PUT", $path_or_array, $function, $options);
+  route("PUT", $path_or_array, $callback, $options);
 }
 
 /**
  * Add a DELETE route
  *
  * @param string $path_or_array 
- * @param string $function
+ * @param string $callback
  * @param array $options (optional). See {@link route()} for available options.
  * @return void
  */
-function dispatch_delete($path_or_array, $function, $options = array())
+function dispatch_delete($path_or_array, $callback, $options = array())
 {
-  route("DELETE", $path_or_array, $function, $options);
+  route("DELETE", $path_or_array, $callback, $options);
 }
 
 
@@ -1199,16 +1199,16 @@ function route_reset()
  * @access private
  * @param string $method allowed http method (one of those returned by {@link request_methods()})
  * @param string|array $path_or_array 
- * @param callback $func callback function called when route is found. It can be
+ * @param callback $callback callback called when route is found. It can be
  *   a function, an object method, a static method or a closure.
  *   See {@link http://php.net/manual/en/language.pseudo-types.php#language.types.callback php documentation}
  *   to learn more about callbacks.
  * @param array $options (optional). Available options: 
  *   - 'params' key with an array of parameters: for parametrized routes.
  *     those parameters will be merged with routes parameters.
- * @return array array with keys "method", "pattern", "names", "function", "options"
+ * @return array array with keys "method", "pattern", "names", "callback", "options"
  */
-function route_build($method, $path_or_array, $func, $options = array())
+function route_build($method, $path_or_array, $callback, $options = array())
 {
   $method = strtoupper($method);
   if(!in_array($method, request_methods())) 
@@ -1299,7 +1299,7 @@ function route_build($method, $path_or_array, $func, $options = array())
   return array( "method"       => $method,
                 "pattern"      => $pattern,
                 "names"        => $names,
-                "function"     => $func,
+                "callback"     => $callback,
                 "options"      => $options  );
 }
 
@@ -1312,7 +1312,7 @@ function route_build($method, $path_or_array, $func, $options = array())
  * @param string $method 
  * @param string $path
  * @return array,false route array has same keys as route returned by 
- *  {@link route_build()} ("method", "pattern", "names", "function", "options")
+ *  {@link route_build()} ("method", "pattern", "names", "callback", "options")
  *  + the processed "params" key
  */
 function route_find($method, $path)
@@ -1821,18 +1821,18 @@ function benchmark()
 /**
  * Calls a function if exists
  *
- * @param callback $func a function stored in a string variable, 
+ * @param callback $callback a function stored in a string variable, 
  *   or an object and the name of a method within the object
  *   See {@link http://php.net/manual/en/language.pseudo-types.php#language.types.callback php documentation}
  *   to learn more about callbacks.
  * @param mixed $arg,.. (optional)
  * @return mixed
  */
-function call_if_exists($func)
+function call_if_exists($callback)
 {
   $args = func_get_args();
-  $func = array_shift($args);
-  if(is_callable($func)) return call_user_func_array($func, $args);
+  $callback = array_shift($args);
+  if(is_callable($callback)) return call_user_func_array($callback, $args);
   return;
 }
 

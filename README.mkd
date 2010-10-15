@@ -30,13 +30,20 @@ A [discussion group](http://groups.google.fr/group/limonade) is also available f
     
 ## Routes ##
 
-Routes combine an HTTP method with an URL matching pattern and a function
+Routes combine 
+
+* an HTTP method 
+* with an URL matching pattern 
+* and a callback parameter
+
+So they make the glue between an URL + a HTTP method, and the code provided in a callback controller.
 
     dispatch('/', 'my_get_function');
     # same as dispatch_get('my_get_function');
         function my_get_function()
         {
             // Show something
+            // with the code of this callback controller
         }
     
     dispatch_post('/', 'my_post_function'); 
@@ -73,6 +80,8 @@ When `PUT` or `DELETE` methods are not supported (like in HTML form submision), 
         <p>... your form fields</p>
         <p><input type="submit" value="Update"></p>
     </form>
+
+### Routing patterns ###
 
 Patterns may include named parameters. Associated values of those parameters are available with the `params()` function.
 
@@ -131,7 +140,31 @@ Wildcard parameters and regular expressions may be named too.
             $name = params('name');
         }
 
-Functions called by routes can be written anywhere before the execution of the  `run()` function. They can also be grouped in controllers files stored in a `controllers/` folder.
+### Callback controllers ###
+
+The callback can be a function, an object method, a static method or a closure.
+See [php documentation](http://php.net/manual/en/language.pseudo-types.php#language.types.callback) to learn more about the callback pseudo-type.
+
+    # will call my_hello_function() function
+    dispatch('/hello', 'my_hello_function');
+
+    # Static class method call, MyClass::hello();
+    dispatch('/hello', array('MyClass', 'hello'));
+
+    # Object method call, $obj->hello();
+    dispatch('/hello', array($obj, 'hello'));
+
+    # Static class method call (As of PHP 5.2.3), MyClass::hello();
+    dispatch('/hello', 'MyClass::hello');
+
+    # Using lambda function (As of PHP 5.3.0)
+    dispatch('/hello', function(){
+      return 'Hello World!';
+    });
+
+Callback controllers return the rendered view output (see _Views and templates_).
+
+Callbacks called by routes can be written anywhere before the execution of the  `run()` function. They can also be grouped in controllers files stored in a `controllers/` folder.
 
     /                   # site root
      - index.php        # file with routes declarations and run()
@@ -245,7 +278,7 @@ If layout value is `null`, rendering will be done without any layout.
 Formatted string can be used like with  [`sprintf`](http://php.net/manual/function.sprintf.php):
 
     set('num', 5);
-    set('tree');
+    set('where', 'tree');
     return render('There are %d monkeys in the %s') // returns 'There are 5 monkeys in the tree'
 
 It's also possible to provide a function name as a template. By this way, we can for example produce a single file application.
@@ -336,7 +369,7 @@ The current matching route is also passed to the before function, so you can tes
 * `method` (HTTP method)
 * `pattern` (regexp pattern)
 * `names` (params names)
-* `function` (callback)
+* `callback` (callback)
 * `options` (route options)
 * `params` (current params)
 
@@ -371,7 +404,7 @@ You can define your own `autorender` function to make automatic rendering  depen
     
     function autorender($route)
     {
-        $view = $route['function'] . ".html.php";
+        $view = $route['callback'] . ".html.php";
         return html($view);
     }
     

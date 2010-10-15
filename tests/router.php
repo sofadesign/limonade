@@ -17,7 +17,7 @@ test_case("Router");
       assert_equal($r["method"], "GET");
       assert_equal($r["pattern"], "#^/index(?:/*?)?$#i");
       assert_empty($r["names"]);
-      assert_equal($r["function"], "get_index");
+      assert_equal($r["callback"], "get_index");
       
       /* testing very simple route with no parameters */
       assert_match($r["pattern"], "/index");
@@ -158,7 +158,7 @@ test_case("Router");
      assert_equal($r[0]["method"], "GET");
      assert_equal($r[0]["pattern"], "#^/index(?:/*?)?$#i");
      assert_empty($r[0]["names"]);
-     assert_equal($r[0]["function"], "my_func");
+     assert_equal($r[0]["callback"], "my_func");
      assert_empty($r[0]["options"]);
      
      $r = route("put", "/blog/:id", "my_update_func");
@@ -168,7 +168,7 @@ test_case("Router");
      assert_match($r[1]["pattern"], "/blog/102");
      assert_length_of($r[1]["names"], 1);
      assert_equal($r[1]["names"][0], "id");
-     assert_equal($r[1]["function"], "my_update_func");
+     assert_equal($r[1]["callback"], "my_update_func");
      assert_empty($r[1]["options"]);
      
      $r = route("post", "/blog/:id", "my_post_func", array('params' => array('extra' => 10)));
@@ -177,7 +177,7 @@ test_case("Router");
      assert_match($r[2]["pattern"], "/blog/102");
      assert_length_of($r[2]["names"], 1);
      assert_equal($r[2]["names"][0], "id");
-     assert_equal($r[2]["function"], "my_post_func");
+     assert_equal($r[2]["callback"], "my_post_func");
      assert_not_empty($r[2]["options"]);
      assert_not_empty($r[2]["options"]['params']);
      assert_equal($r[2]["options"]['params']['extra'], 10);
@@ -206,18 +206,18 @@ test_case("Router");
      assert_false($r);
      
      $r = route_find("POST", "/create");
-     assert_equal($r["function"], "my_create_func");
+     assert_equal($r["callback"], "my_create_func");
      
      $r = route_find("GET", "/edit");
-     assert_equal($r["function"], "my_edit_func");
+     assert_equal($r["callback"], "my_edit_func");
      
      $r = route_find("GET", "/edit/120");
-     assert_equal($r["function"], "my_edit_func");
+     assert_equal($r["callback"], "my_edit_func");
      assert_equal($r["params"]["id"], 120);
      
      $r = route_find("GET","/limonade.jpg/thumb", 'my_jpeg');
      
-     assert_equal($r["function"], "my_jpeg");
+     assert_equal($r["callback"], "my_jpeg");
      assert_equal($r["params"][0], "limonade");
      assert_equal($r["params"]["size"], "thumb");
      
@@ -226,22 +226,22 @@ test_case("Router");
      
      assert_length_of($routes, 10);
      $r = route_find("GET", "/index");
-     assert_equal($r["function"], "my_index_func");
+     assert_equal($r["callback"], "my_index_func");
      
      $r = route_find("GET", "/index/ok");
-     assert_equal($r["function"], "my_index_func2");
+     assert_equal($r["callback"], "my_index_func2");
      
      $r = route_find("DELETE", "/delete");
-     assert_equal($r["function"], "my_delete_func");
+     assert_equal($r["callback"], "my_delete_func");
      
      $r = route_find("DELETE", "/delete/120");
-     assert_equal($r["function"], "my_delete_func");
+     assert_equal($r["callback"], "my_delete_func");
      
      $r = route_find("DELETE", "/delete/120/ok");
-     assert_equal($r["function"], "my_delete_func2");
+     assert_equal($r["callback"], "my_delete_func2");
      
      $r = route_find("GET", "/list/120");
-     assert_equal($r["function"], "my_list_func");
+     assert_equal($r["callback"], "my_list_func");
      
      /* testing parameterized functions */
      $extra_p   = array(123, 'id' => 123, 'name' => 'abc');
@@ -251,16 +251,16 @@ test_case("Router");
      $routes = route( "get", "/indexed/cat/*", "my_p_func", array('params' => $extra_p));
      
      $r = route_find("GET", "/no/cat/21");
-     assert_equal($r["function"], "my_p_func");
+     assert_equal($r["callback"], "my_p_func");
      assert_equal($r["params"]["id"], 21);
      
      $r = route_find("GET", "/with/cat/21");
-     assert_equal($r["function"], "my_p_func");
+     assert_equal($r["callback"], "my_p_func");
      assert_equal($r["params"]["id"], 21);
      assert_equal($r["params"]["name"], "abc");
      
      $r = route_find("GET", "/indexed/cat/21");
-     assert_equal($r["function"], "my_p_func");
+     assert_equal($r["callback"], "my_p_func");
      assert_equal($r["params"][0], 21);
      assert_equal($r["params"]["id"], 123);
      assert_equal($r["params"]["name"], "abc");
@@ -268,11 +268,11 @@ test_case("Router");
      /* testing route with special characters */
      route( "get", "/mañana/:when", "my_special_func");
      $r = route_find("GET", "/mañana/123");
-     assert_equal($r["function"], "my_special_func");
+     assert_equal($r["callback"], "my_special_func");
      assert_equal($r["params"]["when"], 123);
      
      $r = route_find("GET", "/mañana/après demain");
-     assert_equal($r["function"], "my_special_func");
+     assert_equal($r["callback"], "my_special_func");
      assert_equal($r["params"]["when"], "après demain");
      
      

@@ -6,7 +6,6 @@
 ### 0.5 ###
 
 - complete CHANGES file
-- in route() functions, replace "function" name with "callback" name (example: in route_build() returned array). Enhanced use of callback pseudo-type instead of functions names.
 - testing calling lambdas from dispatch functions, with native php callback (see <http://limonade.tumblr.com/post/247098505/hidden-features>).
 - Adding documentation about dispatch callback (see blog post <http://limonade.tumblr.com/post/247098505/hidden-features>) (remember that controller function args must be in the same order as route params!)
 - explain controllers return output in README
@@ -57,6 +56,8 @@
 - in debug output, formating debug_backtrace to be me readable (like debug_backtrace output but with extra informations that can be toggled). Using show_settings view by kematzy ? http://github.com/kematzy/limonade/commit/02ad17260912757b73ff809acad8e970efafc4b4
 - improve security in render_file with a safe_dir option
 - new redirect_to (support for https)
+- Use callback pseudo-type instead of function in error user defined handling.
+
 
 
 ### 0.7 ###

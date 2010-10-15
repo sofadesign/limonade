@@ -33,7 +33,7 @@ function empty_controller()
 }
 
 function autorender($route){
-  return "AUTORENDERED OUTPUT for ".$route['function'];
+  return "AUTORENDERED OUTPUT for ".$route['callback'];
 }
 
 run(); 
