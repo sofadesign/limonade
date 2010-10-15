@@ -1157,7 +1157,9 @@ function dispatch_delete($path_or_array, $callback, $options = array())
  * @param string $method 
  * @param string|array $path_or_array 
  * @param callback $func
- * @param array $options (optional)
+ * @param array $options (optional). Available options: 
+ *   - 'params' key with an array of parameters: for parametrized routes.
+ *     those parameters will be merged with routes parameters.
  * @return array
  */
 function route()
@@ -1305,6 +1307,8 @@ function route_build($method, $path_or_array, $callback, $options = array())
 
 /**
  * Find a route and returns it.
+ * Parameters values extracted from the path are added and merged 
+ * with the default 'params' option of the route
  * If not found, returns false.
  * Routes are checked from first added to last added.
  *

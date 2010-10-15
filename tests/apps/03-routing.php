@@ -106,6 +106,14 @@ function test_route8b($id)
   (int) $id;
   return $id;
 }
+dispatch('/route8c/:id', 'test_route8c', array('params' => array('divider' => 2)));
+function test_route8c($divider, $id)
+{
+  (int) $id;
+  return ($id / $divider);
+}
+
+
 dispatch('/route9/*', 'MyController::staticMethod');
 dispatch('/route9b/*', 'MyController::staticMethod', array('params' => array(10)));
 dispatch(array('/route10/*', array('id')), 'MyController::staticMethod');

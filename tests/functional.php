@@ -83,6 +83,8 @@ test_case("Functional");
      assert_equal($response, 123);
      $response =  test_request($path.'route8b/123', 'GET');
      assert_equal($response, 123);
+     $response =  test_request($path.'route8c/10', 'GET');
+     assert_equal($response, 5);
      $response =  test_request($path.'route9/123', 'GET');
      assert_equal($response, 2460);
      $response =  test_request($path.'route9b/123', 'GET');

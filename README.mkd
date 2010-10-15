@@ -81,12 +81,12 @@ When `PUT` or `DELETE` methods are not supported (like in HTML form submision), 
         <p><input type="submit" value="Update"></p>
     </form>
 
-### Routing patterns ###
+### Routing patterns and parameters ###
 
 Patterns may include named parameters. Associated values of those parameters are available with the `params()` function.
 
     dispatch('/hello/:name', 'hello');
-        function  hello()
+        function hello()
         {
             $name = params('name');
             return 'Hello $name';
@@ -140,6 +140,16 @@ Wildcard parameters and regular expressions may be named too.
             $name = params('name');
         }
 
+You can also provide default parameters values that are merged with and overriden by the pattern parameters.
+
+    $options = array('params' => array('firstname'=>'bob'));
+    dispatch('/hello/:name', 'hello', $options);
+        function hello($firstname, $name) # default parameters first
+        {
+            return 'Hello $firstname $name';
+        }
+
+
 ### Callback controllers ###
 
 The callback can be a function, an object method, a static method or a closure.
@@ -163,6 +173,17 @@ See [php documentation](http://php.net/manual/en/language.pseudo-types.php#langu
     });
 
 Callback controllers return the rendered view output (see _Views and templates_).
+
+They can take the pattern parameters as arguments
+
+    dispatch('/hello/:firstname/:name', 'hello');
+        function hello($firstname, $name)
+        {
+            # $firstname parameter equals params('firstname');
+            # and $name parameter equals params('name');
+            return 'Hello $firstname $name';
+        }
+  
 
 Callbacks called by routes can be written anywhere before the execution of the  `run()` function. They can also be grouped in controllers files stored in a `controllers/` folder.
 
