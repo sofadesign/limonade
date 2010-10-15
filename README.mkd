@@ -372,7 +372,12 @@ Output is temporized so that it can easily handle large files.
 
 [TODO] `content_for($name); endcontent();`
 
-## Before and after request ##
+## Hooks and filters ##
+
+Limonade allow the user to define some functions to enhance the Limonade behaviour with its own needs.
+
+Some of those, like the `before` hook and the `after` filter are commonly used, and others are only for an advanced usage that might require a good comprehension of Limonade internals.
+
 
 ### Before ###
 
@@ -409,6 +414,26 @@ An `after` output filter is also available. It's executed after each request and
     
 The current executed route is also available for `after` function.
 
+### Before render ###
+
+You can define a `before_render` function that will filter your view before rendering it.
+
+The first three parameters are the same as those passed to the `render` function:
+
+* `$content_or_func`: the view string
+* `$layout`: current layout path
+* `$locals`: variables passed directly to the `render` function
+
+Last parameter, `$view_path` is by default `file_path(option('views_dir'), $content_or_func);`
+
+
+    function before_render($content_or_func, $layout, $locals, $view_path)
+    {
+      # Transform $content_or_func, $layout, $locals or $view_path.
+      # Then return there new values
+      return array($content_or_func, $layout, $locals, $view_path);
+    }
+
 ### Autorender ###
 
 You can define your own `autorender` function to make automatic rendering  depending on current matching route. It will be executed if your controller returns a null output.
@@ -430,6 +455,18 @@ You can define your own `autorender` function to make automatic rendering  depen
     }
     
 In this example, when url `/` is called, `hello()` is executed and then `autorender()` renders the matching `hello.html.php` view.
+
+### Before exit ###
+
+If you define a `before_exit`, it is called at the begining of the stop/exit process (`stop_and_exit` function called automatically at Limonade application termination).
+
+    function before_exit($exit)
+    {
+        # $exit is the same parameter as the one passed to `stop_and_exit`.
+        # If it's false, the exit process will not be executed, 
+        # only the stop instructions
+        # by default it is true
+    }
 
 
 ## Configuration ##
