@@ -370,7 +370,47 @@ Output is temporized so that it can easily handle large files.
 
 ### Captures ###
 
-[TODO] `content_for($name); endcontent();`
+The `content_for` function allows you to capture a block of text in a view. The captured block will be made available for the layout. This is useful to manage layout regions like a sidebar or to set javascripts or stylesheets that are specific to a view.
+
+
+For example with this layout:
+
+    <div id="content">
+      <div id="main">
+        <?= $content; ?>
+      </div>
+      <div id="side">
+        <?php if (isset($side)) echo $side; ?>
+      </div>
+    </div>
+    
+And in your view:
+
+    <p>My main content</p>
+    
+    <?php content_for('side'); ?>
+    <ul>
+      <li><a href="<?php echo url_for('/pages/item1')?>">Item 1</a></li>
+      <li><a href="<?php echo url_for('/pages/item2')?>">Item 2</a></li>
+    </ul>
+    <?php end_content_for(); ?>
+
+Rendered result is:
+
+    <div id="content">
+      <div id="main">
+        <p>My main content</p>
+      </div>
+      <div id="side">
+        <ul>
+          <li><a href="?/pages/item1">Item 1</a></li>
+          <li><a href="?/pages/item1">Item 2</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+The above example is detailled in [this tutorial](http://blog.limonade-php.net/post/438674987/how-to-use-content-for-and-partial).
 
 ## Hooks and filters ##
 
@@ -1023,7 +1063,47 @@ Output is temporized so that it can easily handle large files.
 
 ### Captures ###
 
-[TODO] `content_for($name); endcontent();`
+The `content_for` function allows you to capture a block of text in a view. The captured block will be made available for the layout. This is useful to manage layout regions like a sidebar or to set javascripts or stylesheets that are specific to a view.
+
+
+For example with this layout:
+
+    <div id="content">
+      <div id="main">
+        <?= $content; ?>
+      </div>
+      <div id="side">
+        <?php if (isset($side)) echo $side; ?>
+      </div>
+    </div>
+    
+And in your view:
+
+    <p>My main content</p>
+    
+    <?php content_for('side'); ?>
+    <ul>
+      <li><a href="<?php echo url_for('/pages/item1')?>">Item 1</a></li>
+      <li><a href="<?php echo url_for('/pages/item2')?>">Item 2</a></li>
+    </ul>
+    <?php end_content_for(); ?>
+
+Rendered result is:
+
+    <div id="content">
+      <div id="main">
+        <p>My main content</p>
+      </div>
+      <div id="side">
+        <ul>
+          <li><a href="?/pages/item1">Item 1</a></li>
+          <li><a href="?/pages/item1">Item 2</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+The above example is detailled in [this tutorial](http://blog.limonade-php.net/post/438674987/how-to-use-content-for-and-partial).
 
 ## Hooks and filters ##
 
@@ -1676,7 +1756,47 @@ Output is temporized so that it can easily handle large files.
 
 ### Captures ###
 
-[TODO] `content_for($name); endcontent();`
+The `content_for` function allows you to capture a block of text in a view. The captured block will be made available for the layout. This is useful to manage layout regions like a sidebar or to set javascripts or stylesheets that are specific to a view.
+
+
+For example with this layout:
+
+    <div id="content">
+      <div id="main">
+        <?= $content; ?>
+      </div>
+      <div id="side">
+        <?php if (isset($side)) echo $side; ?>
+      </div>
+    </div>
+    
+And in your view:
+
+    <p>My main content</p>
+    
+    <?php content_for('side'); ?>
+    <ul>
+      <li><a href="<?php echo url_for('/pages/item1')?>">Item 1</a></li>
+      <li><a href="<?php echo url_for('/pages/item2')?>">Item 2</a></li>
+    </ul>
+    <?php end_content_for(); ?>
+
+Rendered result is:
+
+    <div id="content">
+      <div id="main">
+        <p>My main content</p>
+      </div>
+      <div id="side">
+        <ul>
+          <li><a href="?/pages/item1">Item 1</a></li>
+          <li><a href="?/pages/item1">Item 2</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+The above example is detailled in [this tutorial](http://blog.limonade-php.net/post/438674987/how-to-use-content-for-and-partial).
 
 ## Hooks and filters ##
 

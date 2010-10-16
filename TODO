@@ -6,13 +6,9 @@
 ### 0.5 ###
 
 - complete CHANGES file
-- testing and documenting autorendering features
 - write tests for partial()
 - refactor partial()
 - partial() write small doc (README) and examples
-- write tests for content_for()
-- refactor content_for()
-- content_for() write small doc (README) and examples
 - removing php shortags in example to enhance compatibility
 
 

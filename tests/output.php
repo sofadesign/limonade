@@ -74,6 +74,18 @@ test_case("Output");
     assert_match("/$q_lorem/", $html);
   }
   
+  function test_output_content_for()
+  {
+    $response =  test_request(TESTS_DOC_ROOT.'02-outputs.php/content_for', 'GET');
+    $o = <<<HTML
+<html><body>
+<p>my content</p>
+<p>my sidebar</p>
+</body></html>
+HTML;
+    assert_equal($response, $o);
+  }
+  
   function test_output_html()
   {
     

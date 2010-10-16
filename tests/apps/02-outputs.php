@@ -32,8 +32,31 @@ function empty_controller()
 
 }
 
+dispatch('/content_for', 'content_for_example');
+function content_for_example()
+{
+  return render('html_default_view', 'html_default_layout');
+}
+
+
 function autorender($route){
   return "AUTORENDERED OUTPUT for ".$route['callback'];
 }
 
 run(); 
+
+
+# _INLINE templates___________________________________________________________
+  
+function html_default_layout($vars){ extract($vars);?>
+<html><body>
+<?php echo $content; ?>
+<?php echo $side; ?>
+</body></html><?php };
+
+function html_default_view($vars){ extract($vars);?>
+<p>my content</p>
+<?php content_for('side');?>
+<p><?php echo 'my'; ?> sidebar</p>
+<?php end_content_for();?>
+<?php };
