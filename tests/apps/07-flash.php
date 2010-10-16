@@ -57,13 +57,13 @@ function html_default_layout($vars){ extract($vars);?>
 </head>
 <body>
   <article>
-    <?=$content;?>
+    <?php echo $content;?>
     
     <?php if(!empty($flash)): ?>
     <section>
       <h2>Current flash messages ( flash_now() / $flash )</h2>
       <pre><code>
-        <?= var_dump(flash_now()); ?>
+        <?php echo  var_dump(flash_now()); ?>
       </code></pre>
     </section>
     <?php endif; ?>
@@ -71,12 +71,12 @@ function html_default_layout($vars){ extract($vars);?>
   <hr>
   <nav>
     <p><strong>Menu:</strong>
-      <a href="<?=url_for('/')?>">One</a> |
-      <a href="<?=url_for('two')?>">Two</a> |
-      <a href="<?=url_for('three')?>">Three</a> |
-      <a href="<?=url_for('four')?>">Four</a> |
-      <a href="<?=url_for('five')?>">Five</a> |
-      <a href="<?=url_for('six')?>">Six</a>
+      <a href="<?php echo url_for('/')?>">One</a> |
+      <a href="<?php echo url_for('two')?>">Two</a> |
+      <a href="<?php echo url_for('three')?>">Three</a> |
+      <a href="<?php echo url_for('four')?>">Four</a> |
+      <a href="<?php echo url_for('five')?>">Five</a> |
+      <a href="<?php echo url_for('six')?>">Six</a>
     </p>
   </nav>
 </body>

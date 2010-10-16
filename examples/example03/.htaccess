@@ -9,5 +9,5 @@
     # test string is a valid directory
     RewriteCond %{SCRIPT_FILENAME} !-d
     
-    RewriteRule ^.*$ index.php [L]
+    RewriteRule ^(.*)$   index.php?uri=/$1    [NC,L,QSA]
 </IfModule>
