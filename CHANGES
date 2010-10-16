@@ -1,5 +1,26 @@
 [Changes since last revision]
 
+[2010-10-16: VERSION 0.5.0]
+
+Fix several bugs and add many new features and tests. See [git logs](http://github.com/sofadesign/limonade/commits/master) and [lighthouse reports](http://sofadesign.lighthouseapp.com/projects/29612-limonade/tickets?q=state%3Aclosed&filter=state%3Aclosed)for a complete overview.
+
+* [NEW] `initialize` user defined hook allows initialization after libs are loaded but before routes are processed
+* [FIXED] error_handler_dispatch: now exit properly after errors that stop application [#39] 
+* [NEW] tests: helpers/assertions for HTTP testing
+* [FIXED] improve compatibility with PHP 5.3
+* [NEW] url_for support for GET params
+* [NEW] optional HTTP status code parameter to redirect_to (usually you'll want HTTP_SEE_OTHER) 
+* [NEW] before_render user defined filter to transform view before rendering
+* [FIXED] flash_now` and `flash` return null when getting an undefined flash var, not all flash vars. [#38]
+* [NEW] Auto rendering feature
+* [NEW] User defined autoload_controller to customize the loading of controllers
+* [CHANGED] Add $routes variable to before() and after() functions
+* [NEW] Add gzip option
+* [NEW] Improve URLs handling: special characters support and extra GET params with or without url_rewriting.
+* [FIXED] Adding a security option that prevents output in require_once_dir 
+
+
+
 [2009-11-30: VERSION 0.4.6]
 
 * [CHANGED] for IIS/Windows compatibility: file_path() normalizes paths in *nix way, even on windows (backslashes are converted in slashes, double slashes are replaced by one). Refactoring options paths in run() to fix paths on windows.
