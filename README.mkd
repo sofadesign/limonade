@@ -368,9 +368,21 @@ A header specifies the proper HTTP `Content-type` depending on the file extensio
 
 Output is temporized so that it can easily handle large files.
 
+### Partials ###
+
+The `partial` function is a shortcut to render with no layout. Useful to manage reusable blocks and to keep them in separate files.
+
+This code
+
+    partial('my_posts.php', array('posts'=>$posts));
+    
+is the same as
+
+    render('my_posts.php', null, array('posts'=>$posts));
+
 ### Captures ###
 
-The `content_for` function allows you to capture a block of text in a view. The captured block will be made available for the layout. This is useful to manage layout regions like a sidebar or to set javascripts or stylesheets that are specific to a view.
+The `content_for` function allows you to capture a block of text in a view. Thus the captured block will be available for the layout. This is useful to manage layout regions like a sidebar or to set javascripts or stylesheets that are specific to a view.
 
 
 For example with this layout:
@@ -411,6 +423,8 @@ Rendered result is:
 
 
 The above example is detailled in [this tutorial](http://blog.limonade-php.net/post/438674987/how-to-use-content-for-and-partial).
+
+Use captures with partials, it will help you to organize your views and will avoid you to copy/paste the same code many times.
 
 ## Hooks and filters ##
 
@@ -1061,9 +1075,21 @@ A header specifies the proper HTTP `Content-type` depending on the file extensio
 
 Output is temporized so that it can easily handle large files.
 
+### Partials ###
+
+The `partial` function is a shortcut to render with no layout. Useful to manage reusable blocks and to keep them in separate files.
+
+This code
+
+    partial('my_posts.php', array('posts'=>$posts));
+    
+is the same as
+
+    render('my_posts.php', null, array('posts'=>$posts));
+
 ### Captures ###
 
-The `content_for` function allows you to capture a block of text in a view. The captured block will be made available for the layout. This is useful to manage layout regions like a sidebar or to set javascripts or stylesheets that are specific to a view.
+The `content_for` function allows you to capture a block of text in a view. Thus the captured block will be available for the layout. This is useful to manage layout regions like a sidebar or to set javascripts or stylesheets that are specific to a view.
 
 
 For example with this layout:
@@ -1104,6 +1130,8 @@ Rendered result is:
 
 
 The above example is detailled in [this tutorial](http://blog.limonade-php.net/post/438674987/how-to-use-content-for-and-partial).
+
+Use captures with partials, it will help you to organize your views and will avoid you to copy/paste the same code many times.
 
 ## Hooks and filters ##
 
@@ -1754,9 +1782,21 @@ A header specifies the proper HTTP `Content-type` depending on the file extensio
 
 Output is temporized so that it can easily handle large files.
 
+### Partials ###
+
+The `partial` function is a shortcut to render with no layout. Useful to manage reusable blocks and to keep them in separate files.
+
+This code
+
+    partial('my_posts.php', array('posts'=>$posts));
+    
+is the same as
+
+    render('my_posts.php', null, array('posts'=>$posts));
+
 ### Captures ###
 
-The `content_for` function allows you to capture a block of text in a view. The captured block will be made available for the layout. This is useful to manage layout regions like a sidebar or to set javascripts or stylesheets that are specific to a view.
+The `content_for` function allows you to capture a block of text in a view. Thus the captured block will be available for the layout. This is useful to manage layout regions like a sidebar or to set javascripts or stylesheets that are specific to a view.
 
 
 For example with this layout:
@@ -1797,6 +1837,8 @@ Rendered result is:
 
 
 The above example is detailled in [this tutorial](http://blog.limonade-php.net/post/438674987/how-to-use-content-for-and-partial).
+
+Use captures with partials, it will help you to organize your views and will avoid you to copy/paste the same code many times.
 
 ## Hooks and filters ##
 

@@ -6,9 +6,6 @@
 ### 0.5 ###
 
 - complete CHANGES file
-- write tests for partial()
-- refactor partial()
-- partial() write small doc (README) and examples
 - removing php shortags in example to enhance compatibility
 
 
