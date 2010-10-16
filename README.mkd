@@ -457,13 +457,15 @@ The current matching route is also passed to the before function, so you can tes
 
 An `after` output filter is also available. It's executed after each request and can apply a transformation to the output (except for `render_file` outputs  which are sent directly to the output buffer).
 
-    function after($output, $route){
-        $config = array('indent' => TRUE,
-    	                'output-xhtml' => TRUE,
-    	                'wrap' => 200);
-
-    	$tidy = tidy_parse_string($output, $config, option('encoding'));
-    	return $tidy->cleanRepair();
+    function after($output){
+      $config = array('indent' => TRUE,
+                      'output-xhtml' => TRUE,
+                      'wrap' => 200);
+      
+      $encoding = strtoupper(str_replace('-','', option('encoding')));
+      $tidy = tidy_parse_string($output, $config, $encoding);
+      $tidy->cleanRepair();
+      return $tidy;
     }
     
 The current executed route is also available for `after` function.
@@ -1164,13 +1166,15 @@ The current matching route is also passed to the before function, so you can tes
 
 An `after` output filter is also available. It's executed after each request and can apply a transformation to the output (except for `render_file` outputs  which are sent directly to the output buffer).
 
-    function after($output, $route){
-        $config = array('indent' => TRUE,
-    	                'output-xhtml' => TRUE,
-    	                'wrap' => 200);
-
-    	$tidy = tidy_parse_string($output, $config, option('encoding'));
-    	return $tidy->cleanRepair();
+    function after($output){
+      $config = array('indent' => TRUE,
+                      'output-xhtml' => TRUE,
+                      'wrap' => 200);
+      
+      $encoding = strtoupper(str_replace('-','', option('encoding')));
+      $tidy = tidy_parse_string($output, $config, $encoding);
+      $tidy->cleanRepair();
+      return $tidy;
     }
     
 The current executed route is also available for `after` function.
@@ -1871,13 +1875,15 @@ The current matching route is also passed to the before function, so you can tes
 
 An `after` output filter is also available. It's executed after each request and can apply a transformation to the output (except for `render_file` outputs  which are sent directly to the output buffer).
 
-    function after($output, $route){
-        $config = array('indent' => TRUE,
-    	                'output-xhtml' => TRUE,
-    	                'wrap' => 200);
-
-    	$tidy = tidy_parse_string($output, $config, option('encoding'));
-    	return $tidy->cleanRepair();
+    function after($output){
+      $config = array('indent' => TRUE,
+                      'output-xhtml' => TRUE,
+                      'wrap' => 200);
+      
+      $encoding = strtoupper(str_replace('-','', option('encoding')));
+      $tidy = tidy_parse_string($output, $config, $encoding);
+      $tidy->cleanRepair();
+      return $tidy;
     }
     
 The current executed route is also available for `after` function.
