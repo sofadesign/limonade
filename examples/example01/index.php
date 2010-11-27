@@ -113,7 +113,7 @@ function html_my_layout($vars){ extract($vars);?>
 	<a href="<?php echo url_for('/how_are_you/', $name)?>">How are you ?</a>
 </body>
 </html>
-<?}
+<?php }
 
 function html_welcome($vars){ extract($vars);?> 
 <h3>Hello <?php echo $name?>!</h3>
@@ -121,8 +121,4 @@ function html_welcome($vars){ extract($vars);?>
 <hr>
 <p><a href="<?php echo url_for('/images/soda_glass.jpg')?>">
    <img src="<?php echo url_for('/soda_glass.jpg/thumb')?>"></a></p>
-<?}
-
-
-
-?>
+<?php }
