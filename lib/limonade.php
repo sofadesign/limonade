@@ -2448,9 +2448,8 @@ function file_path($path)
   $win_ds = '\\';
   $n_path = count($args) > 1 ? implode($ds, $args) : $path;
   if(strpos($n_path, $win_ds) !== false) $n_path = str_replace( $win_ds, $ds, $n_path );
-  $n_path = preg_replace( '/'.preg_quote($ds, $ds).'{2,}'.'/', 
-                          $ds, 
-                          $n_path);
+  $n_path = preg_replace( "#$ds+#", $ds, $n_path);
+  
   return $n_path;
 }
 
