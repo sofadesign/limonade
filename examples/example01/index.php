@@ -8,7 +8,7 @@ function configure()
 
 function before($route)
 {
-  header("X-LIM-route-function: ".$route['function']);
+  header("X-LIM-route-function: ".$route['callback']);
   layout('html_my_layout');
 }
 
