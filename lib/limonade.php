@@ -1344,7 +1344,8 @@ function route_find($method, $path)
         {
           $names = range($n_names, $n_matches - 1);
         }
-        $params = array_replace($params, array_combine($names, $matches));
+        $arr_comb = array_combine($names, $matches);
+        $params = array_replace($params, $arr_comb);
       }
       $route["params"] = $params;
       return $route;
