@@ -2,3 +2,4 @@
 .tmproj
 tests/config/config.php
 **/cookiefile
+*.un~
