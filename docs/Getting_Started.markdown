@@ -36,9 +36,31 @@ Now go to `http://localhost/lim_blog/` in your browser, you should see:
 ![Hello World](images/hello_world.png)
 
 
+A restful structure
+-------------------
+
+( lien restful )
+( limonade support conception restful mais vous pouvez utiliser un autre architecture; but there are many advantages to use a restful architecture ).
 
 
+    #  HTTP Method |  Url path         |  Controller function
+    # -------------+-------------------+-------------------------------------------
+    #   GET        |  /posts           |  blog_posts_index
+    #   GET        |  /posts/:id       |  blog_posts_show 
+    #   GET        |  /posts/new       |  blog_posts_new 
+    #   POST       |  /posts           |  blog_posts_create
+    #   GET        |  /posts/:id/edit  |  blog_posts_edit 
+    #   PUT        |  /posts/:id       |  blog_posts_update
+    #   DELETE     |  /posts/:id       |  blog_posts_destroy
+    #   GET        |  /                |  blog_posts_home (redirect to /posts)
+    # -------------+-------------------+-------------------------------------------
 
+    # matches GET /posts: will show the list of posts
+    dispatch()
+    
+    # matches GET /posts/123: will the post with id 123
+    
+    # matches GET…
 
 
 Go further
