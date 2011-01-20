@@ -72,8 +72,10 @@ define('X-SENDFILE',            10);
 define('X-LIGHTTPD-SEND-FILE',  20);
 
 # for PHP 5.3.0 <
-if(!defined('E_DEPRECATED'))      define('E_DEPRECATED', 8192);
-if(!defined('E_USER_DEPRECATED')) define('E_USER_DEPRECATED', 16384);
+if(!defined('E_DEPRECATED'))         define('E_DEPRECATED',        8192);
+if(!defined('E_USER_DEPRECATED'))    define('E_USER_DEPRECATED',   16384);
+# for PHP 5.2.0 <
+if (!defined('E_RECOVERABLE_ERROR')) define('E_RECOVERABLE_ERROR', 4096);
 
 
 ## SETTING BASIC SECURITY _____________________________________________________
