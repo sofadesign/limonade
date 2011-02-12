@@ -1932,8 +1932,8 @@ function debug($var, $output_as_html = true)
       $out = var_export($var, true);
       break;
   }
-  if ($output_as_html) { $out = h($out);  }
-  return "<pre>\n" . $out ."</pre>";
+  if ($output_as_html) { $out = "<pre>\n" . h($out) ."</pre>"; }
+  return $out;
 }
 
 
