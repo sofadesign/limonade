@@ -56,9 +56,9 @@
  * Limonade version
  */
 define('LIMONADE',              '0.5.0');
-define('LIM_NAME',              'Fresh_and_Minty_Limonade_App');
+define('LIM_NAME',              'Un grand cru qui sait se faire attendre');
 define('LIM_START_MICROTIME',   (float)substr(microtime(), 0, 10));
-define('LIM_SESSION_NAME',      LIM_NAME);
+define('LIM_SESSION_NAME',      'LIMONADE'.str_replace('.','x',LIMONADE));
 define('LIM_SESSION_FLASH_KEY', '_lim_flash_messages');
 define('LIM_START_MEMORY',      memory_get_usage());
 define('E_LIM_HTTP',            32768);
@@ -72,8 +72,10 @@ define('X-SENDFILE',            10);
 define('X-LIGHTTPD-SEND-FILE',  20);
 
 # for PHP 5.3.0 <
-if(!defined('E_DEPRECATED'))      define('E_DEPRECATED', 8192);
-if(!defined('E_USER_DEPRECATED')) define('E_USER_DEPRECATED', 16384);
+if(!defined('E_DEPRECATED'))         define('E_DEPRECATED',        8192);
+if(!defined('E_USER_DEPRECATED'))    define('E_USER_DEPRECATED',   16384);
+# for PHP 5.2.0 <
+if (!defined('E_RECOVERABLE_ERROR')) define('E_RECOVERABLE_ERROR', 4096);
 
 
 ## SETTING BASIC SECURITY _____________________________________________________
@@ -174,6 +176,7 @@ dispatch(array("/_lim_public/**", array('_lim_public_file')), 'render_limonade_f
 # Abstract methods that might be redefined by user:
 #
 # - function configure(){}
+# - function initialize(){}
 # - function autoload_controller($callback){}
 # - function before($route){}
 # - function after($output, $route){}
@@ -391,15 +394,15 @@ function run($env = null)
   call_if_exists('initialize');
 
   # 6. Check request
-  if($rm = request_method())
+  if($rm = request_method($env))
   {
-    if(request_is_head()) ob_start(); // then no output
+    if(request_is_head($env)) ob_start(); // then no output
 
     if(!request_method_is_allowed($rm))
       halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
 
     # 6.1 Check matching route
-    if($route = route_find($rm, request_uri()))
+    if($route = route_find($rm, request_uri($env)))
     {
       params($route['params']);
 
@@ -411,21 +414,21 @@ function run($env = null)
           require_once_dir(option('controllers_dir'));
         }
       }
-      autoload_controller($route['function']);
+      autoload_controller($route['callback']);
 
-      if(is_callable($route['function']))
+      if(is_callable($route['callback']))
       {
         # 6.3 Call before function
         call_if_exists('before', $route);
 
         # 6.4 Call matching controller function and output result
-        $output = call_user_func_array($route['function'], array_values($route['params']));
+        $output = call_user_func_array($route['callback'], array_values($route['params']));
         if(is_null($output)) $output = call_if_exists('autorender', $route);
         echo after(error_notices_render() . $output, $route);
       }
-      else halt(SERVER_ERROR, "Routing error: undefined function '{$route['function']}'", $route);      
+      else halt(SERVER_ERROR, "Routing error: undefined function '{$route['callback']}'", $route);      
     }
-    else route_missing($rm, request_uri());
+    else route_missing($rm, request_uri($env));
 
   }
   else halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
@@ -440,7 +443,7 @@ function run($env = null)
  */
 function stop_and_exit($exit = true)
 {
-  call_if_exists('before_exit');
+  call_if_exists('before_exit', $exit);
   $flash_sweep = true;
   $headers = headers_list();
   foreach($headers as $header)
@@ -1088,62 +1091,62 @@ function request_uri($env = null)
  *
  * @return void
  */
-function dispatch($path_or_array, $function, $options = array())
+function dispatch($path_or_array, $callback, $options = array())
 {
-  dispatch_get($path_or_array, $function, $options);
+  dispatch_get($path_or_array, $callback, $options);
 }
 
 /**
  * Add a GET route. Also automatically defines a HEAD route.
  *
  * @param string $path_or_array 
- * @param string $function
+ * @param string $callback
  * @param array $options (optional). See {@link route()} for available options.
  * @return void
  */
-function dispatch_get($path_or_array, $function, $options = array())
+function dispatch_get($path_or_array, $callback, $options = array())
 {
-  route("GET", $path_or_array, $function, $options);
-  route("HEAD", $path_or_array, $function, $options);
+  route("GET", $path_or_array, $callback, $options);
+  route("HEAD", $path_or_array, $callback, $options);
 }
 
 /**
  * Add a POST route
  *
  * @param string $path_or_array 
- * @param string $function
+ * @param string $callback
  * @param array $options (optional). See {@link route()} for available options.
  * @return void
  */
-function dispatch_post($path_or_array, $function, $options = array())
+function dispatch_post($path_or_array, $callback, $options = array())
 {
-  route("POST", $path_or_array, $function, $options);
+  route("POST", $path_or_array, $callback, $options);
 }
 
 /**
  * Add a PUT route
  *
  * @param string $path_or_array 
- * @param string $function
+ * @param string $callback
  * @param array $options (optional). See {@link route()} for available options.
  * @return void
  */
-function dispatch_put($path_or_array, $function, $options = array())
+function dispatch_put($path_or_array, $callback, $options = array())
 {
-  route("PUT", $path_or_array, $function, $options);
+  route("PUT", $path_or_array, $callback, $options);
 }
 
 /**
  * Add a DELETE route
  *
  * @param string $path_or_array 
- * @param string $function
+ * @param string $callback
  * @param array $options (optional). See {@link route()} for available options.
  * @return void
  */
-function dispatch_delete($path_or_array, $function, $options = array())
+function dispatch_delete($path_or_array, $callback, $options = array())
 {
-  route("DELETE", $path_or_array, $function, $options);
+  route("DELETE", $path_or_array, $callback, $options);
 }
 
 
@@ -1157,7 +1160,9 @@ function dispatch_delete($path_or_array, $function, $options = array())
  * @param string $method 
  * @param string|array $path_or_array 
  * @param callback $func
- * @param array $options (optional)
+ * @param array $options (optional). Available options: 
+ *   - 'params' key with an array of parameters: for parametrized routes.
+ *     those parameters will be merged with routes parameters.
  * @return array
  */
 function route()
@@ -1199,16 +1204,16 @@ function route_reset()
  * @access private
  * @param string $method allowed http method (one of those returned by {@link request_methods()})
  * @param string|array $path_or_array 
- * @param callback $func callback function called when route is found. It can be
+ * @param callback $callback callback called when route is found. It can be
  *   a function, an object method, a static method or a closure.
  *   See {@link http://php.net/manual/en/language.pseudo-types.php#language.types.callback php documentation}
  *   to learn more about callbacks.
  * @param array $options (optional). Available options: 
  *   - 'params' key with an array of parameters: for parametrized routes.
  *     those parameters will be merged with routes parameters.
- * @return array array with keys "method", "pattern", "names", "function", "options"
+ * @return array array with keys "method", "pattern", "names", "callback", "options"
  */
-function route_build($method, $path_or_array, $func, $options = array())
+function route_build($method, $path_or_array, $callback, $options = array())
 {
   $method = strtoupper($method);
   if(!in_array($method, request_methods())) 
@@ -1299,12 +1304,14 @@ function route_build($method, $path_or_array, $func, $options = array())
   return array( "method"       => $method,
                 "pattern"      => $pattern,
                 "names"        => $names,
-                "function"     => $func,
+                "callback"     => $callback,
                 "options"      => $options  );
 }
 
 /**
  * Find a route and returns it.
+ * Parameters values extracted from the path are added and merged 
+ * with the default 'params' option of the route
  * If not found, returns false.
  * Routes are checked from first added to last added.
  *
@@ -1312,7 +1319,7 @@ function route_build($method, $path_or_array, $func, $options = array())
  * @param string $method 
  * @param string $path
  * @return array,false route array has same keys as route returned by 
- *  {@link route_build()} ("method", "pattern", "names", "function", "options")
+ *  {@link route_build()} ("method", "pattern", "names", "callback", "options")
  *  + the processed "params" key
  */
 function route_find($method, $path)
@@ -1340,7 +1347,8 @@ function route_find($method, $path)
         {
           $names = range($n_names, $n_matches - 1);
         }
-        $params = array_replace($params, array_combine($names, $matches));
+        $arr_comb = array_combine($names, $matches);
+        $params = array_replace($params, $arr_comb);
       }
       $route["params"] = $params;
       return $route;
@@ -1821,18 +1829,18 @@ function benchmark()
 /**
  * Calls a function if exists
  *
- * @param callback $func a function stored in a string variable, 
+ * @param callback $callback a function stored in a string variable, 
  *   or an object and the name of a method within the object
  *   See {@link http://php.net/manual/en/language.pseudo-types.php#language.types.callback php documentation}
  *   to learn more about callbacks.
  * @param mixed $arg,.. (optional)
  * @return mixed
  */
-function call_if_exists($func)
+function call_if_exists($callback)
 {
   $args = func_get_args();
-  $func = array_shift($args);
-  if(is_callable($func)) return call_user_func_array($func, $args);
+  $callback = array_shift($args);
+  if(is_callable($callback)) return call_user_func_array($callback, $args);
   return;
 }
 
@@ -1925,6 +1933,7 @@ function debug($var, $output_as_html = true)
       $out = var_export($var, true);
       break;
   }
+<<<<<<< HEAD
   if ($output_as_html) { $out = h($out);  }
   return "<pre>\n" . $out ."</pre>";
 }
@@ -1953,6 +1962,10 @@ function show_settings_output()
   { 
     return "<!-- option(show_settings) disabled -->";
   }
+=======
+  if ($output_as_html) { $out = "<pre>\n" . h($out) ."</pre>"; }
+  return $out;
+>>>>>>> master
 }
 
 
@@ -2182,7 +2195,8 @@ function http_response_status_is_valid($num)
  */
 function http_response_status_code($num)
 {
-  if($str = http_response_status($num)) return "HTTP/1.1 $num $str";
+  $protocole = empty($_SERVER["SERVER_PROTOCOL"]) ? "HTTP/1.1" : $_SERVER["SERVER_PROTOCOL"];
+  if($str = http_response_status($num)) return "$protocole $num $str";
 }
 
 /**
@@ -2469,9 +2483,8 @@ function file_path($path)
   $win_ds = '\\';
   $n_path = count($args) > 1 ? implode($ds, $args) : $path;
   if(strpos($n_path, $win_ds) !== false) $n_path = str_replace( $win_ds, $ds, $n_path );
-  $n_path = preg_replace( '/'.preg_quote($ds, $ds).'{2,}'.'/', 
-                          $ds, 
-                          $n_path);
+  $n_path = preg_replace( "#$ds+#", $ds, $n_path);
+  
   return $n_path;
 }
 

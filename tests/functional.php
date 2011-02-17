@@ -19,6 +19,19 @@ test_case("Functional");
      assert_header($response, 'X-Limonade', LIM_NAME);
    }
    
+   function test_functional_session()
+   {
+     $response =  test_request(TESTS_DOC_ROOT.'06-session.php/', 'GET', false);
+     // In http://www.php.net/manual/en/function.session-name.php:
+     //
+     // > The session name references the session id in cookies and URLs. It
+     //   should contain only alphanumeric characters; it should be short and
+     //   descriptive (i.e. for users with enabled cookie warnings). If name is
+     //   specified, the name of the current session is changed to its value.
+     assert_true(ctype_alnum($response));
+     assert_equal($response, "LIMONADE".str_replace('.', 'x', LIMONADE));
+   }
+   
    function test_functional_routing()
    {
      $path = TESTS_DOC_ROOT.'03-routing.php/';
@@ -32,6 +45,12 @@ test_case("Functional");
      assert_equal($response, 20);
      $response =  test_request($path.'route4', 'GET');
      assert_equal($response, 20);
+     
+     if(version_compare(PHP_VERSION, '5.3.0') >= 0)
+     {
+       $response =  test_request($path.'route-lambda', 'GET');
+       assert_equal($response, 'LAMBDA CALL');
+     }
      
      $response =  test_request($path.'route5', 'GET');
      assert_equal($response, 'human');
@@ -64,6 +83,8 @@ test_case("Functional");
      assert_equal($response, 123);
      $response =  test_request($path.'route8b/123', 'GET');
      assert_equal($response, 123);
+     $response =  test_request($path.'route8c/10', 'GET');
+     assert_equal($response, 5);
      $response =  test_request($path.'route9/123', 'GET');
      assert_equal($response, 2460);
      $response =  test_request($path.'route9b/123', 'GET');
@@ -88,8 +109,25 @@ test_case("Functional");
      /* undefined route */
      $response =  test_request($path.'unknown_route', 'GET');
      assert_match('/Page not found/', $response);     
-     
    }
+   
+   function test_functional_params()
+   {
+     $path = TESTS_DOC_ROOT.'08-params.php';
+     $response =  test_request($path, 'GET');
+     assert_equal($response, 'HELLO');
+     
+     $response =  test_request($path.'?/&sort=asc', 'GET');
+     assert_match('/sort=asc/', $response);
+     
+     $response =  test_request($path.'/books/fr', 'GET');
+     assert_equal($response, 'lang=fr');
+     
+     $response =  test_request($path.'?uri=books/fr&sort=asc&page=2', 'GET');
+     assert_match('/sort=asc/', $response);
+     assert_match('/page=2/', $response);
+   }
+   
    
    function test_functional_errors()
    {
@@ -122,5 +160,52 @@ test_case("Functional");
      $response =  test_request($path.'halt1234', 'GET', true);
      assert_status($response, 501);
      assert_match("/A personnal error #1234/", $response);
+   }
+   
+   function test_functional_flash()
+   {
+     $path = TESTS_DOC_ROOT.'07-flash.php/';
+     
+     $ch = curl_init(); 
+     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); 
+     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE); 
+     curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE); 
+     curl_setopt($ch, CURLOPT_HEADER, 0); 
+     curl_setopt($ch, CURLOPT_COOKIEFILE, "cookiefile"); 
+     curl_setopt($ch, CURLOPT_COOKIEJAR, "cookiefile"); 
+     curl_setopt($ch, CURLOPT_COOKIE, session_name() . '=' . session_id()); 
+     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); 
+
+     curl_setopt($ch, CURLOPT_URL, $path); 
+     $response  = curl_exec($ch); 
+     assert_no_match("/ON DISPLAY/", $response);
+     
+     curl_setopt($ch, CURLOPT_URL, $path.'two'); 
+     $response  = curl_exec($ch); 
+     assert_match("/ON DISPLAY 2/", $response);
+
+     curl_setopt($ch, CURLOPT_URL, $path.'three'); 
+     $response  = curl_exec($ch); 
+     assert_match("/ON DISPLAY 3/", $response);
+
+     curl_setopt($ch, CURLOPT_URL, $path.'four'); 
+     $response  = curl_exec($ch); 
+     assert_match("/ON DISPLAY 4/", $response);
+     assert_match("/NO FLASH MESSAGE ON NEXT PAGE/", $response);
+
+     curl_setopt($ch, CURLOPT_URL, $path.'five'); 
+     $response  = curl_exec($ch); 
+     assert_match("/REDIRECTED FROM INDEX FIVE/", $response);
+     assert_match("/ON DISPLAY 6/", $response);
+
+     curl_setopt($ch, CURLOPT_URL, $path.'six'); 
+     $response  = curl_exec($ch);
+     assert_no_match("/ON DISPLAY/", $response);
+
+     curl_setopt($ch, CURLOPT_URL, $path.'two'); 
+     $response  = curl_exec($ch); 
+     assert_no_match("/ON DISPLAY/", $response);
+
+     curl_close($ch);
    }
 end_test_case();

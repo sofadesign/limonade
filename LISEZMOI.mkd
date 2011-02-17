@@ -1,5 +1,8 @@
 # Limonade: LISEZMOI
 
+**ATTENTION: cette documentation n'est pas à jour. Par manque d'aide et de temps, j'ai décidé de ne plus la maintenir. Aussi veuillez vous référer au fichier README.mkd en anglais. Si souhaitez faire revivre la documentation de Limonade dans la langue de Molière, votre contribution est bien entendu la bienvenue. En vous remerciant pour votre compréhension.**  
+**— Fabrice Luraine.**
+
 Limonade est un micro framework PHP qui permet le prototypage et le développement rapide d'applications web.
 
 Prenant son inspiration de frameworks tels que [Sinatra](http://www.sinatrarb.com/) ou [Camping](http://github.com/camping/camping) en Ruby, ou encore  [Orbit](http://orbit.luaforge.net/) en Lua, il se veut simple, léger et d'un usage extrêmement souple.

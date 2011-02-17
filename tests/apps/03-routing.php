@@ -42,6 +42,12 @@ $obj = new MyController(10);
 dispatch('/route2', array($obj, 'method'));
 dispatch('/route3', array('MyController', 'staticMethod'));
 dispatch('/route4', 'MyController::staticMethod');
+if(version_compare(PHP_VERSION, '5.3.0') >= 0)
+{
+  dispatch('/route-lambda', function(){
+    return 'LAMBDA CALL';
+  });
+}
 
 /* parameterized routes */
 dispatch('/route5', 'test_route5', array('params' => array('type' => 'human')));
@@ -100,6 +106,14 @@ function test_route8b($id)
   (int) $id;
   return $id;
 }
+dispatch('/route8c/:id', 'test_route8c', array('params' => array('divider' => 2)));
+function test_route8c($divider, $id)
+{
+  (int) $id;
+  return ($id / $divider);
+}
+
+
 dispatch('/route9/*', 'MyController::staticMethod');
 dispatch('/route9b/*', 'MyController::staticMethod', array('params' => array(10)));
 dispatch(array('/route10/*', array('id')), 'MyController::staticMethod');
@@ -132,6 +146,8 @@ function test_route11delete()
 {
   return "DELETE";
 }
+
+
 
 
 

@@ -8,7 +8,7 @@ function configure()
 
 function before($route)
 {
-  header("X-LIM-route-function: ".$route['function']);
+  header("X-LIM-route-function: ".$route['callback']);
   layout('html_my_layout');
 }
 
@@ -104,25 +104,21 @@ function html_my_layout($vars){ extract($vars);?>
 </head>
 <body>
   <h1>Limonde first example</h1>
-	<?=$content?>
+	<?php echo $content?>
 	<hr>
-	<a href="<?=url_for('/')?>">Home</a> |
-	<a href="<?=url_for('/hello/', $name)?>">Hello</a> | 
-	<a href="<?=url_for('/welcome/', $name)?>">Welcome !</a> | 
-	<a href="<?=url_for('/are_you_ok/', $name)?>">Are you ok ?</a> | 
-	<a href="<?=url_for('/how_are_you/', $name)?>">How are you ?</a>
+	<a href="<?php echo url_for('/')?>">Home</a> |
+	<a href="<?php echo url_for('/hello/', $name)?>">Hello</a> | 
+	<a href="<?php echo url_for('/welcome/', $name)?>">Welcome !</a> | 
+	<a href="<?php echo url_for('/are_you_ok/', $name)?>">Are you ok ?</a> | 
+	<a href="<?php echo url_for('/how_are_you/', $name)?>">How are you ?</a>
 </body>
 </html>
-<?}
+<?php }
 
 function html_welcome($vars){ extract($vars);?> 
-<h3>Hello <?=$name?>!</h3>
-<p><a href="<?=url_for('/how_are_you/', $name)?>">How are you <?=$name?>?</a></p>
+<h3>Hello <?php echo $name?>!</h3>
+<p><a href="<?php echo url_for('/how_are_you/', $name)?>">How are you <?php echo $name?>?</a></p>
 <hr>
-<p><a href="<?=url_for('/images/soda_glass.jpg')?>">
-   <img src="<?=url_for('/soda_glass.jpg/thumb')?>"></a></p>
-<?}
-
-
-
-?>
+<p><a href="<?php echo url_for('/images/soda_glass.jpg')?>">
+   <img src="<?php echo url_for('/soda_glass.jpg/thumb')?>"></a></p>
+<?php }

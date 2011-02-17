@@ -30,13 +30,20 @@ A [discussion group](http://groups.google.fr/group/limonade) is also available f
     
 ## Routes ##
 
-Routes combine an HTTP method with an URL matching pattern and a function
+Routes combine 
+
+* an HTTP method 
+* with an URL matching pattern 
+* and a callback parameter
+
+So they make the glue between an URL + a HTTP method, and the code provided in a callback controller.
 
     dispatch('/', 'my_get_function');
     # same as dispatch_get('my_get_function');
         function my_get_function()
         {
             // Show something
+            // with the code of this callback controller
         }
     
     dispatch_post('/', 'my_post_function'); 
@@ -74,10 +81,12 @@ When `PUT` or `DELETE` methods are not supported (like in HTML form submision), 
         <p><input type="submit" value="Update"></p>
     </form>
 
+### Routing patterns and parameters ###
+
 Patterns may include named parameters. Associated values of those parameters are available with the `params()` function.
 
     dispatch('/hello/:name', 'hello');
-        function  hello()
+        function hello()
         {
             $name = params('name');
             return 'Hello $name';
@@ -131,7 +140,52 @@ Wildcard parameters and regular expressions may be named too.
             $name = params('name');
         }
 
-Functions called by routes can be written anywhere before the execution of the  `run()` function. They can also be grouped in controllers files stored in a `controllers/` folder.
+You can also provide default parameters values that are merged with and overriden by the pattern parameters.
+
+    $options = array('params' => array('firstname'=>'bob'));
+    dispatch('/hello/:name', 'hello', $options);
+        function hello($firstname, $name) # default parameters first
+        {
+            return 'Hello $firstname $name';
+        }
+
+
+### Callback controllers ###
+
+The callback can be a function, an object method, a static method or a closure.
+See [php documentation](http://php.net/manual/en/language.pseudo-types.php#language.types.callback) to learn more about the callback pseudo-type.
+
+    # will call my_hello_function() function
+    dispatch('/hello', 'my_hello_function');
+
+    # Static class method call, MyClass::hello();
+    dispatch('/hello', array('MyClass', 'hello'));
+
+    # Object method call, $obj->hello();
+    dispatch('/hello', array($obj, 'hello'));
+
+    # Static class method call (As of PHP 5.2.3), MyClass::hello();
+    dispatch('/hello', 'MyClass::hello');
+
+    # Using lambda function (As of PHP 5.3.0)
+    dispatch('/hello', function(){
+      return 'Hello World!';
+    });
+
+Callback controllers return the rendered view output (see _Views and templates_).
+
+They can take the pattern parameters as arguments
+
+    dispatch('/hello/:firstname/:name', 'hello');
+        function hello($firstname, $name)
+        {
+            # $firstname parameter equals params('firstname');
+            # and $name parameter equals params('name');
+            return 'Hello $firstname $name';
+        }
+  
+
+Callbacks called by routes can be written anywhere before the execution of the  `run()` function. They can also be grouped in controllers files stored in a `controllers/` folder.
 
     /                   # site root
      - index.php        # file with routes declarations and run()
@@ -145,6 +199,21 @@ Functions called by routes can be written anywhere before the execution of the  
 This folder location can be set with the `controllers_dir` option.
 
     option('controllers_dir', dirname(__FILE__).'/other/dir/for/controllers');
+    
+
+You can also define `autoload_controller` function to load controllers in your own way:
+
+    function autoload_controller($callback) 
+    { 
+       # If $callback, the callback function defined in matching route, 
+       # begins with 'admin_', then we load controllers from
+       # the admin sub-directory in the controllers directory.
+       # Else we load controllers the normal way from 'controllers_dir'.
+       
+       $path = option('controllers_dir'); 
+       if(strpos($callback, "admin_") === 0) $path = file_path($path, 'admin'); 
+       require_once_dir($path); 
+    }
 
 ### Url rewriting ###
 
@@ -156,7 +225,9 @@ With a `.htaccess` in your app folder
       Options +FollowSymlinks
       Options +Indexes
       RewriteEngine on
-      # RewriteBase /my_app/ # if your app is in a subfolder
+      
+      # if your app is in a subfolder
+      # RewriteBase /my_app/ 
 
       # test string is a valid files
       RewriteCond %{SCRIPT_FILENAME} !-f
@@ -230,7 +301,7 @@ If layout value is `null`, rendering will be done without any layout.
 Formatted string can be used like with  [`sprintf`](http://php.net/manual/function.sprintf.php):
 
     set('num', 5);
-    set('tree');
+    set('where', 'tree');
     return render('There are %d monkeys in the %s') // returns 'There are 5 monkeys in the tree'
 
 It's also possible to provide a function name as a template. By this way, we can for example produce a single file application.
@@ -299,11 +370,70 @@ A header specifies the proper HTTP `Content-type` depending on the file extensio
 
 Output is temporized so that it can easily handle large files.
 
+### Partials ###
+
+The `partial` function is a shortcut to render with no layout. Useful to manage reusable blocks and to keep them in separate files.
+
+This code
+
+    partial('my_posts.php', array('posts'=>$posts));
+    
+is the same as
+
+    render('my_posts.php', null, array('posts'=>$posts));
+
 ### Captures ###
 
-[TODO] `content_for($name); endcontent();`
+The `content_for` function allows you to capture a block of text in a view. Thus the captured block will be available for the layout. This is useful to manage layout regions like a sidebar or to set javascripts or stylesheets that are specific to a view.
 
-## Before and after request ##
+
+For example with this layout:
+
+    <div id="content">
+      <div id="main">
+        <?= $content; ?>
+      </div>
+      <div id="side">
+        <?php if (isset($side)) echo $side; ?>
+      </div>
+    </div>
+    
+And in your view:
+
+    <p>My main content</p>
+    
+    <?php content_for('side'); ?>
+    <ul>
+      <li><a href="<?php echo url_for('/pages/item1')?>">Item 1</a></li>
+      <li><a href="<?php echo url_for('/pages/item2')?>">Item 2</a></li>
+    </ul>
+    <?php end_content_for(); ?>
+
+Rendered result is:
+
+    <div id="content">
+      <div id="main">
+        <p>My main content</p>
+      </div>
+      <div id="side">
+        <ul>
+          <li><a href="?/pages/item1">Item 1</a></li>
+          <li><a href="?/pages/item1">Item 2</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+The above example is detailled in [this tutorial](http://blog.limonade-php.net/post/438674987/how-to-use-content-for-and-partial).
+
+Use captures with partials, it will help you to organize your views and will avoid you to copy/paste the same code many times.
+
+## Hooks and filters ##
+
+Limonade allow the user to define some functions to enhance the Limonade behaviour with its own needs.
+
+Some of those, like the `before` hook and the `after` filter are commonly used, and others are only for an advanced usage that might require a good comprehension of Limonade internals.
+
 
 ### Before ###
 
@@ -321,7 +451,7 @@ The current matching route is also passed to the before function, so you can tes
 * `method` (HTTP method)
 * `pattern` (regexp pattern)
 * `names` (params names)
-* `function` (callback)
+* `callback` (callback)
 * `options` (route options)
 * `params` (current params)
 
@@ -329,16 +459,37 @@ The current matching route is also passed to the before function, so you can tes
 
 An `after` output filter is also available. It's executed after each request and can apply a transformation to the output (except for `render_file` outputs  which are sent directly to the output buffer).
 
-    function after($output, $route){
-        $config = array('indent' => TRUE,
-    	                'output-xhtml' => TRUE,
-    	                'wrap' => 200);
-
-    	$tidy = tidy_parse_string($output, $config, option('encoding'));
-    	return $tidy->cleanRepair();
+    function after($output){
+      $config = array('indent' => TRUE,
+                      'output-xhtml' => TRUE,
+                      'wrap' => 200);
+      
+      $encoding = strtoupper(str_replace('-','', option('encoding')));
+      $tidy = tidy_parse_string($output, $config, $encoding);
+      $tidy->cleanRepair();
+      return $tidy;
     }
     
 The current executed route is also available for `after` function.
+
+### Before render ###
+
+You can define a `before_render` function that will filter your view before rendering it.
+
+The first three parameters are the same as those passed to the `render` function:
+
+* `$content_or_func`: the view string
+* `$layout`: current layout path
+* `$locals`: variables passed directly to the `render` function
+
+Last parameter, `$view_path` is by default `file_path(option('views_dir'), $content_or_func);`
+
+    function before_render($content_or_func, $layout, $locals, $view_path)
+    {
+      # Transform $content_or_func, $layout, $locals or $view_path.
+      # Then return there new values
+      return array($content_or_func, $layout, $locals, $view_path);
+    }
 
 ### Autorender ###
 
@@ -356,11 +507,23 @@ You can define your own `autorender` function to make automatic rendering  depen
     
     function autorender($route)
     {
-        $view = $route['function'] . ".html.php";
+        $view = $route['callback'] . ".html.php";
         return html($view);
     }
     
 In this example, when url `/` is called, `hello()` is executed and then `autorender()` renders the matching `hello.html.php` view.
+
+### Before exit ###
+
+If you define a `before_exit`, it is called at the begining of the stop/exit process (`stop_and_exit` function called automatically at Limonade application termination).
+
+    function before_exit($exit)
+    {
+        # $exit is the same parameter as the one passed to `stop_and_exit`.
+        # If it's false, the exit process will not be executed, 
+        # only the stop instructions
+        # by default it is true
+    }
 
 
 ## Configuration ##
@@ -541,9 +704,5 @@ Limonade also provides a useful set of functions that can help you managing file
 * [Limonade blog](http://blog.limonade-php.net/)
 * [Issue tracking / release planning](http://sofadesign.lighthouseapp.com/projects/29612-limonade/overview)
 * [Support / Discussions](http://groups.google.fr/group/limonade)
-
-
-
-
 
         

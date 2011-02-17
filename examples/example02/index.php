@@ -119,25 +119,21 @@ function html_my_layout($vars){ extract($vars);?>
 </head>
 <body>
   <h1>Limonde second example: errors</h1>
-	<?=$content?>
+	<?php echo $content?>
 	<hr>
 	<p>
-	<a href="<?=url_for('/')?>">Home</a> |
-	<a href="<?=url_for('/everything/is_going_wrong')?>">everything is going wrong</a> | 
-	<a href="<?=url_for('/welcome/')?>">Welcome !</a> | 
-	<a href="<?=url_for('/welcome/bill')?>">Welcome Bill ?</a> | 
-	<a href="<?=url_for('/welcome/leland')?>">Welcome Leland ?</a> | 
-	<a href="<?=url_for('/welcome/bob')?>">Welcome Bob ?</a> | 
-	<a href="<?=url_for('/welcome/david')?>">Welcome David ?</a> | 
-	<a href="<?=url_for('/welcome/audrey')?>">Welcome Audrey ?</a> | 
+	<a href="<?php echo url_for('/')?>">Home</a> |
+	<a href="<?php echo url_for('/everything/is_going_wrong')?>">everything is going wrong</a> | 
+	<a href="<?php echo url_for('/welcome/')?>">Welcome !</a> | 
+	<a href="<?php echo url_for('/welcome/bill')?>">Welcome Bill ?</a> | 
+	<a href="<?php echo url_for('/welcome/leland')?>">Welcome Leland ?</a> | 
+	<a href="<?php echo url_for('/welcome/bob')?>">Welcome Bob ?</a> | 
+	<a href="<?php echo url_for('/welcome/david')?>">Welcome David ?</a> | 
+	<a href="<?php echo url_for('/welcome/audrey')?>">Welcome Audrey ?</a> | 
 	</p>
 </body>
 </html>
 <!--
 <?php print_r(benchmark()); ?>
 -->
-<?}
-
-
-
-?>
+<?};

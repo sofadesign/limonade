@@ -10,12 +10,7 @@ test_case("Output");
     env(null);
     option('encoding', 'utf-8');
   }
-  
-  function test_output_layout()
-  {
     
-  }
-  
   function test_output_render()
   {
     $lorem = "Lorem ipsum dolor sit amet.";
@@ -72,6 +67,43 @@ test_case("Output");
     assert_match("/<title>Page title<\/title>/", $html);
     assert_match("/Hello World/", $html);
     assert_match("/$q_lorem/", $html);
+  }
+  
+  function test_output_layout()
+  {
+    $response =  test_request(TESTS_DOC_ROOT.'02-outputs.php/layout', 'GET');
+    $o = <<<HTML
+<html><body>
+hello!</body></html>
+HTML;
+    assert_equal($response, $o);
+    
+    $response =  test_request(TESTS_DOC_ROOT.'02-outputs.php/layout2', 'GET');
+    $o = <<<HTML
+<html><body>
+<p>my content</p>
+<p>my sidebar</p>
+</body></html>
+HTML;
+    assert_equal($response, $o);
+  }
+  
+  function test_output_content_for()
+  {
+    $response =  test_request(TESTS_DOC_ROOT.'02-outputs.php/content_for', 'GET');
+    $o = <<<HTML
+<html><body>
+<p>my content</p>
+<p>my sidebar</p>
+</body></html>
+HTML;
+    assert_equal($response, $o);
+  }
+  
+  function test_output_partial()
+  {
+    $response =  test_request(TESTS_DOC_ROOT.'02-outputs.php/partial', 'GET');
+    assert_equal($response, 'no layout there buddy');
   }
   
   function test_output_html()
