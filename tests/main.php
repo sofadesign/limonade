@@ -212,6 +212,16 @@ test_case("Main");
      option('base_uri', '/api');
      $url = url_for('test', array('p1' => 'lorem', 'p2' => 'ipsum'));
      assert_equal($url,'/api/test?p1=lorem&amp;p2=ipsum');
-   }
+	 }
+
+	 function test_main_htmlspecialchars_decode()
+	 {
+		 assert_equal(limonade_htmlspecialchars_decode('&quot;'), '"');
+		 assert_equal(limonade_htmlspecialchars_decode('&lt;'), '<');
+		 assert_equal(limonade_htmlspecialchars_decode('&gt;'), '>');
+		 assert_equal(limonade_htmlspecialchars_decode('&amp;'), '&');
+		 assert_equal(limonade_htmlspecialchars_decode('&#39;', ENT_QUOTES), '\'');
+		 assert_equal(limonade_htmlspecialchars_decode('&#039;', ENT_QUOTES), '\'');
+	 }
    
 end_test_case();

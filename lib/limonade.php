@@ -2582,7 +2582,29 @@ function filter_var_url($str)
 }
 
 
+/**
+ * For PHP 5 < 5.1.0 (backward compatibility)
+ * (from {@link http://www.php.net/manual/en/function.htmlspecialchars-decode.php#82133})
+ * 
+ * @param string $string 
+ * @param string $quote_style, one of: ENT_COMPAT, ENT_QUOTES, ENT_NOQUOTES 
+ * @return the decoded string
+ */
+function limonade_htmlspecialchars_decode($string, $quote_style = ENT_COMPAT)
+{
+	$table = array_flip(get_html_translation_table(HTML_SPECIALCHARS, $quote_style));
+	if($quote_style === ENT_QUOTES)
+		$table['&#039;'] = '\'';
+	return strtr($string, $table);
+}
 
+if(!function_exists('htmlspecialchars_decode'))
+{
+	function htmlspecialchars_decode($string, $quote_style = ENT_COMPAT)
+	{
+		return limonade_htmlspecialchars_decode($string, $quote_style);
+	}
+}
 
 
 #   ================================= END ==================================   #
