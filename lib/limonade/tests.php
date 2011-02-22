@@ -333,6 +333,7 @@ function test_request($url, $method="GET", $include_header=false, $post_data=arr
     curl_setopt($curl, CURLOPT_HEADER, $include_header);
     curl_setopt($curl, CURLOPT_HTTPHEADER, $http_header);
     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1); 
     if($method == 'POST')
     {
       curl_setopt($curl, CURLOPT_POST, 1);
