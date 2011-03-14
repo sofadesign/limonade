@@ -9,7 +9,7 @@ dispatch('/', 'index');
 		foreach($pairs as $pair)
 		{
 			$keyAndValue = explode('=', $pair);
-			$params[$keyAndValue[0]] = $keyAndValue[1];
+			$params[$keyAndValue[0]] = count($keyAndValue) > 1 ? $keyAndValue[1] : '';
 		}
 		array_shift($params);
 
