@@ -108,7 +108,10 @@ test_case("Main");
      $obj = new TestCallIfExists();
      assert_equal(call_if_exists(array($obj, 'test'), 3), 30);
      assert_equal(call_if_exists(array('TestCallIfExists', 'testStatic'), 3), 60);
-     assert_equal(call_if_exists('TestCallIfExists::testStatic', 3), 60);
+		 if(version_compare(PHP_VERSION, '5.2.3', '>='))
+		 {			
+	     assert_equal(call_if_exists('TestCallIfExists::testStatic', 3), 60);
+		 }
    }
    
    function test_main_define_unless_exists()
