@@ -224,5 +224,18 @@ test_case("Main");
 		 assert_equal(limonade_htmlspecialchars_decode('&#39;', ENT_QUOTES), '\'');
 		 assert_equal(limonade_htmlspecialchars_decode('&#039;', ENT_QUOTES), '\'');
 	 }
+	
+	 function test_main_benchmark()
+	 {
+	 	 $bench = benchmark();
+		 assert_true(is_array($bench));
+		 assert_true(array_key_exists('execution_time', $bench));
+		 if(function_exists('memory_get_usage'))
+		 {
+			 assert_true(defined('LIM_START_MEMORY'));
+		   assert_true(array_key_exists('start_memory', $bench));
+		   assert_equal(LIM_START_MEMORY, $bench['start_memory']);
+		 }
+	 }
    
 end_test_case();
