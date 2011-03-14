@@ -60,7 +60,8 @@ define('LIM_NAME',              'Un grand cru qui sait se faire attendre');
 define('LIM_START_MICROTIME',   (float)substr(microtime(), 0, 10));
 define('LIM_SESSION_NAME',      'LIMONADE'.str_replace('.','x',LIMONADE));
 define('LIM_SESSION_FLASH_KEY', '_lim_flash_messages');
-define('LIM_START_MEMORY',      memory_get_usage());
+if(function_exists('memory_get_usage'))
+	define('LIM_START_MEMORY',      memory_get_usage());
 define('E_LIM_HTTP',            32768);
 define('E_LIM_PHP',             65536);
 define('E_LIM_DEPRECATED',      35000);
@@ -1800,21 +1801,26 @@ function end_content_for()
 
 /**
  * Shows current memory and execution time of the application.
+ * Returns only execution time if <code>memory_get_usage()</code> 
+ * isn't available.
+ * ( That's the case before PHP5.2.1 if PHP isn't compiled with option 
+ *   <code>--enable-memory-limit</code>. )
  * 
  * @access public
  * @return array
  */
 function benchmark()
 {
-  $current_mem_usage = memory_get_usage();
-  $execution_time = microtime() - LIM_START_MICROTIME;
-  
-  return array(
-    'current_memory' => $current_mem_usage,
-    'start_memory' => LIM_START_MEMORY,
-    'average_memory' => (LIM_START_MEMORY + $current_mem_usage) / 2,
-    'execution_time' => $execution_time
-  );
+	$res = array( 'execution_time' => (microtime() - LIM_START_MICROTIME) );
+  if(defined('LIM_START_MEMORY'))
+	{
+		$current_mem_usage     = memory_get_usage();
+		$res['current_memory'] = $current_mem_usage;
+		$res['start_memory']   = LIM_START_MEMORY;
+		$res['average_memory'] = (LIM_START_MEMORY + $current_mem_usage) / 2;
+	}
+	
+	return $res;
 }
 
 
