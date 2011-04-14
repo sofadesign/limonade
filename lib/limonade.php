@@ -893,6 +893,8 @@ function request_method($env = null)
   $m = array_key_exists('REQUEST_METHOD', $env['SERVER']) ? $env['SERVER']['REQUEST_METHOD'] : null;
   if($m == "POST" && array_key_exists('_method', $env['POST'])) 
     $m = strtoupper($env['POST']['_method']);
+  else if($m == "GET" && array_key_exists('_method', $env['GET']))
+    $m = strtoupper($env['GET']['_method']);
   if(!in_array(strtoupper($m), request_methods()))
   {
     trigger_error("'$m' request method is unknown or unavailable.", E_USER_WARNING);
