@@ -20,7 +20,7 @@ Limonade is easy to learn and provides everything that you can expect from a mod
 
 ## About this document ##
 
-This document provides a quick but comprehensive guide of Limonade features.
+This document provides a quick, but comprehensive, guide of Limonade features.
 
 For more informations, you can see the [website](http://www.limonade-php.net/), 
 [public API documentation](http://www.limonade-php.net/api/), [examples](http://www.limonade-php.net/examples.htm), and of course the [source code](http://github.com/sofadesign/limonade/blob/master/lib/limonade.php) which is still the best documentation.
@@ -65,7 +65,7 @@ So they make the glue between an URL + a HTTP method, and the code provided in a
         }
 
 
-Routes are matched in order they are declared.
+Routes are matched in the order they are declared.
 The search is performed with a path given through browser URL:
 
     http://localhost/my_app/?u=/my/path
@@ -75,7 +75,7 @@ The search is performed with a path given through browser URL:
 
 When `PUT` or `DELETE` methods are not supported (like in HTML form submision), you can use the `_method` parameter in `POST` requests: it will override the `POST` method.
 
-    <form action="<?=url_for('profile_update')?>" method="post">
+    <form action="<?php echo url_for('profile_update'); ?>" method="post">
         <p><input type="hidden" name="_method" value="PUT" id="_method"></p>
         <p>... your form fields</p>
         <p><input type="submit" value="Update"></p>
@@ -130,7 +130,7 @@ Pattern may also be a regular expression if it begins with a `^`
             $num = params(0);
         }
         
-Wildcard parameters and regular expressions may be named too.
+Wildcard parameters and regular expressions may be named, too.
 
     dispatch(array('/say/*/to/**', array("what", "name")), 'my_func');
         function my_func()
@@ -140,7 +140,7 @@ Wildcard parameters and regular expressions may be named too.
             $name = params('name');
         }
 
-You can also provide default parameters values that are merged with and overriden by the pattern parameters.
+You can also provide default parameter values that are merged with and overriden by the pattern parameters.
 
     $options = array('params' => array('firstname'=>'bob'));
     dispatch('/hello/:name', 'hello', $options);
@@ -185,7 +185,7 @@ They can take the pattern parameters as arguments
         }
   
 
-Callbacks called by routes can be written anywhere before the execution of the  `run()` function. They can also be grouped in controllers files stored in a `controllers/` folder.
+Callbacks called by routes can be written anywhere before the execution of the `run()` function. They can also be grouped in controller files stored in a `controllers/` folder.
 
     /                   # site root
      - index.php        # file with routes declarations and run()
@@ -272,7 +272,7 @@ Variables may also be passed directly:
         {
             # matching /hello/
             set_or_default('name', params('name'),'John');
-            return render('Hello %s!'); // returns 'Hello John!' because params('name') was empty. Else it would have return params('name') value.
+            return render('Hello %s!'); // returns 'Hello John!' because params('name') was empty. Else it would have returned params('name') value.
         }
     
 As you can notice, final output is returned by your controller. So remember to explicitly return your view in your controller with the `return` keyword! *(This remark will be particularly helpful for rubyists ;-) )*
@@ -281,7 +281,7 @@ As you can notice, final output is returned by your controller. So remember to e
 
 ### Layouts ###
 
-Templates may be rendered inside an other template: a layout.
+Templates may be rendered inside another template: a layout.
 
 Layout may be set with the `layout` function:
 
@@ -304,12 +304,12 @@ Formatted string can be used like with  [`sprintf`](http://php.net/manual/functi
     set('where', 'tree');
     return render('There are %d monkeys in the %s') // returns 'There are 5 monkeys in the tree'
 
-It's also possible to provide a function name as a template. By this way, we can for example produce a single file application.
+It's also possible to provide a function name as a template. By this way, for example, we can produce a single file application.
 
     function html_message($vars){ extract($vars);?>
-        <h1>Title: <?=h($title)?></h1>
+        <h1>Title: <?php echo h($title); ?></h1>
         <p>Message:<br>
-           <?=h($msg)?></p>
+           <?php echo h($msg); ?></p>
     <?}
     
     // in a request handling function
@@ -366,13 +366,13 @@ The `render_file` function can render a file directly to the ouptut buffer.
     
     render_file(option('public_dir').'foo.jpg');
 
-A header specifies the proper HTTP `Content-type` depending on the file extension and, for text files, encoding setting defined through options (utf8 by default) .
+A header specifies the proper HTTP `Content-type` depending on the file extension, and for text files, encoding setting defined through options (utf8 by default) .
 
 Output is temporized so that it can easily handle large files.
 
 ### Partials ###
 
-The `partial` function is a shortcut to render with no layout. Useful to manage reusable blocks and to keep them in separate files.
+The `partial` function is a shortcut to render with no layout. Useful for managing reusable blocks and keeping them in separate files.
 
 This code
 
@@ -384,14 +384,14 @@ is the same as
 
 ### Captures ###
 
-The `content_for` function allows you to capture a block of text in a view. Thus the captured block will be available for the layout. This is useful to manage layout regions like a sidebar or to set javascripts or stylesheets that are specific to a view.
+The `content_for` function allows you to capture a block of text in a view. Then the captured block will be available for the layout. This is useful for management of layout regions like a sidebar or to set javascript or stylesheet files that are specific to a view.
 
 
 For example with this layout:
 
     <div id="content">
       <div id="main">
-        <?= $content; ?>
+        <?php echo $content; ?>
       </div>
       <div id="side">
         <?php if (isset($side)) echo $side; ?>
@@ -424,20 +424,20 @@ Rendered result is:
     </div>
 
 
-The above example is detailled in [this tutorial](http://blog.limonade-php.net/post/438674987/how-to-use-content-for-and-partial).
+The above example is detailed in [this tutorial](http://blog.limonade-php.net/post/438674987/how-to-use-content-for-and-partial).
 
-Use captures with partials, it will help you to organize your views and will avoid you to copy/paste the same code many times.
+Use captures with partials, it will help you to organize your views and will keep you from having to copy/paste the same code many times.
 
 ## Hooks and filters ##
 
-Limonade allow the user to define some functions to enhance the Limonade behaviour with its own needs.
+Limonade allows the user to define some functions to enhance the Limonade behaviour with its own needs.
 
-Some of those, like the `before` hook and the `after` filter are commonly used, and others are only for an advanced usage that might require a good comprehension of Limonade internals.
+Some of those, like the `before` hook and the `after` filter are commonly used, and others are only for advanced usage that might require a good comprehension of Limonade internals.
 
 
 ### Before ###
 
-You can define a `before` function that will be executed before each request. This is very useful to define a default layout or passing common variables to the templates
+You can define a `before` function that will be executed before each request. This is very useful to define a default layout or for passing common variables to the templates.
 
     function before($route)
     {
@@ -446,7 +446,7 @@ You can define a `before` function that will be executed before each request. Th
     }
 
 
-The current matching route is also passed to the before function, so you can test it. It's an array as returned by the internal `route_find` function, with those values: 
+The current matching route is also passed to the before function, so you can test it. It's an array as returned by the internal `route_find` function, with these values: 
 
 * `method` (HTTP method)
 * `pattern` (regexp pattern)
@@ -528,7 +528,7 @@ If you define a `before_exit`, it is called at the begining of the stop/exit pro
 
 ## Configuration ##
 
-You can define a `configure` that will be executed when application is launched (at the begining of the `run` execution ).
+You can define a `configure` that will be executed when application is launched (at the begining of the `run` execution).
 You can define options inside it, a connection to a database ...
 
     function configure()
@@ -546,7 +546,7 @@ You can define options inside it, a connection to a database ...
         $GLOBALS['my_db_connexion'] = new PDO(option('dsn'));
     }
 
-PHP files contained in the `option('lib_dir')` folder (`lib/` by default) are loaded with [`require_once`](http://php.net/manual/function.require-once.php) just before executing `configure`. So you can place in this folder all your PHP librairies an functions so that they will be loaded and available at application launch.
+PHP files contained in the `option('lib_dir')` folder (`lib/` by default) are loaded with [`require_once`](http://php.net/manual/function.require-once.php) just before executing `configure`. So you can place in this folder all your PHP libraries and functions so that they will be loaded and available at application launch.
 
 ## Options ##
 
@@ -582,7 +582,7 @@ Default Limonade options have the following values:
 
 ## Sessions ##
 
-Session starts automatically by defaut. Then you can access session variables like you use to do, with `$_SESSION` array.
+Session starts automatically by default. Then you can access session variables like you used to do, with `$_SESSION` array.
 
 You can disable sessions with the `session` option.
 
@@ -603,21 +603,21 @@ See sources or api for more about all available helpers.
 
 ### url_for ###
 
-You can use the `url_for` function for rendering limonade urls. They will be well formed whatever the folder in the document root your application is installed on your web server.
+You can use the `url_for` function for rendering limonade urls. They will be well formed from whatever folder in the document root your application is installed on your web server.
 
     # with option('base_uri', '?')
     url_for('one', 'two', 'three'); # returns ?/one/two/three
     url_for('one', 'two', array('page' => 1)); # returns ?/one/two&amp;page=2
     
 
-If you want to use url rewriting, you need to set explicitly the `base_uri` option ( default is `/your_file_path/?`)
+If you want to use url rewriting, you need to explicitly set the `base_uri` option ( default is `/your_file_path/?`)
 
 
 ## Halting and error handling ##
 
 ### Halt ###
 
-You can stop immediatly the execution of the application with the `halt` function. Errors will be handled by default Limonade error handlers or those you have defined.
+You can stop immediately the execution of the application with the `halt` function. Errors will be handled by default Limonade error handlers or those you have defined.
 
     halt(NOT_FOUND);
     halt("En error occured in my app...");
@@ -629,7 +629,7 @@ By default, displays the `not_found` error output function and sends a _`404 NOT
     halt(NOT_FOUND);
     halt(NOT_FOUND, "This product doesn't exists.");
     
-To define a new view for this error, you can simply declare a `not_found` function 
+To define a new view for this error, you can simply declare a `not_found` function.
 
     function not_found($errno, $errstr, $errfile=null, $errline=null)
     {
@@ -649,9 +649,9 @@ By default, displays the `server_error` error output function and sends a _`500 
     halt(SERVER_ERROR, "Not good...");
     trigger_error("Wrong parameter", E_USER_ERROR);
     
-PHP errors are also caught en sent to this error handler output.
+PHP errors are also caught and sent to this error handler output.
 
-To define a new view for this error, you can simply declare a `server_error` function 
+To define a new view for this error, you can simply declare a `server_error` function.
 
     function server_error($errno, $errstr, $errfile=null, $errline=null)
     {
@@ -668,7 +668,7 @@ Allows you to define and access a layout dedicated to errors.
 
 ### Error handling ###
 
-In addition to the common `NOT_FOUND` and `SERVER_ERROR` errors displays, Limonade can redirect precisely errors to your own functions.
+In addition to the common `NOT_FOUND` and `SERVER_ERROR` error displays, Limonade can redirect precise errors to your own functions.
 
     error(E_USER_WARNING, 'my_notices')
         function my_notices($errno, $errstr, $errfile, $errline)
@@ -688,7 +688,7 @@ In addition to the common `NOT_FOUND` and `SERVER_ERROR` errors displays, Limona
             return html('<h1>'.http_response_status_code($errno).'</h1>');
         }
     
-`E_LIM_PHP` means all PHP errors (sended by PHP or raised by the user through [`trigger_error`](http://php.net/manual/function.trigger-error.php) function).
+`E_LIM_PHP` means all PHP errors (sent by PHP or raised by the user through [`trigger_error`](http://php.net/manual/function.trigger-error.php) function).
 
 ## Other useful functions ##
 
