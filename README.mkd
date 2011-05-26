@@ -329,7 +329,7 @@ A header specifies the proper HTTP `Content-type` (`text/html`) and encoding set
 `xml` function is used in the same way as `render`.
 A header specifies the proper HTTP `Content-type` (`text/xml`) and encoding setting defined through options (utf8 by default).
 
-    html('my_template.xml.php');
+    xml('my_template.xml.php');
 
 ### Templates CSS ###
 
