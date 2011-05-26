@@ -115,10 +115,10 @@ run();
 function html_my_layout($vars){ extract($vars);?> 
 <html>
 <head>
-	<title>Limonde second example</title>
+	<title>Limonade second example</title>
 </head>
 <body>
-  <h1>Limonde second example: errors</h1>
+  <h1>Limonade second example: errors</h1>
 	<?php echo $content?>
 	<hr>
 	<p>
