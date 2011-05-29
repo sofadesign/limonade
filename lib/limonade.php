@@ -315,17 +315,12 @@ function set_or_default($name, $value, $default)
  */
 function run($env = null)
 {
-  if(is_null($env)) $env = env();
    
   # 0. Set default configuration
   $root_dir  = dirname(app_file());
-  $base_path = dirname(file_path($env['SERVER']['SCRIPT_NAME']));
-  $base_file = basename($env['SERVER']['SCRIPT_NAME']);
-  $base_uri  = file_path($base_path, (($base_file == 'index.php') ? '?' : $base_file.'?'));
   $lim_dir   = dirname(__FILE__);
+  
   option('root_dir',           $root_dir);
-  option('base_path',          $base_path);
-  option('base_uri',           $base_uri); // set it manually if you use url_rewriting
   option('limonade_dir',       file_path($lim_dir));
   option('limonade_views_dir', file_path($lim_dir, 'limonade', 'views'));
   option('limonade_public_dir',file_path($lim_dir, 'limonade', 'public'));
@@ -343,6 +338,16 @@ function run($env = null)
   option('x-sendfile',         0); // 0: disabled, 
                                    // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
                                    // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
+
+  if(is_null($env)) $env = env();
+
+  $base_path = dirname(file_path($env['SERVER']['SCRIPT_NAME']));
+  $base_file = basename($env['SERVER']['SCRIPT_NAME']);
+  $base_uri  = file_path($base_path, (($base_file == 'index.php') ? '?' : $base_file.'?'));
+
+  option('base_path',          $base_path);
+  option('base_uri',           $base_uri); // set it manually if you use url_rewriting
+
 
   # 1. Set handlers
   # 1.1 Set error handling
