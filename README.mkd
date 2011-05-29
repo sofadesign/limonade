@@ -525,6 +525,25 @@ If you define a `before_exit`, it is called at the begining of the stop/exit pro
         # by default it is true
     }
 
+### Inspecting Headers that are being sent ###
+
+You can define a `inspect_header` function that will be called before Limonade emits a header() call. This way you can add additional Headers:
+
+    dispatch('/style.css', 'css');
+    function css()
+    {
+        # Generate css file and output
+        return css('style.css.php');
+    }
+
+    function inspect_header($header)
+    {
+        if (strpos($header, 'text/css') !== false)
+        {
+            # intercept text/css content-type and add caching to the headers
+            header("Cache-Control: max-age=600, public");
+        }
+    }
 
 ## Configuration ##
 
