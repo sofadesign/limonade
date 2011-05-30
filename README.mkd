@@ -527,6 +527,28 @@ If you define a `before_exit`, it is called at the begining of the stop/exit pro
         # by default it is true
     }
 
+### Before sending a header ###
+
+You can define a `before_sending_header` function that will be called before Limonade emits a header() call. This way you can add additional headers:
+
+    dispatch('/style.css', 'css');
+    function css()
+    {
+        # Generate css file and output
+        return css('style.css.php');
+    }
+
+    function before_sending_header($header)
+    {
+        if (strpos($header, 'text/css') !== false)
+        {
+            # intercept text/css content-type and add caching to the headers
+            send_header("Cache-Control: max-age=600, public");
+        }
+    }
+
+__Caution__: Take care not to cause a loop by repeatedly calling `send_header()` from the `before_sending_header()` function!
+
 
 ## Configuration ##
 
