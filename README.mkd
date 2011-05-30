@@ -27,7 +27,10 @@ For more informations, you can see the [website](http://www.limonade-php.net/),
 
 A [discussion group](http://groups.google.fr/group/limonade) is also available for more exchanges.
 
-    
+## Requirements ##
+
+* PHP 5.1.6 > (successfully tested with PHP 5.1.6 but it might work with older versions)
+   
 ## Routes ##
 
 Routes combine 
