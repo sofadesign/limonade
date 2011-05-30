@@ -185,7 +185,7 @@ function autorender($route)
  * @param string the headers that limonade will send
  * @return void
  */
-function inspect_header($header)
+function before_sending_header($header)
 {
 
 }
