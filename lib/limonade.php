@@ -2595,7 +2595,7 @@ function limonade_htmlspecialchars_decode($string, $quote_style = ENT_COMPAT)
 {
 	$table = array_flip(get_html_translation_table(HTML_SPECIALCHARS, $quote_style));
 	if($quote_style === ENT_QUOTES)
-		$table['&#039;'] = '\'';
+		$table['&#039;'] = $table['&#39;'] = '\'';
 	return strtr($string, $table);
 }
 

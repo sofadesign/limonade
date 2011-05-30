@@ -220,6 +220,7 @@ test_case("Main");
 		 assert_equal(limonade_htmlspecialchars_decode('&lt;'), '<');
 		 assert_equal(limonade_htmlspecialchars_decode('&gt;'), '>');
 		 assert_equal(limonade_htmlspecialchars_decode('&amp;'), '&');
+     echo htmlspecialchars_decode('&#39;', ENT_QUOTES);
 		 assert_equal(limonade_htmlspecialchars_decode('&#39;', ENT_QUOTES), '\'');
 		 assert_equal(limonade_htmlspecialchars_decode('&#039;', ENT_QUOTES), '\'');
 	 }
