@@ -187,6 +187,7 @@ dispatch(array("/_lim_public/**", array('_lim_public_file')), 'render_limonade_f
 # - function before_exit(){}
 # - function before_render($content_or_func, $layout, $locals, $view_path){}
 # - function autorender($route){}
+# - function before_sending_header($header){}
 #
 # See abstract.php for more details.
 
@@ -316,17 +317,12 @@ function set_or_default($name, $value, $default)
  */
 function run($env = null)
 {
-  if(is_null($env)) $env = env();
    
   # 0. Set default configuration
   $root_dir  = dirname(app_file());
-  $base_path = dirname(file_path($env['SERVER']['SCRIPT_NAME']));
-  $base_file = basename($env['SERVER']['SCRIPT_NAME']);
-  $base_uri  = file_path($base_path, (($base_file == 'index.php') ? '?' : $base_file.'?'));
   $lim_dir   = dirname(__FILE__);
+  
   option('root_dir',           $root_dir);
-  option('base_path',          $base_path);
-  option('base_uri',           $base_uri); // set it manually if you use url_rewriting
   option('limonade_dir',       file_path($lim_dir));
   option('limonade_views_dir', file_path($lim_dir, 'limonade', 'views'));
   option('limonade_public_dir',file_path($lim_dir, 'limonade', 'public'));
@@ -344,6 +340,16 @@ function run($env = null)
   option('x-sendfile',         0); // 0: disabled, 
                                    // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
                                    // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
+
+  if(is_null($env)) $env = env();
+
+  $base_path = dirname(file_path($env['SERVER']['SCRIPT_NAME']));
+  $base_file = basename($env['SERVER']['SCRIPT_NAME']);
+  $base_uri  = file_path($base_path, (($base_file == 'index.php') ? '?' : $base_file.'?'));
+
+  option('base_path',          $base_path);
+  option('base_uri',           $base_uri); // set it manually if you use url_rewriting
+
 
   # 1. Set handlers
   # 1.1 Set error handling
@@ -363,7 +369,7 @@ function run($env = null)
   }
   
   # 2.2 Set X-Limonade header
-  if($signature = option('signature')) header("X-Limonade: $signature");
+  if($signature = option('signature')) send_header("X-Limonade: $signature");
 
   # 3. Loading libs
   require_once_dir(option('lib_dir'));
@@ -1463,7 +1469,7 @@ function partial($content_or_func, $locals = array())
  */ 
 function html($content_or_func, $layout = '', $locals = array())
 {
-  if(!headers_sent()) header('Content-Type: text/html; charset='.strtolower(option('encoding')));
+  send_header('Content-Type: text/html; charset='.strtolower(option('encoding')));
   $args = func_get_args();
   return call_user_func_array('render', $args);
 }
@@ -1491,7 +1497,7 @@ function layout($function_or_file = null)
  */
 function xml($data)
 {
-  if(!headers_sent()) header('Content-Type: text/xml; charset='.strtolower(option('encoding')));
+  send_header('Content-Type: text/xml; charset='.strtolower(option('encoding')));
   $args = func_get_args();
   return call_user_func_array('render', $args);
 }
@@ -1506,7 +1512,7 @@ function xml($data)
  */
 function css($content_or_func, $layout = '', $locals = array())
 {
-  if(!headers_sent()) header('Content-Type: text/css; charset='.strtolower(option('encoding')));
+  send_header('Content-Type: text/css; charset='.strtolower(option('encoding')));
   $args = func_get_args();
   return call_user_func_array('render', $args);
 }
@@ -1521,7 +1527,7 @@ function css($content_or_func, $layout = '', $locals = array())
  */
 function js($content_or_func, $layout = '', $locals = array())
 {
-  if(!headers_sent()) header('Content-Type: application/javascript; charset='.strtolower(option('encoding')));
+  send_header('Content-Type: application/javascript; charset='.strtolower(option('encoding')));
   $args = func_get_args();
   return call_user_func_array('render', $args);
 }
@@ -1536,7 +1542,7 @@ function js($content_or_func, $layout = '', $locals = array())
  */
 function txt($content_or_func, $layout = '', $locals = array())
 {
-  if(!headers_sent()) header('Content-Type: text/plain; charset='.strtolower(option('encoding')));
+  send_header('Content-Type: text/plain; charset='.strtolower(option('encoding')));
   $args = func_get_args();
   return call_user_func_array('render', $args);
 }
@@ -1552,7 +1558,7 @@ function txt($content_or_func, $layout = '', $locals = array())
  */
 function json($data, $json_option = 0)
 {
-  if(!headers_sent()) header('Content-Type: application/json; charset='.strtolower(option('encoding')));
+  send_header('Content-Type: application/json; charset='.strtolower(option('encoding')));
   return version_compare(PHP_VERSION, '5.3.0', '>=') ? json_encode($data, $json_option) : json_encode($data);
 }
 
@@ -1582,12 +1588,26 @@ function render_file($filename, $return = false)
     $content_type = mime_type(file_extension($filename));
     $header = 'Content-type: '.$content_type;
     if(file_is_text($filename)) $header .= '; charset='.strtolower(option('encoding'));
-    if(!headers_sent()) header($header);
+    send_header($header);
     return file_read($filename, $return);
   }
   else halt(NOT_FOUND, "unknown filename $filename");
 }
 
+/**
+ * Call before_sending_header() if it exists, then send headers
+ * 
+ * @param string $header
+ * @return void
+ */
+function send_header($header = null, $replace = true, $code = false)
+{
+    if(!headers_sent()) 
+    {
+        call_if_exists('before_sending_header', $header);
+        header($header, $replace, $code);
+    }
+}
 
 
 
@@ -2019,7 +2039,7 @@ function status($code = 500)
   if(!headers_sent())
   {
     $str = http_response_status_code($code);
-    header($str);
+    send_header($str);
   }
 }
 
@@ -2065,10 +2085,10 @@ function redirect_to($params)
       }
       $n_params[] = $param;
     }
-		$uri = call_user_func_array('url_for', $n_params);
-		$uri = htmlspecialchars_decode($uri, ENT_NOQUOTES);
+    $uri = call_user_func_array('url_for', $n_params);
+    $uri = htmlspecialchars_decode($uri, ENT_NOQUOTES);
     stop_and_exit(false);
-    header('Location: '.$uri, true, $status);
+    send_header('Location: '.$uri, true, $status);
     exit;
   }
 }

@@ -177,3 +177,17 @@ function autorender($route)
   # process output depending on $route
   return $output;
 }
+
+/**
+ * Called if a header is about to be sent
+ *
+ * @abstract this function might be defined by user
+ * @param string the headers that limonade will send
+ * @return void
+ */
+function before_sending_header($header)
+{
+
+}
+
+
