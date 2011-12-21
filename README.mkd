@@ -2,7 +2,7 @@
 
 Limonade is a PHP micro framework for rapid web development and prototyping.
 
-It's inspired by frameworks like [Sinatra](http://www.sinatrarb.com/) or [Camping](http://github.com/camping/camping) in Ruby, or [Orbit](http://orbit.luaforge.net/) in Lua. It aims to be simple, lightweight and extremly flexible.
+It's inspired by frameworks like [Sinatra](http://www.sinatrarb.com/) or [Camping](http://github.com/camping/camping) in Ruby, or [Orbit](http://orbit.luaforge.net/) in Lua. It aims to be simple, lightweight and extremely flexible.
 
 Limonade provides functions that complete the PHP basic set, while keeping consistency with native functions and sitting up on them.
 
@@ -252,9 +252,9 @@ You can access your site with urls like `http://your.new-website.com/my/limonade
 ## Views and templates ##
 
 Template files are located by default in `views/` folder.
-Views folder location can be set with the `views_dir` option.
+Views folder location can be set with the `dir.views` option.
 
-    option('views_dir', dirname(__FILE__).'/other/dir/for/views');
+    option('dir.views', dirname(__FILE__).'/other/dir/for/views');
 
 To pass variables to templates, we use the function `set ()`
 
@@ -484,7 +484,7 @@ The first three parameters are the same as those passed to the `render` function
 * `$layout`: current layout path
 * `$locals`: variables passed directly to the `render` function
 
-Last parameter, `$view_path` is by default `file_path(option('views_dir'), $content_or_func);`
+Last parameter, `$view_path` is by default `file_path(option('dir.views'), $content_or_func);`
 
     function before_render($content_or_func, $layout, $locals, $view_path)
     {
@@ -585,17 +585,32 @@ You can use it to manage Limonade options and your own custom options in your ap
 
 Default Limonade options have the following values:
 
-    option('root_dir',        $root_dir); // this folder contains your main application file
+    option('dir.root',           $root_dir); // this folder contains your main application file
     option('base_path',          $base_path);
     option('base_uri',           $base_uri); // set it manually if you use url_rewriting
-    option('limonade_dir',       dirname(__FILE__).'/'); // this fiolder contains the limonade.php main file
-    option('limonade_views_dir', dirname(__FILE__).'/limonade/views/');
-    option('limonade_public_dir',dirname(__FILE__).'/limonade/public/');
-    option('public_dir',         $root_dir.'/public/');
-    option('views_dir',          $root_dir.'/views/');
-    option('controllers_dir',    $root_dir.'/controllers/');
-    option('lib_dir',            $root_dir.'/lib/');
-    option('error_views_dir',    option('limonade_views_dir'));
+    option('dir.limonade',       dirname(__FILE__).'/'); // this fiolder contains the limonade.php main file
+    option('dir.limonade.views', dirname(__FILE__).'/limonade/views/');
+    option('dir.limonade.public',dirname(__FILE__).'/limonade/public/');
+    option('dir.public',         $root_dir.'/public/');
+    option('dir.views',          $root_dir.'/views/');
+    option('dir.controllers',    $root_dir.'/controllers/');
+    option('dir.lib',            $root_dir.'/lib/');
+    option('dir.views.errors',   option('dir.limonade.views'));
+    
+    # custom dirs
+    option('dir.lib.cores',      file_path($lim_dir, 'core'));
+    option('dir.lib.core',       file_path($lim_dir, 'core'));
+    option('dir.lib.helpers',    file_path($lim_dir, 'helpers'));
+    option('dir.lib.lexts',      file_path($lim_dir, 'lexts'));
+
+    option('dir.db',             file_path(dirname($root_dir), 'db'));
+    option('dir.app',            file_path(dirname($lim_dir)));
+    option('dir.app.assets',     file_path(dirname($lim_dir), 'assets'));
+    option('dir.app.conf',       file_path(dirname($lim_dir), 'conf'));
+    option('dir.app.lib',        file_path($lim_dir));
+    option('dir.app.models',     file_path(dirname($lim_dir), 'models'));
+    option('dir.app.views',      file_path(dirname($lim_dir), 'views'));
+    
     option('env',                ENV_PRODUCTION);
     option('debug',              true);
     option('session',            LIM_SESSION_NAME); // true, false or the name of your session
@@ -603,6 +618,7 @@ Default Limonade options have the following values:
     option('x-sendfile',         0); // 0: disabled, 
                                      // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
                                      // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
+
 
 ## Sessions ##
 
