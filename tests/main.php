@@ -108,7 +108,10 @@ test_case("Main");
      $obj = new TestCallIfExists();
      assert_equal(call_if_exists(array($obj, 'test'), 3), 30);
      assert_equal(call_if_exists(array('TestCallIfExists', 'testStatic'), 3), 60);
-     assert_equal(call_if_exists('TestCallIfExists::testStatic', 3), 60);
+		 if(version_compare(PHP_VERSION, '5.2.3', '>='))
+		 {			
+	     assert_equal(call_if_exists('TestCallIfExists::testStatic', 3), 60);
+		 }
    }
    
    function test_main_define_unless_exists()
@@ -212,6 +215,30 @@ test_case("Main");
      option('base_uri', '/api');
      $url = url_for('test', array('p1' => 'lorem', 'p2' => 'ipsum'));
      assert_equal($url,'/api/test?p1=lorem&amp;p2=ipsum');
-   }
+	 }
+
+	 function test_main_htmlspecialchars_decode()
+	 {
+		 assert_equal(limonade_htmlspecialchars_decode('&quot;'), '"');
+		 assert_equal(limonade_htmlspecialchars_decode('&lt;'), '<');
+		 assert_equal(limonade_htmlspecialchars_decode('&gt;'), '>');
+		 assert_equal(limonade_htmlspecialchars_decode('&amp;'), '&');
+     echo htmlspecialchars_decode('&#39;', ENT_QUOTES);
+		 assert_equal(limonade_htmlspecialchars_decode('&#39;', ENT_QUOTES), '\'');
+		 assert_equal(limonade_htmlspecialchars_decode('&#039;', ENT_QUOTES), '\'');
+	 }
+	
+	 function test_main_benchmark()
+	 {
+	 	 $bench = benchmark();
+		 assert_true(is_array($bench));
+		 assert_true(array_key_exists('execution_time', $bench));
+		 if(function_exists('memory_get_usage'))
+		 {
+			 assert_true(defined('LIM_START_MEMORY'));
+		   assert_true(array_key_exists('start_memory', $bench));
+		   assert_equal(LIM_START_MEMORY, $bench['start_memory']);
+		 }
+	 }
    
 end_test_case();

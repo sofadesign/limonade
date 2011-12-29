@@ -1,15 +1,11 @@
 <?php
-/**
- * @package tests
- */
- 
-# ============================================================================ #
-#    TESTS                                                                     #
-# ============================================================================ #
 
-/**
- * load assertions
- */
+# @package tests
+
+# ----- 
+# #### TESTS
+
+//load assertions
 require_once dirname(__FILE__)."/assertions.php";
 
 
@@ -252,11 +248,11 @@ function test_call_func($func)
  * @return boolean true
  */
 function test_error_handler($errno, $errstr, $errfile, $errline)
-{
-	if($errno < E_USER_ERROR || $errno > E_USER_NOTICE) 
-	   echo test_cli_format("!!! ERROR", "red") . " [$errno], $errstr in $errfile at line $errline\n";
-	$GLOBALS["limonade"]["test_errors"][] = array($errno, $errstr, $errfile, $errline);
-   return true;
+{ 
+  if($errno < E_USER_ERROR || $errno > E_USER_NOTICE) 
+    echo test_cli_format("!!! ERROR", "red") . " [$errno], $errstr in $errfile at line $errline\n";
+  $GLOBALS["limonade"]["test_errors"][] = array($errno, $errstr, $errfile, $errline);
+  return true;
 }
 
 /**
@@ -292,7 +288,8 @@ function test_assert_failure($script, $line, $message)
    $GLOBALS["limonade"]["test_cases"][$name]['failures']++;
 }
 
-function test_cli_format($text, $format) {
+function test_cli_format($text, $format) 
+{ 
     $formats = array(
         "blue"       => 34,
         "bold"       => 1,
@@ -310,40 +307,47 @@ function test_cli_format($text, $format) {
     return chr(27) . "[01;{$format} m{$text}" . chr(27) . "[00m";
 }
 
-/**
- * Do HTTP request and return the response content.
- * 
- * @param string $url
- * @param string $method
- * @param bool $include_header
- * @return string
- * @author Nando Vieira
- */
-function test_request($url, $method="GET", $include_header=false, $post_data=array(), $http_header=array()) {
-    $method = strtoupper($method);
-    $allowed_methods = array("GET", "PUT", "POST", "DELETE", "HEAD");
-    if(!in_array($method, $allowed_methods))
-    {
-      $message = "The requested method '$method' is not allowed";
-      return assert('false; //'.$message);
-    }
-    
-    $curl = curl_init($url);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HEADER, $include_header);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $http_header);
-    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
-    if($method == 'POST')
-    {
-      curl_setopt($curl, CURLOPT_POST, 1);
-      curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data);
-    }
-    if($method == 'HEAD')
-    {
-      curl_setopt($curl, CURLOPT_NOBODY, true);
-    }
-    $response = curl_exec($curl);
-    curl_close($curl);
-
-    return $response;
+## 
+# Do HTTP request and return the response content.
+# 
+# @param string $url
+# 
+# @param string $method
+# 
+# @param bool $include_header
+# 
+# @return string
+# 
+# @author Nando Vieira
+#
+## 
+function test_request($url, $method="GET", $include_header=false, $post_data=array(), $http_header=array()) 
+{ 
+  $method = strtoupper($method);
+  $allowed_methods = array("GET", "PUT", "POST", "DELETE", "HEAD");
+  if(!in_array($method, $allowed_methods))
+  {
+    $message = "The requested method '$method' is not allowed";
+    return assert('false; //'.$message);
+  }
+  
+  $curl = curl_init($url);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($curl, CURLOPT_HEADER, $include_header);
+  curl_setopt($curl, CURLOPT_HTTPHEADER, $http_header);
+  curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+  curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1); 
+  if($method == 'POST')
+  {
+    curl_setopt($curl, CURLOPT_POST, 1);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data);
+  }
+  if($method == 'HEAD')
+  {
+    curl_setopt($curl, CURLOPT_NOBODY, true);
+  }
+  $response = curl_exec($curl);
+  curl_close($curl);
+  
+  return $response;
 }

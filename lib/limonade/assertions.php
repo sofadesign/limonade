@@ -1,19 +1,22 @@
 <?php
-/**
- * @package tests
- * @subpackage assertions
- */
-# ============================================================================ #
-#    ASSERTIONS                                                                #
-# ============================================================================ #
 
-/**
- * assert_true
- *
- * @param string $value 
- * @param string $message 
- * @return boolean
- */
+ 
+# @package tests
+# @subpackage assertions
+
+# -----
+# #### ASSERTIONS
+
+## 
+# assert_true
+# 
+# @param string $value 
+# 
+# @param string $message 
+# 
+# @return boolean
+# 
+##
 function assert_true($value, $message = '<1> should be TRUE')
 {
    test_run_assertion();
@@ -110,24 +113,24 @@ function assert_trigger_error($callable, $args = array(), $message = '<1> should
   return assert('$trigger_errors < count($GLOBALS["limonade"]["test_errors"]); //'.$message);
 }
 
-# TODO add web browser assertions assert_http_get, assert_http_response... as in SimpleTest (http://www.simpletest.org/en/web_tester_documentation.html)
+# #### TODO add web browser assertions assert_http_get, assert_http_response... as in SimpleTest (http://www.simpletest.org/en/web_tester_documentation.html)
 
 function assert_header($response, $expected_name, $expected_value = null, $message = "expected header '%s' to be equal to '%s' but received '%s: %s'")
 {
   test_run_assertion();
-  # see assert_header in http://github.com/fnando/voodoo-test/blob/f3b0994ef138a6ba94d5e7cef6c1fb1720797a86/lib/assertions.php
+  // see assert_header in http://github.com/fnando/voodoo-test/blob/f3b0994ef138a6ba94d5e7cef6c1fb1720797a86/lib/assertions.php
   $headers = preg_split("/^\s*$/ms", $response);
-  //var_dump($headers);    
+  // var_dump($headers);    
   $headers = preg_replace("/\s*$/sm", "", $headers[0]);
-  //var_dump($headers);   
+  // var_dump($headers);   
   
   $regex_header = str_replace("/", "\\/", $expected_name);
   $regex_header = str_replace(".", "\\.", $regex_header);
   
   $header = $expected_name;
   
-  # from http://www.faqs.org/rfcs/rfc2616
-  # Field names are case-insensitive
+  // from http://www.faqs.org/rfcs/rfc2616
+  // Field names are case-insensitive
   if ($expected_value) {
       $regex = "/^{$regex_header}:(.*?)$/ism";
       $header .= ": {$expected_value}";

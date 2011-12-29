@@ -40,6 +40,20 @@ test_case("HTTP");
      
      $response =  test_request(TESTS_DOC_ROOT.'05-content_negociation.php', 'GET', false, array(), array("Accept: application/json"));
      assert_equal("json", $response);
+	 }
+	 
+	 function test_http_redirect()
+	 {
+		 $url = TESTS_DOC_ROOT.'09-redirect.php?/';
+		 
+		 $response = test_request($url, 'GET');
+		 assert_equal($response, '/redirected');
+		 
+		 $response = test_request($url.'&key1=value1', 'GET');
+		 assert_equal($response, '/redirected&key1=value1');
+		 
+		 $response = test_request($url.'&key1=value1&key2=value2', 'GET');
+		 assert_equal($response, '/redirected&key1=value1&key2=value2');
    }
-   
+
 end_test_case();

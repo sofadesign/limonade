@@ -184,6 +184,15 @@ test_case("Functional");
      $response  = curl_exec($ch); 
      assert_match("/ON DISPLAY 2/", $response);
 
+     # Run a HEAD request on a page where there is no new flash
+     # message set. Previous flash message should still be
+     # there after this request.
+     curl_setopt($ch, CURLOPT_URL, $path.'four'); 
+     curl_setopt($ch, CURLOPT_NOBODY, TRUE); 
+     curl_setopt($ch, CURLOPT_HEADER, 1); 
+     $response  = curl_exec($ch); 
+
+     curl_setopt($ch, CURLOPT_NOBODY, FALSE); 
      curl_setopt($ch, CURLOPT_URL, $path.'three'); 
      $response  = curl_exec($ch); 
      assert_match("/ON DISPLAY 3/", $response);

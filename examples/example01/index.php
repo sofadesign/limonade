@@ -100,10 +100,10 @@ run();
 function html_my_layout($vars){ extract($vars);?> 
 <html>
 <head>
-	<title>Limonde first example</title>
+	<title>Limonade first example</title>
 </head>
 <body>
-  <h1>Limonde first example</h1>
+  <h1>Limonade first example</h1>
 	<?php echo $content?>
 	<hr>
 	<a href="<?php echo url_for('/')?>">Home</a> |

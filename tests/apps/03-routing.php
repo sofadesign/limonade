@@ -44,9 +44,9 @@ dispatch('/route3', array('MyController', 'staticMethod'));
 dispatch('/route4', 'MyController::staticMethod');
 if(version_compare(PHP_VERSION, '5.3.0') >= 0)
 {
-  dispatch('/route-lambda', function(){
+  eval("dispatch('/route-lambda', function(){
     return 'LAMBDA CALL';
-  });
+  });");
 }
 
 /* parameterized routes */
