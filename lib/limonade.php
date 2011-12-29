@@ -232,6 +232,61 @@ function option($name = null, $values = null)
 }
 
 /**
+* Tests if an option value is set (ie: not NULL)
+* 
+* Provides a safe way to test for the presence of an option value without incurring a
+*   <tt>PHP Fatal error:  Can't use function return value in write context</tt>
+* 
+* <code>
+*   // fails with  [ PHP Fatal error:  Can't use function return value in write context ]
+*   if ( isset( option('dir.views) ) ) { }
+* 
+*   // Works just fine
+*   if ( option_isset('dir.views) ) { }
+* </code>
+* 
+* @param string $name => the option key to test for
+* @return boolean  TRUE if value is set, FALSE if value is undefined ie: NULL
+*/
+function option_isset($name)
+{ 
+  $res = option($name);
+  return ( isset( $res);
+}
+
+// syntactic sugar
+function isset_option($name)     { return option_isset($name); }
+// syntactic sugar:  reads better when testing for the value
+function option_defined($name)   { return option_isset($name); }
+// syntactic sugar:  reads better when testing for the value
+// returns the opposite of option_isset()
+function option_undefined($name) { return ! option_isset($name); }
+function option_missing($name)   { return ! option_isset($name); }
+
+/**
+ * Shortcut to test for presence and value of an option
+ * 
+ * Provides a safe and quick way to test for the presence and value of an option setting.
+ * 
+ * <code>
+ *    // the long way
+ *    if ( option_isset('dir.views) && ( option('dir.views') === 'some value' ) ) { }
+ * 
+ *    // the smart way
+ *    if ( option_equals('dir.views', 'some value') ) { }
+ * </code>
+ *
+ * @param string $name 
+ * @param string $value 
+ * @return boolean  => TRUE if present and the same, FALSE if undefined or not the same
+ */
+function option_equals($name, $value)
+{ 
+  if( option_undefined($name) ) { return FALSE; }
+  return ( option($name) === $value );
+}
+
+/** 
 * Set and returns params
 * 
 * Depending on provided arguments:
