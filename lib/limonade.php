@@ -1921,12 +1921,30 @@ function v($value, $default)
 function require_once_dir($path, $pattern = "*.php", $prevents_output = true)
 {
   if($path[strlen($path) - 1] != "/") $path .= "/";
-  $filenames = glob($path.$pattern);
+  $filenames = glob_recursive($path.$pattern);
   if(!is_array($filenames)) $filenames = array();
   if($prevents_output) ob_start();
   foreach($filenames as $filename) require_once $filename;
   if($prevents_output) ob_end_clean();
   return $filenames;
+}
+
+
+/**
+ * A recursive version of glob which returns $pattern
+ * matches for all driectories and subdirectories
+ *
+ * @param string $pattern a regexp pattern that filter files to load
+ * @param int $flags the normal flags associated with glob
+ */
+function glob_recursive($pattern, $flags = 0)
+{
+  $files = glob($pattern, $flags);
+  foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir)
+  {
+    $files = array_merge($files, glob_recursive($dir.'/'.basename($pattern), $flags));
+  }
+  return $files;
 }
 
 /**
