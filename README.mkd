@@ -22,7 +22,7 @@ Limonade is easy to learn and provides everything that you can expect from a mod
 
 This document provides a quick, but comprehensive, guide of Limonade features.
 
-For more informations, you can see the [website](http://www.limonade-php.net/), [examples](http://www.limonade-php.net/examples.htm), and of course the [source code](http://github.com/sofadesign/limonade/blob/master/lib/limonade.php) which is still the best documentation.
+For more informations, you can see the [website](http://limonade-php.github.com/), [examples](https://github.com/sofadesign/limonade/wiki/Examples-and-tutorials), and of course the [source code](http://github.com/sofadesign/limonade/blob/master/lib/limonade.php) which is still the best documentation.
 
 A [discussion group](http://groups.google.fr/group/limonade) is also available for more exchanges.
 
@@ -724,8 +724,8 @@ Limonade also provides a useful set of functions that can help you managing file
 
 ## More ##
 
-* [Limonade web site](http://www.limonade-php.net/)
-* [Limonade blog](http://blog.limonade-php.net/)
+* [Limonade web site](http://limonade-php.github.com/)
+* [Limonade blog](http://limonade.tumblr.com/)
 * [Issue tracking / release planning](http://sofadesign.lighthouseapp.com/projects/29612-limonade/overview)
 * [Support / Discussions](http://groups.google.fr/group/limonade)
 
