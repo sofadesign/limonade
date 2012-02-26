@@ -1,67 +1,65 @@
 <?php
-                                                                  
-# ============================================================================ #
 
 /**
- *  L I M O N A D E
- * 
- *  a PHP micro framework.
- * 
- *  For more informations: {@link http://github/sofadesign/limonade}
- *  
- *  @author Fabrice Luraine
- *  @copyright Copyright (c) 2009 Fabrice Luraine
- *  @license http://opensource.org/licenses/mit-license.php The MIT License
- *  @package limonade
- */
+* 
+* ### L I M O N A D E
+* 
+* a PHP micro framework.
+* 
+* For more informations: [http://github/sofadesign/limonade][lim]
+* 
+* @author Fabrice Luraine
+* @copyright Copyright (c) 2009 Fabrice Luraine
+* @license [The MIT License][mit]
+* @package limonade
+* 
+* [lim]: http://github/sofadesign/limonade
+* [mit]: http://opensource.org/licenses/mit-license.php
+* 
+* 
+* -----
+* 
+*   Copyright (c) 2009 Fabrice Luraine
+*   
+*   Permission is hereby granted, free of charge, to any person 
+*   obtaining a copy of this software and associated documentation
+*   files (the "Software"), to deal in the Software without
+*   restriction, including without limitation the rights to use,
+*   copy, modify, merge, publish, distribute, sublicense, and/or sell
+*   copies of the Software, and to permit persons to whom the 
+*   Software is furnished to do so, subject to the following
+*   conditions:
+*   
+*   The above copyright notice and this permission notice shall be
+*   included in all copies or substantial portions of the Software.
+*   
+*   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+*   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+*   OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+*   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+*   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+*   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+*   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
+*   OTHER DEALINGS IN THE SOFTWARE.
+* 
+*/
 
-#   -----------------------------------------------------------------------    #
-#    Copyright (c) 2009 Fabrice Luraine                                        #
-#                                                                              #
-#    Permission is hereby granted, free of charge, to any person               #
-#    obtaining a copy of this software and associated documentation            #
-#    files (the "Software"), to deal in the Software without                   #
-#    restriction, including without limitation the rights to use,              #
-#    copy, modify, merge, publish, distribute, sublicense, and/or sell         #
-#    copies of the Software, and to permit persons to whom the                 #
-#    Software is furnished to do so, subject to the following                  #
-#    conditions:                                                               #
-#                                                                              #
-#    The above copyright notice and this permission notice shall be            #
-#    included in all copies or substantial portions of the Software.           #
-#                                                                              #
-#    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,           #
-#    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES           #
-#    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND                  #
-#    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT               #
-#    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,              #
-#    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING              #
-#    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR             #
-#    OTHER DEALINGS IN THE SOFTWARE.                                           #
-# ============================================================================ # 
+// -----
+// ###  0. PREPARE
 
 
+// -----
+// #### CONSTANTS
 
-
-
-
-
-
-# ============================================================================ #
-#    0. PREPARE                                                                #
-# ============================================================================ #
-
-## CONSTANTS __________________________________________________________________
-/**
- * Limonade version
- */
-define('LIMONADE',              '0.5.0');
-define('LIM_NAME',              'Un grand cru qui sait se faire attendre');
+# set the Limonade version
+define('LIMONADE',              '0.5.1');
+define('LIM_NAME',              'Fresh_and_Minty_Limonade_App');
 define('LIM_START_MICROTIME',   (float)substr(microtime(), 0, 10));
 define('LIM_SESSION_NAME',      'LIMONADE'.str_replace('.','x',LIMONADE));
 define('LIM_SESSION_FLASH_KEY', '_lim_flash_messages');
-if(function_exists('memory_get_usage'))
-	define('LIM_START_MEMORY',      memory_get_usage());
+if(function_exists('memory_get_usage')) { 
+  define('LIM_START_MEMORY',      memory_get_usage()); 
+}
 define('E_LIM_HTTP',            32768);
 define('E_LIM_PHP',             65536);
 define('E_LIM_DEPRECATED',      35000);
@@ -78,169 +76,243 @@ if(!defined('E_USER_DEPRECATED'))    define('E_USER_DEPRECATED',   16384);
 # for PHP 5.2.0 <
 if (!defined('E_RECOVERABLE_ERROR')) define('E_RECOVERABLE_ERROR', 4096);
 
-
-## SETTING BASIC SECURITY _____________________________________________________
-
-# A. Unsets all global variables set from a superglobal array
+// -----
+// #### SETTING BASIC SECURITY
 
 /**
- * @access private
- * @return void
- */
+* A. Unsets all global variables set from a superglobal array
+*
+* @access private
+* 
+* @return void
+*/
 function unregister_globals()
-{
+{ 
   $args = func_get_args();
   foreach($args as $k => $v)
-    if(array_key_exists($k, $GLOBALS)) unset($GLOBALS[$k]);
+  { 
+    if(array_key_exists($k, $GLOBALS)){ unset($GLOBALS[$k]); }
+  }
 }
 
 if(ini_get('register_globals'))
-{
+{ 
   unregister_globals( '_POST', '_GET', '_COOKIE', '_REQUEST', '_SERVER', 
                       '_ENV', '_FILES');
   ini_set('register_globals', 0);
 }
 
-# B. removing magic quotes
-
 /**
- * @access private
- * @param string $array 
- * @return array
- */
+* B. removing magic quotes
+* 
+* @access private
+* 
+* @param string $array 
+* 
+* @return array 
+*/
 function remove_magic_quotes($array)
-{
+{ 
   foreach ($array as $k => $v)
+  { 
     $array[$k] = is_array($v) ? remove_magic_quotes($v) : stripslashes($v);
+  }
   return $array;
 }
 
 if (get_magic_quotes_gpc())
-{
+{ 
   $_GET    = remove_magic_quotes($_GET);
   $_POST   = remove_magic_quotes($_POST);
   $_COOKIE = remove_magic_quotes($_COOKIE);
   ini_set('magic_quotes_gpc', 0);
 }
 
-if(function_exists('set_magic_quotes_runtime') && get_magic_quotes_runtime()) set_magic_quotes_runtime(false);
+if(function_exists('set_magic_quotes_runtime') && get_magic_quotes_runtime()) { set_magic_quotes_runtime(false); }
 
-# C. Disable error display
-#    by default, no error reporting; it will be switched on later in run().
-#    ini_set('display_errors', 1); must be called explicitly in app file
-#    if you want to show errors before running app
+/**
+* C. Disable error display
+* 
+* by default, no error reporting; it will be switched on later in `run()`.
+* `ini_set('display_errors', 1);` must be called explicitly in app file
+* if you want to show errors before running app
+* 
+*/
 ini_set('display_errors', 0);
 
-## SETTING INTERNAL ROUTES _____________________________________________________
+// -----
+// #### SETTING INTERNAL ROUTES
+
 
 dispatch(array("/_lim_css/*.css", array('_lim_css_filename')), 'render_limonade_css');
   /**
-   * Internal controller that responds to route /_lim_css/*.css
-   *
-   * @access private
-   * @return string
-   */
+  * Internal controller that responds to route /_lim_css/*.css
+  *
+  * @access private
+  * 
+  * @return string
+  */
   function render_limonade_css()
   {
-    option('views_dir', file_path(option('limonade_public_dir'), 'css'));
+    option('dir.views', file_path(option('dir.limonade.public'), 'css'));
     $fpath = file_path(params('_lim_css_filename').".css");
-    return css($fpath, null); // with no layout
+    return css($fpath, null); # with no layout
   }
 
 dispatch(array("/_lim_public/**", array('_lim_public_file')), 'render_limonade_file');
-  /**
-   * Internal controller that responds to route /_lim_public/**
-   *
-   * @access private
-   * @return void
-   */
+  /** 
+  * Internal controller that responds to route /_lim_public/**
+  * 
+  * @access private
+  * 
+  * @return void
+  */
   function render_limonade_file()
   {
-    $fpath = file_path(option('limonade_public_dir'), params('_lim_public_file'));
+    $fpath = file_path(option('dir.limonade.public'), params('_lim_public_file'));
     return render_file($fpath, true);
   }
 
 
 
 
-                                     # # #
 
-
-
-
-# ============================================================================ #
-#    1. BASE                                                                   #
-# ============================================================================ #
+// -----
+// ### 1. BASE 
  
-## ABSTRACTS ___________________________________________________________________
 
-# Abstract methods that might be redefined by user:
-#
-# - function configure(){}
-# - function initialize(){}
-# - function autoload_controller($callback){}
-# - function before($route){}
-# - function after($output, $route){}
-# - function not_found($errno, $errstr, $errfile=null, $errline=null){}
-# - function server_error($errno, $errstr, $errfile=null, $errline=null){}
-# - function route_missing($request_method, $request_uri){}
-# - function before_exit(){}
-# - function before_render($content_or_func, $layout, $locals, $view_path){}
-# - function autorender($route){}
-# - function before_sending_header($header){}
-#
-# See abstract.php for more details.
-
-
-## MAIN PUBLIC FUNCTIONS _______________________________________________________
+// -----
+// #### ABSTRACTS
 
 /**
- * Set and returns options values
- * 
- * If multiple values are provided, set $name option with an array of those values.
- * If there is only one value, set $name option with the provided $values
- *
- * @param string $name 
- * @param mixed  $values,... 
- * @return mixed option value for $name if $name argument is provided, else return all options
- */
+* Abstract methods that might be redefined by user:
+*
+* - function configure(){}
+* - function initialize(){}
+* - function autoload_controller($callback){}
+* - function before($route){}
+* - function after($output, $route){}
+* - function not_found($errno, $errstr, $errfile=null, $errline=null){}
+* - function server_error($errno, $errstr, $errfile=null, $errline=null){}
+* - function route_missing($request_method, $request_uri){}
+* - function before_exit(){}
+* - function before_render($content_or_func, $layout, $locals, $view_path){}
+* - function autorender($route){}
+* - function before_sending_header($header){}
+*
+* See abstract.php for more details.
+*/
+
+// -----
+// #### MAIN PUBLIC FUNCTIONS 
+
+/** 
+* Set and returns options values
+* 
+* If multiple values are provided, set $name option with an array of those values.
+* If there is only one value, set $name option with the provided $values
+* 
+* @param string $name 
+* @param mixed  $values,... 
+* @return mixed option value for $name if $name argument is provided, else return all options
+* 
+*/ 
 function option($name = null, $values = null)
 {
   static $options = array();
   $args = func_get_args();
   $name = array_shift($args);
-  if(is_null($name)) return $options;
+  if(is_null($name)) { return $options; }
   if(!empty($args))
   {
     $options[$name] = count($args) > 1 ? $args : $args[0];
   }
-  if(array_key_exists($name, $options)) return $options[$name];
+  if(array_key_exists($name, $options)) { return $options[$name]; }
   return;
 }
 
 /**
- * Set and returns params
+* Tests if an option value is set (ie: not NULL)
+* 
+* Provides a safe way to test for the presence of an option value without incurring a
+*   <tt>PHP Fatal error:  Can't use function return value in write context</tt>
+* 
+* <code>
+*   // fails with  [ PHP Fatal error:  Can't use function return value in write context ]
+*   if ( isset( option('dir.views) ) ) { }
+* 
+*   // Works just fine
+*   if ( option_isset('dir.views) ) { }
+* </code>
+* 
+* @param string $name => the option key to test for
+* @return boolean  TRUE if value is set, FALSE if value is undefined ie: NULL
+*/
+function option_isset($name)
+{ 
+  $res = option($name);
+  return ( isset( $res);
+}
+
+// syntactic sugar
+function isset_option($name)     { return option_isset($name); }
+// syntactic sugar:  reads better when testing for the value
+function option_defined($name)   { return option_isset($name); }
+// syntactic sugar:  reads better when testing for the value
+// returns the opposite of option_isset()
+function option_undefined($name) { return ! option_isset($name); }
+function option_missing($name)   { return ! option_isset($name); }
+
+/**
+ * Shortcut to test for presence and value of an option
  * 
- * Depending on provided arguments:
+ * Provides a safe and quick way to test for the presence and value of an option setting.
  * 
- *  * Reset params if first argument is null
- * 
- *  * If first argument is an array, merge it with current params
- * 
- *  * If there is a second argument $value, set param $name (first argument) with $value
  * <code>
- *  params('name', 'Doe') // set 'name' => 'Doe'
- * </code>
- *  * If there is more than 2 arguments, set param $name (first argument) value with
- *    an array of next arguments
- * <code>
- *  params('months', 'jan', 'feb', 'mar') // set 'month' => array('months', 'jan', 'feb', 'mar')
- * </code>
+ *    // the long way
+ *    if ( option_isset('dir.views) && ( option('dir.views') === 'some value' ) ) { }
  * 
- * @param mixed $name_or_array_or_null could be null || array of params || name of a param (optional)
- * @param mixed $value,... for the $name param (optional)
- * @return mixed all params, or one if a first argument $name is provided
+ *    // the smart way
+ *    if ( option_equals('dir.views', 'some value') ) { }
+ * </code>
+ *
+ * @param string $name 
+ * @param string $value 
+ * @return boolean  => TRUE if present and the same, FALSE if undefined or not the same
  */
+function option_equals($name, $value)
+{ 
+  if( option_undefined($name) ) { return FALSE; }
+  return ( option($name) === $value );
+}
+
+/** 
+* Set and returns params
+* 
+* Depending on provided arguments:
+* 
+*  * Reset params if first argument is null
+* 
+*  * If first argument is an array, merge it with current params
+* 
+*  * If there is a second argument $value, set param $name (first argument) with $value
+* <code>
+*  params('name', 'Doe') // set 'name' => 'Doe'
+* </code>
+* 
+*  * If there is more than 2 arguments, set param $name (first argument) value with
+*    an array of next arguments
+* <code>
+*  params('months', 'jan', 'feb', 'mar') // set 'month' => array('months', 'jan', 'feb', 'mar')
+* </code>
+* 
+* @param mixed $name_or_array_or_null could be null || array of params || name of a param (optional)
+* 
+* @param mixed $value,... for the $name param (optional)
+* 
+* @return mixed all params, or one if a first argument $name is provided
+*
+*/
 function params($name_or_array_or_null = null, $value = null)
 {
   static $params = array();
@@ -251,7 +323,7 @@ function params($name_or_array_or_null = null, $value = null)
     $name = array_shift($args);
     if(is_null($name))
     {
-      # Reset params
+      // Reset params
       $params = array();
       return $params;
     }
@@ -273,119 +345,148 @@ function params($name_or_array_or_null = null, $value = null)
 }
 
 /**
- * Set and returns template variables
- * 
- * If multiple values are provided, set $name variable with an array of those values.
- * If there is only one value, set $name variable with the provided $values
- *
- * @param string $name 
- * @param mixed  $values,... 
- * @return mixed variable value for $name if $name argument is provided, else return all variables
- */
+* Set and returns template variables
+* 
+* If multiple values are provided, set $name variable with an array of those values.
+* If there is only one value, set $name variable with the provided $values
+* 
+* @param string $name 
+* 
+* @param mixed  $values,... 
+* 
+* @return mixed variable value for $name if $name argument is provided, else return all variables
+* 
+*/
 function set($name = null, $values = null)
 {
   static $vars = array();
   $args = func_get_args();
   $name = array_shift($args);
-  if(is_null($name)) return $vars;
+  if(is_null($name)) { return $vars; }
   if(!empty($args))
   {
     $vars[$name] = count($args) > 1 ? $args : $args[0];
   }
-  if(array_key_exists($name, $vars)) return $vars[$name];
+  if(array_key_exists($name, $vars)) { return $vars[$name]; }
   return $vars;
 }
 
 /**
- * Sets a template variable with a value or a default value if value is empty
- *
- * @param string $name 
- * @param string $value 
- * @param string $default 
- * @return mixed setted value
- */
+* Sets a template variable with a value or a default value if value is empty
+* 
+* * @param string $name 
+* * @param string $value 
+* * @param string $default 
+* 
+* @return mixed set value
+* 
+*/ 
 function set_or_default($name, $value, $default)
 {
   return set($name, value_or_default($value, $default));
 }
 
 /**
- * Running application
- *
- * @param string $env 
- * @return void
- */
+* Running application
+* 
+* @param string $env 
+* 
+* @return void
+* 
+*/ 
 function run($env = null)
 {
   if(is_null($env)) $env = env();
    
-  # 0. Set default configuration
+  // 0. Set default configuration
   $root_dir  = dirname(app_file());
-  $lim_dir   = dirname(__FILE__);
   $base_path = dirname(file_path($env['SERVER']['SCRIPT_NAME']));
   $base_file = basename($env['SERVER']['SCRIPT_NAME']);
   $base_uri  = file_path($base_path, (($base_file == 'index.php') ? '?' : $base_file.'?'));
-  
-  option('root_dir',           $root_dir);
-  option('limonade_dir',       file_path($lim_dir));
-  option('limonade_views_dir', file_path($lim_dir, 'limonade', 'views'));
-  option('limonade_public_dir',file_path($lim_dir, 'limonade', 'public'));
-  option('public_dir',         file_path($root_dir, 'public'));
-  option('views_dir',          file_path($root_dir, 'views'));
-  option('controllers_dir',    file_path($root_dir, 'controllers'));
-  option('lib_dir',            file_path($root_dir, 'lib'));
-  option('error_views_dir',    option('limonade_views_dir'));
+  $lim_dir   = dirname(__FILE__);
+  option('dir.root',           $root_dir);
   option('base_path',          $base_path);
   option('base_uri',           $base_uri); // set it manually if you use url_rewriting
+  option('dir.limonade',       file_path($lim_dir));
+  option('dir.limonade.views', file_path($lim_dir, 'limonade', 'views'));
+  option('dir.limonade.public',file_path($lim_dir, 'limonade', 'public'));
+  option('dir.public',         file_path($root_dir, 'public'));
+  option('dir.views',          file_path($root_dir, 'views'));
+  option('dir.controllers',    file_path($root_dir, 'controllers'));
+  option('dir.lib',            file_path($root_dir, 'lib'));
+  option('dir.views.errors',   option('dir.limonade.views'));
+  # custom dirs
+  option('dir.lib.cores',      file_path($lim_dir, 'core'));
+  option('dir.lib.core',       file_path($lim_dir, 'core'));
+  option('dir.lib.helpers',    file_path($lim_dir, 'helpers'));
+  option('dir.lib.lexts',      file_path($lim_dir, 'lexts'));
+  
+  option('dir.db',             file_path(dirname($root_dir), 'db'));
+  option('dir.app',            file_path(dirname($lim_dir)));
+  option('dir.app.assets',     file_path(dirname($lim_dir), 'assets'));
+  option('dir.app.conf',       file_path(dirname($lim_dir), 'conf'));
+  option('dir.app.lib',        file_path($lim_dir));
+  option('dir.app.models',     file_path(dirname($lim_dir), 'models'));
+  option('dir.app.views',      file_path(dirname($lim_dir), 'views'));
+  
   option('env',                ENV_PRODUCTION);
   option('debug',              true);
-  option('session',            LIM_SESSION_NAME); // true, false or the name of your session
+  option('settings.show',      false);
+  option('session',            LIM_SESSION_NAME); # true, false or the name of your session
   option('encoding',           'utf-8');
-  option('signature',          LIM_NAME); // X-Limonade header value or false to hide it
+  option('signature',          LIM_NAME); # X-Limonade header value or false to hide it
   option('gzip',               false);
-  option('x-sendfile',         0); // 0: disabled, 
-                                   // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
-                                   // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
+  option('x-sendfile',         0); # 0: disabled, 
+                                   # X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
+                                   # X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
 
-
-  # 1. Set handlers
-  # 1.1 Set error handling
+  // 1. Set handlers
+  // 1.1 Set error handling
   ini_set('display_errors', 1);
   set_error_handler('error_handler_dispatcher', E_ALL ^ E_NOTICE);
   
-  # 1.2 Register shutdown function
+  // 1.2 Register shutdown function
   register_shutdown_function('stop_and_exit');
 
-  # 2. Set user configuration
-  call_if_exists('configure');
+  # 1.3 Load extras
+  # extras(true);
   
-  # 2.1 Set gzip compression if defined
+  // 2. Set user configuration
+  event('configure.before', true, array($env));
+  call_if_exists('configure');
+  event('configure.after', true, array($env));
+  
+  // 2.1 Set gzip compression if defined
   if(is_bool(option('gzip')) && option('gzip'))
   {
     ini_set('zlib.output_compression', '1');
   }
   
-  # 2.2 Set X-Limonade header
-  if($signature = option('signature')) send_header("X-Limonade: $signature");
+  // 2.2 Set X-Limonade header
+  if($signature = option('signature')) { header("X-Limonade: $signature"); }
 
-  # 3. Loading libs
-  require_once_dir(option('lib_dir'));
+  // 3. Loading libs
+  event('libs.before', true, array($env));
+  require_once_dir(option('dir.lib'));
+  event('libs.after', true, array($env));
+  
   fallbacks_for_not_implemented_functions();
 
-  # 4. Starting session
+  // 4. Starting session
+  event('session.before', true, array($env));
+  
   if(!defined('SID') && option('session'))
   {
-    if(!is_bool(option('session'))) session_name(option('session'));
-    if(!session_start()) trigger_error("An error occured while trying to start the session", E_USER_WARNING);
+    if(!is_bool(option('session'))) { session_name(option('session')); }
+    if(!session_start()) { trigger_error("An error occurred while trying to start the session", E_USER_WARNING); }
   }
 
-  # 5. Set some default methods if needed
+  event('session.after', true, array($env));
+  
+  // 5. Set some default methods if needed
   if(!function_exists('after'))
   {
-    function after($output)
-    {
-      return $output;
-    }
+    function after($output) { return $output; }
   }
   if(!function_exists('route_missing'))
   {
@@ -395,56 +496,93 @@ function run($env = null)
     }
   }
 
+  event('initialize.before', true, array($env));
+  
   call_if_exists('initialize');
 
-  # 6. Check request
+  event('initialize.after', true, array($env));
+  
+  
+  // 6. Check request
   if($rm = request_method($env))
   {
     if(request_is_head($env)) ob_start(); // then no output
 
     if(!request_method_is_allowed($rm))
+    { 
       halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
+    }
 
-    # 6.1 Check matching route
+    // 6.1 Check matching route
     if($route = route_find($rm, request_uri($env)))
     {
       params($route['params']);
 
-      # 6.2 Load controllers dir
+      // 6.2 Load controllers dir
       if(!function_exists('autoload_controller'))
       {
         function autoload_controller($callback)
         {
-          require_once_dir(option('controllers_dir'));
+          require_once_dir(option('dir.controllers'));
         }
       }
+      
+      event('controller_autoload.before', true, array($env, $route));
+      
       autoload_controller($route['callback']);
 
+      event('controller_autoload.after', true, array($env, $route));
+      
       if(is_callable($route['callback']))
       {
-        # 6.3 Call before function
+        // 6.3 Call before function
+        event('before.before', true, array($env, $route));
+        
         call_if_exists('before', $route);
 
-        # 6.4 Call matching controller function and output result
+        event('before.after', true, array($env, $route));
+        
+        // 6.4 Call matching controller function and output result
+        event('render.before', true, array($env, $route));
+        
         $output = call_user_func_array($route['callback'], array_values($route['params']));
         if(is_null($output)) $output = call_if_exists('autorender', $route);
-        echo after(error_notices_render() . $output, $route);
-      }
-      else halt(SERVER_ERROR, "Routing error: undefined function '{$route['callback']}'", $route);      
-    }
-    else route_missing($rm, request_uri($env));
+        
+        event('render.after', true, array($env, $route, &$output));
 
+        event('after.before', true, array($env, $route, &$output));
+        $output = after(error_notices_render() . $output, $route);
+        event('after.after', true, array($env, $route, &$output));
+        echo $output;
+        
+        # echo after(error_notices_render() . $output, $route);
+      }
+      else 
+      { 
+        halt(SERVER_ERROR, "Routing error: undefined function '{$route['callback']}'", $route);
+      }
+    }
+    else
+    { 
+      route_missing($rm, request_uri($env)); 
+    }
   }
-  else halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
+  else 
+  { 
+    halt(HTTP_NOT_IMPLEMENTED, "The requested method <code>'$rm'</code> is not implemented");
+  }
 }
 
 /**
- * Stop and exit limonade application
- *
- * @access private 
- * @param boolean exit or not
- * @return void
- */
+* Stop and exit limonade application
+* 
+* @access private 
+* 
+* @param boolean exit or not
+* 
+* @return void
+* 
+*/
 function stop_and_exit($exit = true)
 {
   call_if_exists('before_exit', $exit);
@@ -452,12 +590,14 @@ function stop_and_exit($exit = true)
   if(request_is_head())
   { 
      ob_end_clean();
-  } else {
+  } 
+  else 
+  { 
     $flash_sweep = true;
     foreach($headers as $header)
     {
-      // If a Content-Type header exists, flash_sweep only if is text/html
-      // Else if there's no Content-Type header, flash_sweep by default
+      # If a Content-Type header exists, flash_sweep only if is text/html
+      # Else if there's no Content-Type header, flash_sweep by default
       if(stripos($header, 'Content-Type:') === 0)
       {
         $flash_sweep = stripos($header, 'Content-Type: text/html') === 0;
@@ -471,16 +611,18 @@ function stop_and_exit($exit = true)
 }
 
 /**
- * Returns limonade environment variables:
- *
- * 'SERVER', 'FILES', 'REQUEST', 'SESSION', 'ENV', 'COOKIE', 
- * 'GET', 'POST', 'PUT', 'DELETE'
- * 
- * If a null argument is passed, reset and rebuild environment
- *
- * @param null @reset reset and rebuild environment
- * @return array
- */
+* Returns limonade environment variables:
+* 
+* 'SERVER', 'FILES', 'REQUEST', 'SESSION', 'ENV', 'COOKIE', 
+* 'GET', 'POST', 'PUT', 'DELETE'
+* 
+* If a null argument is passed, reset and rebuild environment
+* 
+* @param null @reset reset and rebuild environment
+* 
+* @return array
+*
+*/
 function env($reset = null)
 {
   static $env = array();
@@ -494,8 +636,8 @@ function env($reset = null)
   {
     if(empty($GLOBALS['_SERVER']))
     {
-      // Fixing empty $GLOBALS['_SERVER'] bug 
-      // http://sofadesign.lighthouseapp.com/projects/29612-limonade/tickets/29-env-is-empty
+      # Fixing empty $GLOBALS['_SERVER'] bug 
+      # http://sofadesign.lighthouseapp.com/projects/29612-limonade/tickets/29-env-is-empty
       $GLOBALS['_SERVER']  =& $_SERVER;
       $GLOBALS['_FILES']   =& $_FILES;
       $GLOBALS['_REQUEST'] =& $_REQUEST;
@@ -536,10 +678,11 @@ function env($reset = null)
 }
 
 /**
- * Returns application root file path
- *
- * @return string
- */
+* Returns application root file path
+* 
+* @return string
+*
+*/ 
 function app_file()
 {
   static $file;
@@ -551,26 +694,170 @@ function app_file()
   }
   return file_path($file);
 }
-
-
-
-
-                                     # # #
-
-
-
-
-# ============================================================================ #
-#    2. ERROR                                                                  #
-# ============================================================================ #
  
 /**
- * Associate a function with error code(s) and return all associations
+ * Simplistic event handler.
  *
- * @param string $errno 
- * @param string $function 
- * @return array
+ * Usage:
+ *    # Adds a callback to an event.
+ *    event($event, string $callback);
+ *    
+ *    # Adds multiple callbacks to an event.
+ *    event(array('event', array('callback_1, callback_2')));
+ *    
+ *    # Adds callbacks to multiple events.
+ *    event(array('event_1' => 'callback', 'event_2' => array('callback', 'callback_2')));
+ *    
+ *    # Fires an event with arguments arg_1, arg2, ..., arg_n.
+ *    event('event_name', true, array(arg_1, arg_2, ..., arg_n));
+ *    
+ *    # Clears an event queue.
+ *    event('event_name', false);
+ * 
+ *
+ * @param mixed $event The event name or an array of type event => callback(s).
+ * @param mixed $callback optional, the callback name, set to false to clear the event, set true to fire the event
+ *
+ * @return void
  */
+function event($event = null, $callback = null, $args = array())
+{ 
+  static $events = array();
+  if ( is_null($event)) 
+  { 
+    return $events;
+  }
+  if(is_array($event))
+  { 
+    foreach($event as $e => $callback)
+    { 
+      if(is_string($callback)) { event($e, $callback); }
+    }
+    return;
+  }
+  
+  if(!isset($events[$event])) { $events[$event] = array(); }
+  
+  if(true === $callback)
+  { 
+    foreach($events[$event] as $callback => $_)
+    { 
+      if(function_exists($callback)) { call_user_func_array($callback, array_force($args)); }
+    }
+  }  
+  elseif(false === $callback)
+  { 
+    $events[$event] = array();
+  }
+  else
+  { 
+    foreach(array_force($callback) as $c)
+    { 
+      # add callback as array key to allow easier overrides.
+      if(is_string($c)) { $events[$event][$c] = null; }
+    }
+  }
+}
+
+#  TODO:: Work on this implementation  
+# /**
+#  * Extras manager.
+#  *
+#  * @todo fix this mechanism so it can handle extras requiring other extras.
+#  * @todo handle cyclic references.
+#  *
+#  * @access private
+#  *
+#  * @param mixed $name set to true to load all extras, array for multiple extras 
+#  * @return array $extras the list of extras to load
+#  */
+# function extras($extra)
+# { 
+#   static $extras = array();
+#   static $loaded = array();
+#   
+#   if(is_array($extra))
+#   { 
+#     foreach($extra as $e){ extras((string)$e); }
+#   }
+#   elseif(true === $extra)
+#   { 
+#     foreach(array_diff_assoc($extras, $loaded) as $e => $ignore)
+#     { 
+#       $file = file_path(option('dir.limonade.extras'), 'limonade.'.$e.'.php');
+#       if(file_exists($file))
+#       { 
+#         require_once($file);
+#         if(function_exists($e.'_init'))
+#         { 
+#           call_user_func($e.'_init');
+#         }
+#         $loaded[$e] = null;
+#       }
+#       else
+#       { 
+#         error_notice(E_WARNING, sprintf('Requested extras file "%s" could not be found', $file));
+#       }
+#     }
+#   }
+#   else
+#   { 
+#     # protect against invalid extras name.
+#     if(preg_match('/^(\w+)/', $extra, $matches))
+#     { 
+#       $extra = $matches[1];
+#       $extras[$extra] = null;
+#     }
+#   }
+#   return $extras;
+# }
+# 
+# /**
+#  * Shortcut function for @see{extras()} for naming consistency.
+#  *
+#  * @param string $name the name of the extra to use
+#  */
+# function use_extra($name) { extras((string) $name); }
+# 
+# function use_helper($name)
+# { 
+#   $file = file_path(option('dir.lib.helpers'), $name.'.helper.php');
+#   if(file_exists($file))
+#   { 
+#     require_once($file);
+#   }
+#   else
+#   { 
+#     error_notice( E_WARNING, sprintf('Helper file "%s" not found.', $file ));
+#   }
+# }
+# 
+# function use_model($name)
+# { 
+#   $file = file_path(option('dir.app.models'), $name.'.model.php');
+#   if(file_exists($file))
+#   { 
+#     require_once($file);
+#   }
+#   else
+#   { 
+#     error_notice( E_WARNING, sprintf('Model file "%s" not found.', $file ));
+#   }
+# }
+# 
+
+// -----
+// ### 2. ERROR
+ 
+
+/**
+* Associate a function with error code(s) and return all associations
+* 
+* @param string $errno 
+* @param string $function 
+* @return array
+*
+*/ 
 function error($errno = null, $function = null)
 {
   static $errors = array();
@@ -582,24 +869,29 @@ function error($errno = null, $function = null)
 }
 
 /**
- * Raise an error, passing a given error number and an optional message,
- * then exit.
- * Error number should be a HTTP status code or a php user error (E_USER...)
- * $errno and $msg arguments can be passsed in any order
- * If no arguments are passed, default $errno is SERVER_ERROR (500)
- *
- * @param int,string $errno Error number or message string
- * @param string,string $msg Message string or error number
- * @param mixed $debug_args extra data provided for debugging
- * @return void
- */
+* Raise an error, passing a given error number and an optional message,
+* then exit.
+* 
+* Error number should be a HTTP status code or a php user error (E_USER...)
+* 
+* $errno and $msg arguments can be passsed in any order
+* 
+* If no arguments are passed, default $errno is SERVER_ERROR (500)
+* 
+* * @param int,string $errno Error number or message string
+* * @param string,string $msg Message string or error number
+* * @param mixed $debug_args extra data provided for debugging
+* 
+* @return void
+* 
+*/
 function halt($errno = SERVER_ERROR, $msg = '', $debug_args = null)
 {
   $args = func_get_args();
   $error = array_shift($args);
 
   # switch $errno and $msg args
-  # TODO cleanup / refactoring
+  // ### TODO cleanup / refactoring
   if(is_string($errno))
   {
    $msg = $errno;
@@ -614,21 +906,24 @@ function halt($errno = SERVER_ERROR, $msg = '', $debug_args = null)
   set('_lim_err_debug_args', $debug_args);
 
   error_handler_dispatcher($errno, $msg, null, null);
-
 }
 
 /**
- * Internal error handler dispatcher
- * Find and call matching error handler and exit
- * If no match found, call default error handler
- *
- * @access private
- * @param int $errno 
- * @param string $errstr 
- * @param string $errfile 
- * @param string $errline 
- * @return void
- */
+* Internal error handler dispatcher
+* 
+* Find and call matching error handler and exit
+* If no match found, call default error handler
+* 
+* @access private
+* 
+* * @param int $errno 
+* * @param string $errstr 
+* * @param string $errfile 
+* * @param string $errline 
+* 
+* @return void
+*
+*/ 
 function error_handler_dispatcher($errno, $errstr, $errfile, $errline)
 {
   $back_trace = debug_backtrace();
@@ -646,7 +941,7 @@ function error_handler_dispatcher($errno, $errstr, $errfile, $errline)
   if(error_wont_halt_app($errno))
   {
     error_notice($errno, $errstr, $errfile, $errline);
-  	return;
+    return;
   }
   else
   {
@@ -676,14 +971,19 @@ function error_handler_dispatcher($errno, $errstr, $errfile, $errline)
 
 
 /**
- * Default error handler
- *
- * @param string $errno 
- * @param string $errstr 
- * @param string $errfile 
- * @param string $errline 
- * @return string error output
- */
+* Default error handler
+* 
+* @param string $errno 
+* 
+* @param string $errstr 
+* 
+* @param string $errfile 
+* 
+* @param string $errline 
+* 
+* @return string error output
+*
+*/ 
 function error_default_handler($errno, $errstr, $errfile, $errline)
 {
   $is_http_err = http_response_status_is_valid($errno);
@@ -697,28 +997,33 @@ function error_default_handler($errno, $errstr, $errfile, $errline)
 }
 
 /**
- * Returns not found error output
- *
- * @access private
- * @param string $msg 
- * @return string
- */
+* Returns not found error output
+* 
+* @access private
+* 
+* @param string $msg 
+* 
+* @return string
+*
+*/ 
 function error_not_found_output($errno, $errstr, $errfile, $errline)
 {
   if(!function_exists('not_found'))
   {
     /**
-     * Default not found error output
-     *
-     * @param string $errno 
-     * @param string $errstr 
-     * @param string $errfile 
-     * @param string $errline 
-     * @return string
-     */
+    * Default not found error output
+    * 
+    * * @param string $errno 
+    * * @param string $errstr 
+    * * @param string $errfile 
+    * * @param string $errline 
+    * 
+    * @return string
+    *
+    */ 
     function not_found($errno, $errstr, $errfile=null, $errline=null)
     {
-      option('views_dir', option('error_views_dir'));
+      option('dir.views', option('dir.views.errors'));
       $msg = h(rawurldecode($errstr));
       return html("<h1>Page not found:</h1><p><code>{$msg}</code></p>", error_layout());
     }
@@ -727,35 +1032,40 @@ function error_not_found_output($errno, $errstr, $errfile, $errline)
 }
 
 /**
- * Returns server error output
- *
- * @access private
- * @param int $errno 
- * @param string $errstr 
- * @param string $errfile 
- * @param string $errline 
- * @return string
- */
+* Returns server error output
+* 
+* @access private
+* 
+* * @param int $errno 
+* * @param string $errstr 
+* * @param string $errfile 
+* * @param string $errline 
+* 
+* @return string
+*
+*/ 
 function error_server_error_output($errno, $errstr, $errfile, $errline)
 {
   if(!function_exists('server_error'))
   {
     /**
-     * Default server error output
-     *
-     * @param string $errno 
-     * @param string $errstr 
-     * @param string $errfile 
-     * @param string $errline 
-     * @return string
-     */
+    * Default server error output
+    * 
+    * @param string $errno 
+    * @param string $errstr 
+    * @param string $errfile 
+    * @param string $errline 
+    * 
+    * @return string
+    *
+    */ 
     function server_error($errno, $errstr, $errfile=null, $errline=null)
     {
       $is_http_error = http_response_status_is_valid($errno);
       $args = compact('errno', 'errstr', 'errfile', 'errline', 'is_http_error');
-      option('views_dir', option('limonade_views_dir'));
+      option('dir.views', option('dir.limonade.views'));
       $html = render('error.html.php', null, $args);	
-      option('views_dir', option('error_views_dir'));
+      option('dir.views', option('dir.views.errors'));
       return html($html, error_layout(), $args);
     }
   }
@@ -763,17 +1073,19 @@ function error_server_error_output($errno, $errstr, $errfile, $errline)
 }
 
 /**
- * Set and returns error output layout
- *
- * @param string $layout 
- * @return string
- */
+* Set and returns error output layout
+* 
+* @param string $layout
+*  
+* @return string
+* 
+*/ 
 function error_layout($layout = false)
 {
   static $o_layout = 'default_layout.php';
   if($layout !== false)
   {
-    option('error_views_dir', option('views_dir'));
+    option('dir.views.errors', option('dir.views'));
     $o_layout = $layout;
   }
   return $o_layout;
@@ -781,50 +1093,62 @@ function error_layout($layout = false)
 
 
 /**
- * Set a notice if arguments are provided
- * Returns all stored notices.
- * If $errno argument is null, reset the notices array
- *
- * @access private
- * @param string, null $str 
- * @return array
- */
+* Set a notice if arguments are provided
+* Returns all stored notices.
+* If $errno argument is null, reset the notices array
+* 
+* @access private
+* 
+* @param string, null $str 
+* 
+* @return array
+* 
+*/ 
 function error_notice($errno = false, $errstr = null, $errfile = null, $errline = null)
 {
   static $notices = array();
-  if($errno) $notices[] = compact('errno', 'errstr', 'errfile', 'errline');
-  else if(is_null($errno)) $notices = array();
+  if($errno) 
+  { 
+    $notices[] = compact('errno', 'errstr', 'errfile', 'errline');
+  }
+  else 
+  { 
+    if(is_null($errno)) { $notices = array(); }
+  }
   return $notices;
 }
 
 /**
- * Returns notices output rendering and reset notices
- *
- * @return string
- */
+* Returns notices output rendering and reset notices
+* 
+* @return string
+* 
+*/ 
 function error_notices_render()
 {
   if(option('debug') && option('env') > ENV_PRODUCTION)
   {
     $notices = error_notice();
     error_notice(null); // reset notices
-    $c_view_dir = option('views_dir'); // keep for restore after render
-    option('views_dir', option('limonade_views_dir'));
+    $c_view_dir = option('dir.views'); // keep for restore after render
+    option('dir.views', option('dir.limonade.views'));
     $o = render('_notices.html.php', null, array('notices' => $notices));
-    option('views_dir', $c_view_dir); // restore current views dir
-
+    option('dir.views', $c_view_dir); // restore current views dir
     return $o;
   }
 }
 
 /**
- * Checks if an error is will halt application execution. 
- * Notices and warnings will not.
- *
- * @access private
- * @param string $num error code number
- * @return boolean
- */
+* Checks if an error is will halt application execution. 
+* Notices and warnings will not.
+*
+* @access private
+* 
+* @param string $num error code number
+* 
+* @return boolean
+* 
+*/
 function error_wont_halt_app($num)
 {
   return $num == E_NOTICE ||
@@ -841,11 +1165,13 @@ function error_wont_halt_app($num)
 
 
 /**
- * return error code name for a given code num, or return all errors names
- *
- * @param string $num 
- * @return mixed
- */
+* return error code name for a given code num, or return all errors names
+*
+* @param string $num 
+* 
+* @return mixed
+* 
+*/
 function error_type($num = null)
 {
   $types = array (
@@ -866,42 +1192,46 @@ function error_type($num = null)
               E_USER_DEPRECATED    => 'USER DEPRECATED WARNING',
               E_LIM_DEPRECATED     => 'LIMONADE DEPRECATED WARNING'
               );
-  return is_null($num) ? $types : $types[$num];
+  return is_null($num) ? $types : @$types[$num];
 }
 
 /**
- * Returns http response status for a given error number
- *
- * @param string $errno 
- * @return int
- */
+* Returns http response status for a given error number
+*
+* @param string $errno 
+* 
+* @return int
+* 
+*/
 function error_http_status($errno)
 {
   $code = http_response_status_is_valid($errno) ? $errno : SERVER_ERROR;
   return http_response_status($code);
 }
 
-                                     # # #
 
 
+// -----
+// ### 3. REQUEST
 
 
-# ============================================================================ #
-#    3. REQUEST                                                                #
-# ============================================================================ #
  
 /**
- * Returns current request method for a given environment or current one
- *
- * @param string $env 
- * @return string
- */
+* Returns current request method for a given environment or current one
+*
+* @param string $env 
+* 
+* @return string
+*
+*/
 function request_method($env = null)
 {
   if(is_null($env)) $env = env();
   $m = array_key_exists('REQUEST_METHOD', $env['SERVER']) ? $env['SERVER']['REQUEST_METHOD'] : null;
   if($m == "POST" && array_key_exists('_method', $env['POST'])) 
+  { 
     $m = strtoupper($env['POST']['_method']);
+  }
   if(!in_array(strtoupper($m), request_methods()))
   {
     trigger_error("'$m' request method is unknown or unavailable.", E_USER_WARNING);
@@ -911,11 +1241,13 @@ function request_method($env = null)
 }
 
 /**
- * Checks if a request method or current one is allowed
- *
- * @param string $m 
- * @return bool
- */
+* Checks if a request method or current one is allowed
+*
+* @param string $m 
+* 
+* @return bool
+* 
+*/
 function request_method_is_allowed($m = null)
 {
   if(is_null($m)) $m = request_method();
@@ -923,77 +1255,90 @@ function request_method_is_allowed($m = null)
 }
 
 /**
- * Checks if request method is GET
- *
- * @param string $env 
- * @return bool
- */
+* Checks if request method is GET
+*
+* @param string $env 
+* 
+* @return bool
+* 
+*/
 function request_is_get($env = null)
 {
   return request_method($env) == "GET";
 }
 
 /**
- * Checks if request method is POST
- *
- * @param string $env 
- * @return bool
- */
+* Checks if request method is POST
+*
+* @param string $env 
+* 
+* @return bool
+* 
+*/
 function request_is_post($env = null)
 {
   return request_method($env) == "POST";
 }
 
 /**
- * Checks if request method is PUT
- *
- * @param string $env 
- * @return bool
- */
+* Checks if request method is PUT
+*
+* @param string $env 
+* 
+* @return bool
+*
+*/
 function request_is_put($env = null)
 {
   return request_method($env) == "PUT";
 }
 
 /**
- * Checks if request method is DELETE
- *
- * @param string $env 
- * @return bool
- */
+* Checks if request method is DELETE
+*
+* @param string $env 
+* 
+* @return bool
+* 
+*/
 function request_is_delete($env = null)
 {
   return request_method($env) == "DELETE";
 }
 
 /**
- * Checks if request method is HEAD
- *
- * @param string $env 
- * @return bool
- */
+* Checks if request method is HEAD
+*
+* @param string $env 
+* 
+* 
+* @return bool
+* 
+*/
 function request_is_head($env = null)
 {
   return request_method($env) == "HEAD";
 }
 
 /**
- * Returns allowed request methods
- *
- * @return array
- */
+* Returns allowed request methods
+*
+* @return array
+* 
+*/
 function request_methods()
 {
   return array("GET","POST","PUT","DELETE", "HEAD");
 }
 
 /**
- * Returns current request uri (the path that will be compared with routes)
- * 
- * (Inspired from codeigniter URI::_fetch_uri_string method)
- *
- * @return string
- */
+* Returns current request uri (the path that will be compared with routes)
+* 
+* (Inspired from codeigniter URI::_fetch_uri_string method)
+*
+* @return string
+* 
+*/
 function request_uri($env = null)
 {
   static $uri = null;
@@ -1011,19 +1356,19 @@ function request_uri($env = null)
   {
     $uri = $env['GET']['u'];
   }
-  // bug: dot are converted to _... so we can't use it...
-  // else if (count($env['GET']) == 1 && trim(key($env['GET']), '/') != '')
-  // {
-  //  $uri = key($env['GET']);
-  // }
+  # bug: dot are converted to _... so we can't use it...
+  # else if (count($env['GET']) == 1 && trim(key($env['GET']), '/') != '')
+  # {
+  #  $uri = key($env['GET']);
+  # }
   else
   {
     $app_file = app_file();
     $path_info = isset($env['SERVER']['PATH_INFO']) ? $env['SERVER']['PATH_INFO'] : @getenv('PATH_INFO');
     $query_string =  isset($env['SERVER']['QUERY_STRING']) ? $env['SERVER']['QUERY_STRING'] : @getenv('QUERY_STRING');
 
-    // Is there a PATH_INFO variable?
-    // Note: some servers seem to have trouble with getenv() so we'll test it two ways
+    # Is there a PATH_INFO variable?
+    # Note: some servers seem to have trouble with getenv() so we'll test it two ways
     if (trim($path_info, '/') != '' && $path_info != "/".$app_file)
     {
       if(strpos($path_info, '&') !== 0)
@@ -1043,7 +1388,7 @@ function request_uri($env = null)
       }
       $uri = $path_info;
     }
-    // No PATH_INFO?... What about QUERY_STRING?
+    # No PATH_INFO?... What about QUERY_STRING?
     elseif (trim($query_string, '/') != '')
     {
       $uri = $query_string;
@@ -1084,34 +1429,32 @@ function request_uri($env = null)
 
 
 
-
-                                     # # #
-
-
+// -----
+// ### 4. ROUTER
 
 
-# ============================================================================ #
-#    4. ROUTER                                                                 #
-# ============================================================================ #
  
 /**
- * An alias of {@link dispatch_get()}
- *
- * @return void
- */
+* An alias of {@link dispatch_get()}
+*
+* @return void
+* 
+*/
 function dispatch($path_or_array, $callback, $options = array())
 {
   dispatch_get($path_or_array, $callback, $options);
 }
 
 /**
- * Add a GET route. Also automatically defines a HEAD route.
- *
- * @param string $path_or_array 
- * @param string $callback
- * @param array $options (optional). See {@link route()} for available options.
- * @return void
- */
+* Add a GET route. Also automatically defines a HEAD route.
+*
+* @param string $path_or_array 
+* @param string $callback
+* @param array $options (optional). See {@link route()} for available options.
+* 
+* @return void
+* 
+*/
 function dispatch_get($path_or_array, $callback, $options = array())
 {
   route("GET", $path_or_array, $callback, $options);
@@ -1119,39 +1462,45 @@ function dispatch_get($path_or_array, $callback, $options = array())
 }
 
 /**
- * Add a POST route
- *
- * @param string $path_or_array 
- * @param string $callback
- * @param array $options (optional). See {@link route()} for available options.
- * @return void
- */
+* Add a POST route
+*
+* @param string $path_or_array 
+* @param string $callback
+* @param array $options (optional). See {@link route()} for available options.
+* 
+* @return void
+* 
+*/
 function dispatch_post($path_or_array, $callback, $options = array())
 {
   route("POST", $path_or_array, $callback, $options);
 }
 
 /**
- * Add a PUT route
- *
- * @param string $path_or_array 
- * @param string $callback
- * @param array $options (optional). See {@link route()} for available options.
- * @return void
- */
+* Add a PUT route
+*
+* @param (string) $path_or_array 
+* @param (string) $callback
+* @param (array) $options (optional). See {@link route()} for available options.
+* 
+* @return void
+* 
+*/
 function dispatch_put($path_or_array, $callback, $options = array())
 {
   route("PUT", $path_or_array, $callback, $options);
 }
 
 /**
- * Add a DELETE route
- *
- * @param string $path_or_array 
- * @param string $callback
- * @param array $options (optional). See {@link route()} for available options.
- * @return void
- */
+* Add a DELETE route
+* 
+* @param string $path_or_array 
+* @param string $callback
+* @param array $options (optional). See {@link route()} for available options.
+* 
+* @return void
+* 
+*/
 function dispatch_delete($path_or_array, $callback, $options = array())
 {
   route("DELETE", $path_or_array, $callback, $options);
@@ -1159,20 +1508,25 @@ function dispatch_delete($path_or_array, $callback, $options = array())
 
 
 /**
- * Add route if required params are provided.
- * Delete all routes if null is passed as a unique argument
- * Return all routes
- * 
- * @see route_build()
- * @access private
- * @param string $method 
- * @param string|array $path_or_array 
- * @param callback $func
- * @param array $options (optional). Available options: 
- *   - 'params' key with an array of parameters: for parametrized routes.
- *     those parameters will be merged with routes parameters.
- * @return array
- */
+* Add route if required params are provided.
+* 
+* Delete all routes if null is passed as a unique argument
+* Return all routes
+* 
+* @see route_build()
+* 
+* @access private
+* 
+* @param string $method 
+* @param string|array $path_or_array 
+* @param callback $func
+* @param array $options (optional). Available options: 
+*   - 'params' key with an array of parameters: for parametrized routes.
+*     those parameters will be merged with routes parameters.
+* 
+* @return array
+* 
+*/
 function route()
 {
   static $routes = array();
@@ -1196,36 +1550,47 @@ function route()
 }
 
 /**
- * An alias of route(null): reset all routes
- * 
- * @access private
- * @return void
- */
+* An alias of route(null): reset all routes
+* 
+* @access private
+* 
+* @return void
+* 
+*/
 function route_reset()
 {
   route(null);
 }
 
 /**
- * Build a route and return it
- *
- * @access private
- * @param string $method allowed http method (one of those returned by {@link request_methods()})
- * @param string|array $path_or_array 
- * @param callback $callback callback called when route is found. It can be
- *   a function, an object method, a static method or a closure.
- *   See {@link http://php.net/manual/en/language.pseudo-types.php#language.types.callback php documentation}
- *   to learn more about callbacks.
- * @param array $options (optional). Available options: 
- *   - 'params' key with an array of parameters: for parametrized routes.
- *     those parameters will be merged with routes parameters.
- * @return array array with keys "method", "pattern", "names", "callback", "options"
- */
+* Build a route and return it
+* 
+* @access private
+* 
+* @param string $method allowed http method (one of those returned by {@link request_methods()})
+* 
+* @param string|array $path_or_array 
+* 
+* @param callback $callback callback called when route is found. It can be
+*   a function, an object method, a static method or a closure.
+*   See {@link http://php.net/manual/en/language.pseudo-types.php#language.types.callback php documentation}
+*   to learn more about callbacks.
+* 
+* @param array $options (optional). Available options: 
+*   - 'params' key with an array of parameters: for parametrized routes.
+*     those parameters will be merged with routes parameters.
+* 
+* 
+* @return array array with keys "method", "pattern", "names", "callback", "options"
+* 
+*/
 function route_build($method, $path_or_array, $callback, $options = array())
 {
   $method = strtoupper($method);
   if(!in_array($method, request_methods())) 
-    trigger_error("'$method' request method is unkown or unavailable.", E_USER_WARNING);
+  { 
+    trigger_error("'$method' request method is unknown or unavailable.", E_USER_WARNING);
+  }
 
   if(is_array($path_or_array))
   {
@@ -1240,7 +1605,7 @@ function route_build($method, $path_or_array, $callback, $options = array())
 
   $single_asterisk_subpattern   = "(?:/([^\/]*))?";
   $double_asterisk_subpattern   = "(?:/(.*))?";
-  $optionnal_slash_subpattern   = "(?:/*?)";
+  $optional_slash_subpattern   = "(?:/*?)";
   $no_slash_asterisk_subpattern = "(?:([^\/]*))?";
 
   if($path[0] == "^")
@@ -1250,7 +1615,7 @@ function route_build($method, $path_or_array, $callback, $options = array())
   }
   else if(empty($path) || $path == "/")
   {
-    $pattern = "#^".$optionnal_slash_subpattern."$#";
+    $pattern = "#^".$optional_slash_subpattern."$#";
   }
   else
   {
@@ -1262,9 +1627,7 @@ function route_build($method, $path_or_array, $callback, $options = array())
     foreach($elts as $elt)
     {
       if(empty($elt)) continue;
-
       $name = null; 
-
       # extracting double asterisk **
       if($elt == "**"):
         $parsed[] = $double_asterisk_subpattern;
@@ -1291,7 +1654,7 @@ function route_build($method, $path_or_array, $callback, $options = array())
           $parsed_sub[] = preg_quote($sub_elt, "#");
           $name = $parameters_count;
         }
-        // 
+        # 
         $parsed[] = "/".implode($no_slash_asterisk_subpattern, $parsed_sub);
 
       else:
@@ -1299,14 +1662,14 @@ function route_build($method, $path_or_array, $callback, $options = array())
 
       endif;
 
-      /* set parameters names */ 
+      # set parameters names 
       if(is_null($name)) continue;
       if(!array_key_exists($parameters_count, $names) || is_null($names[$parameters_count]))
         $names[$parameters_count] = $name;
       $parameters_count++;
     }
 
-    $pattern = "#^".implode('', $parsed).$optionnal_slash_subpattern."?$#i";
+    $pattern = "#^".implode('', $parsed).$optional_slash_subpattern."?$#i";
   }
 
   return array( "method"       => $method,
@@ -1317,19 +1680,25 @@ function route_build($method, $path_or_array, $callback, $options = array())
 }
 
 /**
- * Find a route and returns it.
- * Parameters values extracted from the path are added and merged 
- * with the default 'params' option of the route
- * If not found, returns false.
- * Routes are checked from first added to last added.
- *
- * @access private
- * @param string $method 
- * @param string $path
- * @return array,false route array has same keys as route returned by 
- *  {@link route_build()} ("method", "pattern", "names", "callback", "options")
- *  + the processed "params" key
- */
+* Find a route and returns it.
+* 
+* Parameters values extracted from the path are added and merged 
+* with the default 'params' option of the route
+* 
+* If not found, returns false.
+*
+* Routes are checked from first added to last added.
+*
+* @access private
+* 
+* @param string $method 
+* @param string $path
+*
+* @return array,false route array has same keys as route returned by 
+*  {@link route_build()} ("method", "pattern", "names", "callback", "options")
+*  + the processed "params" key
+* 
+*/
 function route_find($method, $path)
 {
   $routes = route();
@@ -1368,33 +1737,36 @@ function route_find($method, $path)
 
 
 
+// -----
+// ### 5. OUTPUT AND RENDERING
 
-# ============================================================================ #
-#    5. OUTPUT AND RENDERING                                                   #
-# ============================================================================ #
 
 /**
- * Returns a string to output
- * 
- * It might use a template file, a function, or a formatted string (like {@link sprintf()}).
- * It could be embraced by a layout or not.
- * Local vars can be passed in addition to variables made available with the {@link set()}
- * function.
- *
- * @param string $content_or_func 
- * @param string $layout 
- * @param string $locals 
- * @return string
- */
+* Returns a string to output
+* 
+* It might use a template file, a function, or a formatted string (like {@link sprintf()}).
+* It could be embraced by a layout or not.
+* Local vars can be passed in addition to variables made available with the {@link set()}
+* function.
+*
+* @param string $content_or_func 
+* @param string $layout 
+* @param string $locals 
+* 
+* @return string
+* 
+*/
 function render($content_or_func, $layout = '', $locals = array())
 {
   $args = func_get_args();
   $content_or_func = array_shift($args);
   $layout = count($args) > 0 ? array_shift($args) : layout();
-  $view_path = file_path(option('views_dir'),$content_or_func);
+  $view_path = file_path(option('dir.views'),$content_or_func);
   
   if(function_exists('before_render'))
+  { 
     list($content_or_func, $layout, $locals, $view_path) = before_render($content_or_func, $layout, $locals, $view_path);    
+  }
   
   $vars = array_merge(set(), $locals);
 
@@ -1443,27 +1815,31 @@ function render($content_or_func, $layout = '', $locals = array())
 }
 
 /**
- * Returns a string to output
- * 
- * Shortcut to render with no layout.
- *
- * @param string $content_or_func 
- * @param string $locals 
- * @return string
- */
+* Returns a string to output
+* 
+* Shortcut to render with no layout.
+*
+* @param string $content_or_func 
+* @param string $locals 
+* 
+* @return string
+* 
+*/
 function partial($content_or_func, $locals = array())
 {
   return render($content_or_func, null, $locals);
 }
 
 /**
- * Returns html output with proper http headers
- *
- * @param string $content_or_func 
- * @param string $layout 
- * @param string $locals 
- * @return string
- */ 
+* Returns html output with proper http headers
+*
+* @param string $content_or_func 
+* @param string $layout 
+* @param string $locals 
+* 
+* @return string
+* 
+*/
 function html($content_or_func, $layout = '', $locals = array())
 {
   send_header('Content-Type: text/html; charset='.strtolower(option('encoding')));
@@ -1472,11 +1848,13 @@ function html($content_or_func, $layout = '', $locals = array())
 }
 
 /**
- * Set and return current layout
- *
- * @param string $function_or_file 
- * @return string
- */
+* Set and return current layout
+*
+* @param string $function_or_file 
+* 
+* @return string
+* 
+*/
 function layout($function_or_file = null)
 {
   static $layout = null;
@@ -1485,13 +1863,15 @@ function layout($function_or_file = null)
 }
 
 /**
- * Returns xml output with proper http headers
- *
- * @param string $content_or_func 
- * @param string $layout 
- * @param string $locals 
- * @return string
- */
+* Returns xml output with proper http headers
+*
+* @param string $content_or_func 
+* @param string $layout 
+* @param string $locals 
+* 
+* @return string
+* 
+*/
 function xml($data)
 {
   send_header('Content-Type: text/xml; charset='.strtolower(option('encoding')));
@@ -1500,13 +1880,14 @@ function xml($data)
 }
 
 /**
- * Returns css output with proper http headers
- *
- * @param string $content_or_func 
- * @param string $layout 
- * @param string $locals 
- * @return string
- */
+* Returns css output with proper http headers
+*
+* @param string $content_or_func 
+* @param string $layout 
+* @param string $locals 
+* 
+* @return string
+*/
 function css($content_or_func, $layout = '', $locals = array())
 {
   send_header('Content-Type: text/css; charset='.strtolower(option('encoding')));
@@ -1515,13 +1896,14 @@ function css($content_or_func, $layout = '', $locals = array())
 }
 
 /**
- * Returns javacript output with proper http headers
- *
- * @param string $content_or_func 
- * @param string $layout 
- * @param string $locals 
- * @return string
- */
+* Returns javacript output with proper http headers
+*
+* @param string $content_or_func 
+* @param string $layout 
+* @param string $locals 
+* 
+* @return string
+*/
 function js($content_or_func, $layout = '', $locals = array())
 {
   send_header('Content-Type: application/javascript; charset='.strtolower(option('encoding')));
@@ -1530,13 +1912,14 @@ function js($content_or_func, $layout = '', $locals = array())
 }
 
 /**
- * Returns txt output with proper http headers
- *
- * @param string $content_or_func 
- * @param string $layout 
- * @param string $locals 
- * @return string
- */
+* Returns txt output with proper http headers
+*
+* @param string $content_or_func 
+* @param string $layout 
+* @param string $locals 
+* 
+* @return string
+*/
 function txt($content_or_func, $layout = '', $locals = array())
 {
   send_header('Content-Type: text/plain; charset='.strtolower(option('encoding')));
@@ -1545,14 +1928,16 @@ function txt($content_or_func, $layout = '', $locals = array())
 }
 
 /**
- * Returns json representation of data with proper http headers.
- * On PHP 5 < PHP 5.2.0, you must provide your own implementation of the
- * <code>json_encode()</code> function beore using <code>json()</code>.
- *
- * @param string $data 
- * @param int $json_option
- * @return string
- */
+* Returns json representation of data with proper http headers
+* 
+* On PHP 5 < PHP 5.2.0, you must provide your own implementation of the
+* <code>json_encode()</code> function beore using <code>json()</code>.
+* 
+* @param string $data 
+* @param int $json_option
+* 
+* @return string
+*/
 function json($data, $json_option = 0)
 {
   send_header('Content-Type: application/json; charset='.strtolower(option('encoding')));
@@ -1560,25 +1945,26 @@ function json($data, $json_option = 0)
 }
 
 /**
- * undocumented function
- *
- * @param string $filename 
- * @param string $return 
- * @return mixed number of bytes delivered or file output if $return = true
- */
+* undocumented function
+*
+* @param string $filename 
+* @param string $return 
+* 
+* @return mixed number of bytes delivered or file output if $return = true
+*/
 function render_file($filename, $return = false)
 {
-  # TODO implements X-SENDFILE headers
-  // if($x-sendfile = option('x-sendfile'))
-  // {
-  //    // add a X-Sendfile header for apache and Lighttpd >= 1.5
-  //    if($x-sendfile > X-SENDFILE) // add a X-LIGHTTPD-send-file header 
-  //   
-  // }
-  // else
-  // {
-  //   
-  // }
+  // TODO implements X-SENDFILE headers
+  # if($x-sendfile = option('x-sendfile'))
+  # {
+  #    // add a X-Sendfile header for apache and Lighttpd >= 1.5
+  #    if($x-sendfile > X-SENDFILE) // add a X-LIGHTTPD-send-file header 
+  #   
+  # }
+  # else
+  # {
+  #   
+  # }
   $filename = str_replace('../', '', $filename);
   if(file_exists($filename))
   {
@@ -1592,42 +1978,39 @@ function render_file($filename, $return = false)
 }
 
 /**
- * Call before_sending_header() if it exists, then send headers
- * 
- * @param string $header
- * @return void
- */
+* Call before_sending_header() if it exists, then send headers
+* 
+* @param string $header
+* 
+* @return void
+*/
 function send_header($header = null, $replace = true, $code = false)
 {
-    if(!headers_sent()) 
-    {
-        call_if_exists('before_sending_header', $header);
-        header($header, $replace, $code);
-    }
+  if(!headers_sent()) 
+  { 
+    call_if_exists('before_sending_header', $header);
+    header($header, $replace, $code);
+  }
 }
 
 
 
+// -----
+// ### 6. HELPERS
 
-
-                                     # # #
-
-
-
-
-# ============================================================================ #
-#    6. HELPERS                                                                #
-# ============================================================================ #
 
 /**
- * Returns an url composed of params joined with /
- * A param can be a string or an array.
- * If param is an array, its members will be added at the end of the return url
- * as GET parameters "&key=value".
- *
- * @param string or array $param1, $param2 ... 
- * @return string
- */ 
+* Returns an url composed of params joined with /
+* 
+* A param can be a string or an array.
+* 
+* If param is an array, its members will be added at the end of the return url
+* as GET parameters "&key=value".
+*
+* @param string or array $param1, $param2 ... 
+* 
+* @return string
+*/
 function url_for($params = null)
 {
   $paths  = array();
@@ -1657,7 +2040,7 @@ function url_for($params = null)
   if(!filter_var_url($path)) 
   {
     # it's a relative URL or an URL without a schema
-    $base_uri = option('base_uri');
+    $base_uri = option('base.uri');
     $path = file_path($base_uri, $path);
   }
   
@@ -1681,14 +2064,16 @@ function url_for($params = null)
 }
 
 /**
- * An alias of {@link htmlspecialchars()}.
- * If no $charset is provided, uses option('encoding') value
- *
- * @param string $str 
- * @param string $quote_style 
- * @param string $charset 
- * @return void
- */
+* An alias of {@link htmlspecialchars()}.
+* If no $charset is provided, uses option('encoding') value
+*
+* @param string $str 
+* @param string $quote_style 
+* @param string $charset 
+*
+* @return void
+* 
+*/
 function h($str, $quote_style = ENT_NOQUOTES, $charset = null)
 {
   if(is_null($charset)) $charset = strtoupper(option('encoding'));
@@ -1696,17 +2081,19 @@ function h($str, $quote_style = ENT_NOQUOTES, $charset = null)
 }
 
 /**
- * Set and returns flash messages that will be available in the next action
- * via the {@link flash_now()} function or the view variable <code>$flash</code>.
- * 
- * If multiple values are provided, set <code>$name</code> variable with an array of those values.
- * If there is only one value, set <code>$name</code> variable with the provided $values
- * or if it's <code>$name</code> is an array, merge it with current messages.
- *
- * @param string, array $name 
- * @param mixed  $values,... 
- * @return mixed variable value for $name if $name argument is provided, else return all variables
- */
+* Set and returns flash messages that will be available in the next action
+* via the {@link flash_now()} function or the view variable <code>$flash</code>.
+* 
+* If multiple values are provided, set <code>$name</code> variable with an array of those values.
+* 
+* If there is only one value, set <code>$name</code> variable with the provided $values
+* or if it's <code>$name</code> is an array, merge it with current messages.
+*
+* @param string, array $name 
+* @param mixed  $values,... 
+* 
+* @return mixed variable value for $name if $name argument is provided, else return all variables
+*/
 function flash($name = null, $value = null)
 {
   if(!defined('SID')) trigger_error("Flash messages can't be used because session isn't enabled", E_USER_WARNING);
@@ -1725,19 +2112,22 @@ function flash($name = null, $value = null)
 }
 
 /**
- * Set and returns flash messages available for the current action, included those
- * defined in the previous action with {@link flash()}
- * Those messages will also be passed to the views and made available in the 
- * <code>$flash</code> variable.
- * 
- * If multiple values are provided, set <code>$name</code> variable with an array of those values.
- * If there is only one value, set <code>$name</code> variable with the provided $values
- * or if it's <code>$name</code> is an array, merge it with current messages.
- *
- * @param string, array $name 
- * @param mixed  $values,... 
- * @return mixed variable value for $name if $name argument is provided, else return all variables
- */
+* Set and returns flash messages available for the current action, included those
+* defined in the previous action with {@link flash()}
+* 
+* Those messages will also be passed to the views and made available in the 
+* <code>$flash</code> variable.
+* 
+* If multiple values are provided, set <code>$name</code> variable with an array of those values.
+* 
+* If there is only one value, set <code>$name</code> variable with the provided $values
+* or if it's <code>$name</code> is an array, merge it with current messages.
+*
+* @param string, array $name 
+* @param mixed  $values,... 
+* 
+* @return mixed variable value for $name if $name argument is provided, else return all variables
+*/
 function flash_now($name = null, $value = null)
 {
   static $messages = null;
@@ -1761,13 +2151,16 @@ function flash_now($name = null, $value = null)
 }
 
 /**
- * Delete current flash messages in session, and set new ones stored with 
- * flash function.
- * Called before application exit.
- *
- * @access private
- * @return void
- */
+* Delete current flash messages in session, and set new ones stored with 
+* flash function.
+* 
+* Called before application exit.
+*
+* @access private
+* 
+* @return void
+* 
+*/
 function flash_sweep()
 {
   if(defined('SID'))
@@ -1778,18 +2171,20 @@ function flash_sweep()
 }
 
 /**
- * Starts capturing block of text
- *
- * Calling without params stops capturing (same as end_content_for()).
- * After capturing the captured block is put into a variable
- * named $name for later use in layouts. If second parameter
- * is supplied, its content will be used instead of capturing
- * a block of text.
- *
- * @param string $name
- * @param string $content
- * @return void
- */
+* Starts capturing block of text
+*
+* Calling without params stops capturing (same as end_content_for()).
+* 
+* After capturing the captured block is put into a variable
+* named $name for later use in layouts. If second parameter
+* is supplied, its content will be used instead of capturing
+* a block of text.
+*
+* @param string $name
+* @param string $content
+* 
+* @return void
+*/
 function content_for($name = null, $content = null)
 {
   static $_name = null;
@@ -1810,61 +2205,61 @@ function content_for($name = null, $content = null)
 }
 
 /**
- * Stops capturing block of text
- *
- * @return void
- */
+* Stops capturing block of text
+*
+* @return void
+* 
+*/
 function end_content_for()
 {
   content_for();
 }
 
 /**
- * Shows current memory and execution time of the application.
- * Returns only execution time if <code>memory_get_usage()</code> 
- * isn't available.
- * ( That's the case before PHP5.2.1 if PHP isn't compiled with option 
- *   <code>--enable-memory-limit</code>. )
- * 
- * @access public
- * @return array
- */
+* Shows current memory and execution time of the application.
+* 
+* Returns only execution time if <code>memory_get_usage()</code> is not available.
+* ( That's the case before PHP5.2.1 if PHP isn't compiled with option 
+*  <code>--enable-memory-limit</code>. )
+*
+* @access public
+* 
+* @return array
+* 
+*/
 function benchmark()
 {
-	$res = array( 'execution_time' => (microtime() - LIM_START_MICROTIME) );
+  $res = array( 'execution_time' => (microtime() - LIM_START_MICROTIME) );
   if(defined('LIM_START_MEMORY'))
-	{
-		$current_mem_usage     = memory_get_usage();
-		$res['current_memory'] = $current_mem_usage;
-		$res['start_memory']   = LIM_START_MEMORY;
-		$res['average_memory'] = (LIM_START_MEMORY + $current_mem_usage) / 2;
-	}
+  { 
+    $current_mem_usage     = memory_get_usage();
+    $res['current_memory'] = $current_mem_usage;
+    $res['start_memory']   = LIM_START_MEMORY;
+    $res['average_memory'] = (LIM_START_MEMORY + $current_mem_usage) / 2;
+  }
 	
-	return $res;
+  return $res;
 }
 
 
 
-
-                                     # # #
-
-
+// -----
+// ### 7. UTILS
 
 
-# ============================================================================ #
-#    7. UTILS                                                                  #
-# ============================================================================ #
  
 /**
- * Calls a function if exists
- *
- * @param callback $callback a function stored in a string variable, 
- *   or an object and the name of a method within the object
- *   See {@link http://php.net/manual/en/language.pseudo-types.php#language.types.callback php documentation}
- *   to learn more about callbacks.
- * @param mixed $arg,.. (optional)
- * @return mixed
- */
+* Calls a function if exists
+*
+* @param callback $callback a function stored in a string variable, 
+*   or an object and the name of a method within the object
+*   See {@link http://php.net/manual/en/language.pseudo-types.php#language.types.callback php documentation}
+*   to learn more about callbacks.
+* 
+* @param mixed $arg,.. (optional)
+* 
+* @return mixed
+*/
 function call_if_exists($callback)
 {
   $args = func_get_args();
@@ -1874,50 +2269,54 @@ function call_if_exists($callback)
 }
 
 /**
- * Define a constant unless it already exists
- *
- * @param string $name 
- * @param string $value 
- * @return void
- */
+* Define a constant unless it already exists
+*
+* @param string $name 
+* @param string $value 
+* 
+* @return void
+*/
 function define_unless_exists($name, $value)
 {
   if(!defined($name)) define($name, $value);
 }
 
 /**
- * Return a default value if provided value is empty
- *
- * @param mixed $value 
- * @param mixed $default default value returned if $value is empty
- * @return mixed
- */
+* Return a default value if provided value is empty
+*
+* @param mixed $value 
+* @param mixed $default default value returned if $value is empty
+* 
+* @return mixed
+*/
 function value_or_default($value, $default)
 {
   return empty($value) ? $default : $value;
 }
 
 /**
- * An alias of {@link value_or_default()}
- *
- * 
- * @param mixed $value 
- * @param mixed $default 
- * @return mixed
- */
+* An alias of {@link value_or_default()}
+*
+* 
+* @param mixed $value 
+* @param mixed $default 
+* 
+* @return mixed
+*/
 function v($value, $default)
 {
   return value_or_default($value, $default);
 }
 
 /**
- * Load php files with require_once in a given dir
- *
- * @param string $path Path in which are the file to load
- * @param string $pattern a regexp pattern that filter files to load
- * @param bool $prevents_output security option that prevents output
- * @return array paths of loaded files
- */
+* Load php files with require_once in a given dir
+*
+* @param string $path Path in which are the file to load
+* @param string $pattern a regexp pattern that filter files to load
+* @param bool $prevents_output security option that prevents output
+* 
+* @return array paths of loaded files
+*/
 function require_once_dir($path, $pattern = "*.php", $prevents_output = true)
 {
   if($path[strlen($path) - 1] != "/") $path .= "/";
@@ -1930,12 +2329,13 @@ function require_once_dir($path, $pattern = "*.php", $prevents_output = true)
 }
 
 /**
- * Dumps a variable into inspectable format
- *
- * @param anything $var the variable to debug
- * @param bool $output_as_html sets whether to wrap output in <pre> tags. default: true
- * @return string the variable with output
- */
+* Dumps a variable into inspectable format
+*
+* @param anything $var the variable to debug
+* @param bool $output_as_html sets whether to wrap output in <pre> tags. default: true
+* 
+* @return string the variable with output
+*/
 function debug($var, $output_as_html = true)
 { 
   if ( is_null($var) ) { return '<span class="null-value">[NULL]</span>'; };
@@ -1967,10 +2367,55 @@ function debug($var, $output_as_html = true)
 }
 
 
-## HTTP utils  _________________________________________________________________
+/**
+ * Provides debugging output of all system settings, enabling easy inspection of
+ * all current values and settings.
+ * 
+ * Depends on option('settings.show') being set and true, else outputs simple HTML comment.
+ * 
+ * @return string the html output displaying all the settings.
+ */
+
+function settings_show_output()
+{ 
+  if ( option('settings.show') ) 
+  { 
+    $c_view_dir = option('dir.views'); # keep for restore after render
+    option('dir.views', option('dir.limonade.views'));
+    $o = render('_settings.html.php', null);
+    option('dir.views', $c_view_dir); # restore current views dir
+    return $o;
+  }
+  else
+  { 
+    return "<!-- option('settings.show') disabled -->";
+  }
+}
+
+/**
+* Syntactic sugar for var_export()
+* 
+* <strong>Params</strong>
+* 
+* @param (string) $var => the variable/object/array to dump
+* 
+* @return (string)
+* 
+* <strong>Examples</strong>
+* 
+*     <pre><?= _dump( env() ); ?></pre>
+* 
+*/
+function _dump($var)
+{ 
+  return var_export($var, true);
+}
+
+// -----
+// #### HTTP utils
 
 
-### Constants: HTTP status codes
+# Constants: HTTP status codes
 
 define( 'HTTP_CONTINUE',                      100 );
 define( 'HTTP_SWITCHING_PROTOCOLS',           101 );
@@ -2026,11 +2471,12 @@ define( 'HTTP_INSUFFICIENT_STORAGE',          507 );
 define( 'HTTP_NOT_EXTENDED',                  510 );
 
 /**
- * Output proper HTTP header for a given HTTP code
- *
- * @param string $code 
- * @return void
- */
+* Output proper HTTP header for a given HTTP code
+*
+* @param string $code 
+* 
+* @return void
+*/
 function status($code = 500)
 {
   if(!headers_sent())
@@ -2041,20 +2487,25 @@ function status($code = 500)
 }
 
 /**
- * Http redirection
- * 
- * Same use as {@link url_for()}
- * By default HTTP status code is 302, but a different code can be specified
- * with a status key in array parameter.
- * 
- * <code>
- * redirecto('new','url'); # 302 HTTP_MOVED_TEMPORARILY by default
- * redirecto('new','url', array('status' => HTTP_MOVED_PERMANENTLY));
- * </code>
- * 
- * @param string or array $param1, $param2... 
- * @return void
- */
+* Http redirection
+* 
+* Same use as {@link url_for()}
+* 
+* By default HTTP status code is 302, but a different code can be specified
+* with a status key in array parameter.
+* 
+* <code>
+*     redirecto('new','url'); # 302 HTTP_MOVED_TEMPORARILY by default
+*     
+*     
+*     redirecto('new','url', array('status' => HTTP_MOVED_PERMANENTLY));
+* </code>
+*
+* @param string or array $param1, $param2... 
+* 
+* @return void
+* 
+*/
 function redirect_to($params)
 {
   # [NOTE]: (from php.net) HTTP/1.1 requires an absolute URI as argument to » Location:
@@ -2063,7 +2514,7 @@ function redirect_to($params)
   # $_SERVER['PHP_SELF'] and dirname() to make an absolute URI from a relative
   # one yourself.
 
-  # TODO make absolute uri
+  // ### TODO make absolute uri
   if(!headers_sent())
   {
     $status = HTTP_MOVED_TEMPORARILY; # default for a redirection in PHP
@@ -2091,12 +2542,14 @@ function redirect_to($params)
 }
 
 /**
- * Http redirection
- *
- * @deprecated deprecated since version 0.4. Please use {@link redirect_to()} instead.
- * @param string $url 
- * @return void
- */
+* HTTP redirection
+*
+* @deprecated deprecated since version 0.4. Please use {@link redirect_to()} instead.
+* 
+* @param string $url 
+* 
+* @return void
+*/
 function redirect($uri)
 {
   # halt('redirect() is deprecated. Please use redirect_to() instead.', E_LIM_DEPRECATED);
@@ -2105,12 +2558,14 @@ function redirect($uri)
 }
 
 /**
- * Returns HTTP response status for a given code.
- * If no code provided, return an array of all status
- *
- * @param string $num 
- * @return string,array
- */
+* Returns HTTP response status for a given code.
+* 
+* If no code provided, return an array of all status
+*
+* @param string $num 
+* 
+* @return string,array
+*/
 function http_response_status($num = null)
 {
   $status =  array(
@@ -2175,11 +2630,12 @@ function http_response_status($num = null)
 }
 
 /**
- * Checks if an HTTP response code is valid
- *
- * @param string $num 
- * @return bool
- */
+* Checks if an HTTP response code is valid
+*
+* @param string $num 
+* 
+* @return bool
+*/
 function http_response_status_is_valid($num)
 {
   $r = http_response_status($num);
@@ -2187,11 +2643,12 @@ function http_response_status_is_valid($num)
 }
 
 /**
- * Returns an HTTP response status string for a given code
- *
- * @param string $num 
- * @return string
- */
+* Returns an HTTP response status string for a given code
+*
+* @param string $num 
+* 
+* @return string
+*/
 function http_response_status_code($num)
 {
   $protocole = empty($_SERVER["SERVER_PROTOCOL"]) ? "HTTP/1.1" : $_SERVER["SERVER_PROTOCOL"];
@@ -2199,17 +2656,18 @@ function http_response_status_code($num)
 }
 
 /**
- * Check if the _Accept_ header is present, and includes the given `type`.
- *
- * When the _Accept_ header is not present `true` is returned. Otherwise
- * the given `type` is matched by an exact match, and then subtypes. You
- * may pass the subtype such as "html" which is then converted internally
- * to "text/html" using the mime lookup table.
- *
- * @param string $type
- * @param string $env 
- * @return bool
- */
+* Check if the _Accept_ header is present, and includes the given `type`.
+*
+* When the _Accept_ header is not present `true` is returned. Otherwise
+* the given `type` is matched by an exact match, and then subtypes. You
+* may pass the subtype such as "html" which is then converted internally
+* to "text/html" using the mime lookup table.
+*
+* @param string $type
+* @param string $env 
+* 
+* @return bool
+*/
 function http_ua_accepts($type, $env = null)
 {
   if(is_null($env)) $env = env();
@@ -2219,13 +2677,13 @@ function http_ua_accepts($type, $env = null)
   
   if($type)
   {
-    // Allow "html" vs "text/html" etc
+    # Allow "html" vs "text/html" etc
     if(!strpos($type, '/')) $type = mime_type($type);
     
-    // Check if we have a direct match
+    # Check if we have a direct match
     if(strpos($accept, $type) > -1) return true;
     
-    // Check if we have type/*  
+    # Check if we have type/*  
     $type_parts = explode('/', $type); 
     $type = $type_parts[0].'/*';
     return (strpos($accept, $type) > -1);
@@ -2234,16 +2692,19 @@ function http_ua_accepts($type, $env = null)
   return false; 
 }
 
-## FILE utils  _________________________________________________________________
+// -----
+// #### FILE utils
+
 
 /**
- * Returns mime type for a given extension or if no extension is provided,
- * all mime types in an associative array, with extensions as keys. 
- * (extracted from Orbit source http://orbit.luaforge.net/)
- *
- * @param string $ext
- * @return string, array
- */
+* Returns mime type for a given extension or if no extension is provided,
+* all mime types in an associative array, with extensions as keys. 
+* (extracted from Orbit source http://orbit.luaforge.net/)
+*
+* @param string $ext
+* 
+* @return string, array
+*/
 function mime_type($ext = null)
 {
   $types = array(
@@ -2410,14 +2871,16 @@ function mime_type($ext = null)
 }
 
 /**
- * Detect MIME Content-type for a file
- *
- * @param string $filename Path to the tested file.
- * @return string
- */
+* Detect MIME Content-type for a file
+*
+* @param string $filename Path to the tested file.
+* 
+* @return string
+* 
+*/
 function file_mime_content_type($filename)
 {
-  $ext = file_extension($filename); /* strtolower isn't necessary */
+  $ext = file_extension($filename); # strtolower isn't necessary 
   if($mime = mime_type($ext)) return $mime;
   elseif (function_exists('finfo_open'))
   {
@@ -2435,18 +2898,20 @@ function file_mime_content_type($filename)
 
 
 /**
- * Read and output file content and return filesize in bytes or status after 
- * closing file.
- * This function is very efficient for outputing large files without timeout
- * nor too expensive memory use
- *
- * @param string $filename 
- * @param string $retbytes 
- * @return bool, int
- */
+* Read and output file content and return file size in bytes or status after 
+* closing file.
+* 
+* This function is very efficient for outputting large files without timeout
+* nor too expensive memory use
+*
+* @param string $filename 
+* @param string $retbytes 
+* 
+* @return bool, int
+*/
 function file_read_chunked($filename, $retbytes = true)
 {
-  $chunksize = 1*(1024*1024); // how many bytes per chunk
+  $chunksize = 1*(1024*1024); # how many bytes per chunk
   $buffer    = '';
   $cnt       = 0;
   $handle    = fopen($filename, 'rb');
@@ -2464,17 +2929,19 @@ function file_read_chunked($filename, $retbytes = true)
   ob_end_flush();
 
   $status = fclose($handle);
-  if ($retbytes && $status) return $cnt; // return num. bytes delivered like readfile() does.
+  if ($retbytes && $status) return $cnt; # return num. bytes delivered like readfile() does.
   return $status;
 }
 
 /**
- * Create a file path by concatenation of given arguments.
- * Windows paths with backslash directory separators are normalized in *nix paths.
- *
- * @param string $path, ... 
- * @return string normalized path
- */
+* Create a file path by concatenation of given arguments.
+* 
+* Windows paths with backslash directory separators are normalized in *nix paths.
+*
+* @param string $path, ... 
+* 
+* @return string normalized path
+*/#
 function file_path($path)
 {
   $args = func_get_args();
@@ -2483,16 +2950,16 @@ function file_path($path)
   $n_path = count($args) > 1 ? implode($ds, $args) : $path;
   if(strpos($n_path, $win_ds) !== false) $n_path = str_replace( $win_ds, $ds, $n_path );
   $n_path = preg_replace( "#$ds+#", $ds, $n_path);
-  
   return $n_path;
 }
 
 /**
- * Returns file extension or false if none
- *
- * @param string $filename 
- * @return string, false
- */
+* Returns file extension or false if none
+*
+* @param string $filename 
+* 
+* @return string, false
+*/
 function file_extension($filename)
 {
   $pos = strrpos($filename, '.');
@@ -2501,11 +2968,12 @@ function file_extension($filename)
 }
 
 /**
- * Checks if $filename is a text file
- *
- * @param string $filename 
- * @return bool
- */
+* Checks if $filename is a text file
+*
+* @param string $filename 
+* 
+* @return bool
+*/
 function file_is_text($filename)
 {
   if($mime = file_mime_content_type($filename)) return substr($mime,0,5) == "text/";
@@ -2513,11 +2981,13 @@ function file_is_text($filename)
 }
 
 /**
- * Checks if $filename is a binary file
- *
- * @param string $filename 
- * @return void
- */
+* Checks if $filename is a binary file
+*
+* @param string $filename 
+* 
+* @return void
+* 
+*/
 function file_is_binary($filename)
 {
   $is_text = file_is_text($filename);
@@ -2525,12 +2995,11 @@ function file_is_binary($filename)
 }
 
 /**
- * Return or output file content
- *
- * @return 	string, int
- *				
- **/
-
+* Return or output file content
+*
+* @return 	string, int
+*
+*/
 function file_read($filename, $return = false)
 {
   if(!file_exists($filename)) trigger_error("$filename doesn't exists", E_USER_ERROR);
@@ -2539,11 +3008,12 @@ function file_read($filename, $return = false)
 }
 
 /**
- * Returns an array of files contained in a directory
- *
- * @param string $dir 
- * @return array
- */
+* Returns an array of files contained in a directory
+*
+* @param string $dir 
+* 
+* @return array
+*/
 function file_list_dir($dir)
 {
   $files = array();
@@ -2558,19 +3028,37 @@ function file_list_dir($dir)
   return $files;
 }
 
-## Extra utils  ________________________________________________________________
+
+
+// -----
+// #### Extra utils
+
+
+/**
+ * Force a value to be an array.
+ *
+ * @param mixed $value The value to make sure is an array.
+ *
+ * @return array The provided $value if it was an array or array($value)
+ */
+function array_force($value)
+{ 
+  return (is_array($value) ? $value : array($value));
+}
 
 if(!function_exists('array_replace'))
 {
   /**
-   * For PHP 5 < 5.3.0 (backward compatibility)
-   * (from {@link http://www.php.net/manual/fr/function.array-replace.php#92549 this php doc. note})
-   * 
-   * @see array_replace()
-   * @param string $array 
-   * @param string $array1 
-   * @return $array
-   */
+  * For PHP 5 < 5.3.0 (backward compatibility)
+  * (from {@link http://www.php.net/manual/fr/function.array-replace.php#92549 this php doc. note})
+  * 
+  * @see array_replace()
+  * 
+  * @param string $array 
+  * @param string $array1 
+  * 
+  * @return $array
+  */
   function array_replace( array &$array, array &$array1 )
   {
     $args  = func_get_args();
@@ -2596,15 +3084,15 @@ if(!function_exists('array_replace'))
 }
 
 /**
- * Check if a string is an url
- *
- * This implementation no longer requires 
- * {@link http://www.php.net/manual/en/book.filter.php the filter extenstion}, 
- * so it will improve compatibility with older PHP versions.
- *
- * @param string $str 
- * @return false, str   the string if true, false instead
- */
+* Check if a string is an url
+*
+* This implementation no longer requires 
+* {@link http://www.php.net/manual/en/book.filter.php the filter extenstion}, 
+* so it will improve compatibility with older PHP versions.
+*
+* @param string $str 
+* @return false, str   the string if true, false instead
+*/
 function filter_var_url($str)
 {
   $regexp = '@^https?://([-[:alnum:]]+\.)+[a-zA-Z]{2,6}(:[0-9]+)?(.*)?$@';
@@ -2612,44 +3100,40 @@ function filter_var_url($str)
   return preg_match($regexp, $str) ? $str : false;
 }
 
-
 /**
- * For PHP 5 < 5.1.0 (backward compatibility)
- * (from {@link http://www.php.net/manual/en/function.htmlspecialchars-decode.php#82133})
- * 
- * @param string $string 
- * @param string $quote_style, one of: ENT_COMPAT, ENT_QUOTES, ENT_NOQUOTES 
- * @return the decoded string
- */
+* For PHP 5 < 5.1.0 (backward compatibility)
+* (from {@link http://www.php.net/manual/en/function.htmlspecialchars-decode.php#82133})
+* 
+* @param string $string 
+* @param string $quote_style, one of: ENT_COMPAT, ENT_QUOTES, ENT_NOQUOTES 
+* 
+* @return the decoded string
+*/
 function limonade_htmlspecialchars_decode($string, $quote_style = ENT_COMPAT)
 {
-	$table = array_flip(get_html_translation_table(HTML_SPECIALCHARS, $quote_style));
-	if($quote_style === ENT_QUOTES)
-		$table['&#039;'] = $table['&#39;'] = '\'';
-	return strtr($string, $table);
+  $table = array_flip(get_html_translation_table(HTML_SPECIALCHARS, $quote_style));
+  if($quote_style === ENT_QUOTES) { $table['&#039;'] = $table['&#39;'] = '\''; }
+  return strtr($string, $table);
 }
 
 if(!function_exists('htmlspecialchars_decode'))
 {
-	function htmlspecialchars_decode($string, $quote_style = ENT_COMPAT)
-	{
-		return limonade_htmlspecialchars_decode($string, $quote_style);
-	}
+  function htmlspecialchars_decode($string, $quote_style = ENT_COMPAT)
+  { 
+    return limonade_htmlspecialchars_decode($string, $quote_style);
+  }
 }
 
 /**
- * Called just after loading libs, it provides fallback for some 
- * functions if they don't exists.
- *
- */
+* Called just after loading libs, it provides fallback for some 
+* functions if they don't exists.
+* 
+*/ 
 function fallbacks_for_not_implemented_functions()
 {
   if(!function_exists('json_encode'))
   {
-    /**
-     * for PHP 5 < PHP 5.2.0
-     *
-     */
+    # for PHP 5 < PHP 5.2.0
     function json_encode()
     {
       trigger_error(
@@ -2660,5 +3144,5 @@ function fallbacks_for_not_implemented_functions()
 }
 
 
-
-#   ================================= END ==================================   #
+#/EOF
+?>

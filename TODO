@@ -6,9 +6,9 @@
 ### 0.5.1 ###
 
 - cleanup documentation
-  - put everything in the github wiki
+  - put everything in the Github wiki
   - add a Getting Started section
-  - make the README hyper-simplified; acts as a resume, lits of features +  and a table of content
+  - make the README hyper-simplified; acts as a resume, list of features +  and a table of content
   - remove reference to html API: no time to maintain it and source code is enough. Maybe we can simply use a two-columns documentation generated with something like http://rtomayko.github.com/rocco/ ?
 - Add instructions about running tests
 - adding contributors/thanks in AUTHORS
@@ -19,7 +19,7 @@
 - in README, complete the section about hooks and user defined functions
 - add file controller feature
   - a controller can be a file if controller callback string ending with '.php'
-  - this allow to push direcly the procedural code of the controller in a file, without declaring a controller function
+  - this allow to push directly the procedural code of the controller in a file, without declaring a controller function
   - it end with a return, like a normal controller
   - code is loaded in a container function when route is built, just before execution 
   
@@ -34,7 +34,7 @@
     - route_callback_[controller_]create()
     - route_callback_[controller_]call()
 - add a flash_keep() function like in rails (http://guides.rubyonrails.org/action_controller_overview.html#the-flash)
-- in debug output, formating debug_backtrace to be me readable (like debug_backtrace output but with extra informations that can be toggled). Using show_settings view by kematzy ? http://github.com/kematzy/limonade/commit/02ad17260912757b73ff809acad8e970efafc4b4
+- in debug output, formatting debug_backtrace to be more readable (like debug_backtrace output but with extra informations that can be toggled). Using show_settings view by kematzy ? http://github.com/kematzy/limonade/commit/02ad17260912757b73ff809acad8e970efafc4b4
 - improve security in render_file with a safe_dir option
 - new redirect_to (support for https)
 - Use callback pseudo-type instead of function in error user defined handling.
@@ -56,16 +56,16 @@
   
 #### Adding support for handling php settings with option() function
 
-- this will help have more consistency, and setting php options at the begining of the run
+- this will help have more consistency, and setting php options at the beginning of the run
 - all options that begins with `php_` are mapped with ini_set() options in read and write
 - adding an option('php_display_errors'); by default ini_set('display_errors', 0) in production env, but enabled if env is dev (unless matching option is enabled)
-- a default callback `php_display_errors` will be there to set correct limonade debug level
+- a default callback `php_display_errors` will be there to set correct Limonade debug level
 
 
 ### 0.8 ###
 
 - Zestify Limonade
-  - refactor main dipatching loop
+  - refactor main dispatching loop
   - allow zest response return in controllers
 
 
