@@ -1063,6 +1063,9 @@ function request_uri($env = null)
 
       if($request_uri."index.php" == $base_path) $request_uri .= "index.php";
       $uri = str_replace($base_path, '', $request_uri);
+      if(option('base_uri') && strpos($uri, option('base_uri')) === 0) {
+       $uri = substr($uri, strlen(option('base_uri')));
+      }
     }
     elseif($env['SERVER']['argc'] > 1 && trim($env['SERVER']['argv'][1], '/') != '')
     {
