@@ -1044,7 +1044,7 @@ function request_uri($env = null)
       $uri = $path_info;
     }
     // No PATH_INFO?... What about QUERY_STRING?
-    elseif (trim($query_string, '/') != '')
+    elseif (trim($query_string, '/') != '' && $query_string[0] == '/')
     {
       $uri = $query_string;
       $get = $env['GET'];
