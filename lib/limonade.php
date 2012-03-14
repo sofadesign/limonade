@@ -1058,13 +1058,16 @@ function request_uri($env = null)
     }
     elseif(array_key_exists('REQUEST_URI', $env['SERVER']) && !empty($env['SERVER']['REQUEST_URI']))
     {
-      $request_uri = rtrim(rawurldecode($env['SERVER']['REQUEST_URI']), '?/').'/';
+      $request_uri = rtrim($env['SERVER']['REQUEST_URI'], '?/').'/';
       $base_path = $env['SERVER']['SCRIPT_NAME'];
 
       if($request_uri."index.php" == $base_path) $request_uri .= "index.php";
       $uri = str_replace($base_path, '', $request_uri);
       if(option('base_uri') && strpos($uri, option('base_uri')) === 0) {
        $uri = substr($uri, strlen(option('base_uri')));
+      }
+      if(strpos($uri, '?') !== false) {
+      	$uri = substr($uri, 0, strpos($uri, '?')) . '/';
       }
     }
     elseif($env['SERVER']['argc'] > 1 && trim($env['SERVER']['argv'][1], '/') != '')
