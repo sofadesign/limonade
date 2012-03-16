@@ -1,7 +1,8 @@
 # Limonade: LISEZMOI
 
-**Cette documentation est à jour. un peu d'aide et de temps et c'est à jour. **
-**— Thomas Ingles && Meld && Google.**
+> **Cette documentation a été mise à jour en janvier 2012 par [Thomas Ingles](https://github.com/sudwebdesign) mais n'est pas maintenue officiellement.** 
+> **La documentation de référence à consulter reste [README](https://github.com/sofadesign/limonade/blob/master/README.mkd)**
+
 
 Limonade est un micro framework PHP qui permet le prototypage et le développement rapide d'applications web.
 
