@@ -570,7 +570,7 @@ You can define options inside it, a connection to a database ...
         $GLOBALS['my_db_connexion'] = new PDO(option('dsn'));
     }
 
-PHP files contained in the `option('lib_dir')` folder (`lib/` by default) are loaded with [`require_once`](http://php.net/manual/function.require-once.php) just before executing `configure`. So you can place in this folder all your PHP libraries and functions so that they will be loaded and available at application launch.
+PHP files contained in the `option('lib_dir')` folder (`lib/` by default) are loaded with [`require_once`](http://php.net/manual/function.require-once.php) just after executing `configure`. So you can place in this folder all your PHP libraries and functions so that they will be loaded and available at application launch.
 
 ## Options ##
 
