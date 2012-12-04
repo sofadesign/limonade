@@ -7,7 +7,7 @@
  * 
  *  a PHP micro framework.
  * 
- *  For more informations: {@link http://github/sofadesign/limonade}
+ *  For more informations: {@link https://github.com/sofadesign/limonade}
  *  
  *  @author Fabrice Luraine
  *  @copyright Copyright (c) 2009 Fabrice Luraine
