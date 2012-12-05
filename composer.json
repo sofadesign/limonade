@@ -1,0 +1,9 @@
+{
+    "name": "sofadesign/limonade",
+    "description": "a PHP micro-framework",
+    "homepage": "http://www.limonade-php.net/",
+    "keywords": ["microframework"],
+    "autoload": {
+        "files": ["lib/limonade.php"]
+    }
+}
