@@ -66,6 +66,12 @@ So they make the glue between an URL + a HTTP method, and the code provided in a
             // Delete something
         }
 
+    dispatch_patch('/', 'my_patch_function');
+        function my_patch_function()
+        {
+            // Patch something
+        }
+
 
 Routes are matched in the order they are declared.
 The search is performed with a path given through browser URL:
@@ -75,7 +81,7 @@ The search is performed with a path given through browser URL:
     http://localhost/my_app/index.php?/my/path
     http://localhost/my_app/?/my/path
 
-When `PUT` or `DELETE` methods are not supported (like in HTML form submision), you can use the `_method` parameter in `POST` requests: it will override the `POST` method.
+When `PUT`,`DELETE` or `PATCH` methods are not supported (like in HTML form submision), you can use the `_method` parameter in `POST` requests: it will override the `POST` method.
 
     <form action="<?php echo url_for('profile_update'); ?>" method="post">
         <p><input type="hidden" name="_method" value="PUT" id="_method"></p>
