@@ -11,7 +11,7 @@ test_case("Request");
    function test_request_methods()
    {
      $m = request_methods();
-     assert_length_of($m, 5);
+     assert_length_of($m, 6);
    }
    
    function test_request_method_is_allowed()
@@ -22,6 +22,7 @@ test_case("Request");
      assert_true(request_method_is_allowed("PUT"));
      assert_true(request_method_is_allowed("DELETE"));
      assert_true(request_method_is_allowed("HEAD"));
+     assert_true(request_method_is_allowed("PATCH"));
    }
    
    function test_request_method()
@@ -47,6 +48,9 @@ test_case("Request");
      $env['POST']['_method'] = "DELETE";
      assert_equal(request_method($env), "DELETE");
      
+     $env['POST']['_method'] = "PATCH";
+     assert_equal(request_method($env), "PATCH");
+
      $env['POST']['_method'] = "UNKOWN";
      assert_trigger_error('request_method', array($env));
      assert_false(request_method());

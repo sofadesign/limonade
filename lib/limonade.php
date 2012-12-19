@@ -474,7 +474,7 @@ function stop_and_exit($exit = true)
  * Returns limonade environment variables:
  *
  * 'SERVER', 'FILES', 'REQUEST', 'SESSION', 'ENV', 'COOKIE', 
- * 'GET', 'POST', 'PUT', 'DELETE'
+ * 'GET', 'POST', 'PUT', 'DELETE', 'PATCH'
  * 
  * If a null argument is passed, reset and rebuild environment
  *
@@ -978,13 +978,24 @@ function request_is_head($env = null)
 }
 
 /**
+ * Checks if request method is PATCH
+ *
+ * @param string $env
+ * @return bool
+ */
+function request_is_patch($env = null)
+{
+  return request_method($env) == "PATCH";
+}
+
+/**
  * Returns allowed request methods
  *
  * @return array
  */
 function request_methods()
 {
-  return array("GET","POST","PUT","DELETE", "HEAD");
+  return array("GET","POST","PUT","DELETE","HEAD","PATCH");
 }
 
 /**
@@ -1161,6 +1172,19 @@ function dispatch_put($path_or_array, $callback, $options = array())
 function dispatch_delete($path_or_array, $callback, $options = array())
 {
   route("DELETE", $path_or_array, $callback, $options);
+}
+
+/**
+ * Add a PATCH route
+ *
+ * @param string $path_or_array
+ * @param string $callback
+ * @param array $options (optional). See {@link route()} for available options.
+ * @return void
+ */
+function dispatch_patch($path_or_array, $callback, $options = array())
+{
+  route("PATCH", $path_or_array, $callback, $options);
 }
 
 
