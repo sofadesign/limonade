@@ -518,7 +518,8 @@ function env($reset = null)
     $varname = "_$method";
     if (strpos($_SERVER['CONTENT_TYPE'], 'application/json') === 0)
     {
-      $GLOBALS[$varname] = json_decode(file_get_contents('php://input'), true);
+      $json = json_decode(file_get_contents('php://input'), true);
+      $GLOBALS[$varname] = !empty($json) ? $json : array();
     }
     elseif($method == 'PUT' || $method == 'DELETE')
     {
