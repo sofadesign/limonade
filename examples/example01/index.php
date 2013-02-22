@@ -84,7 +84,7 @@ dispatch('/*.jpg/:size', 'image_show_jpeg_only');
 
 function after($output, $route)
 {
-  $time = number_format( (float)substr(microtime(), 0, 10) - LIM_START_MICROTIME, 6);
+  $time = number_format( microtime(true) - LIM_START_MICROTIME, 6);
   $output .= "\n<!-- page rendered in $time sec., on ".date(DATE_RFC822)." -->\n";
   $output .= "<!-- for route\n";
   $output .= print_r($route, true);
