@@ -57,7 +57,7 @@
  */
 define('LIMONADE',              '0.5.0');
 define('LIM_NAME',              'Un grand cru qui sait se faire attendre');
-define('LIM_START_MICROTIME',   (float)substr(microtime(), 0, 10));
+define('LIM_START_MICROTIME',   microtime(true));
 define('LIM_SESSION_NAME',      'LIMONADE'.str_replace('.','x',LIMONADE));
 define('LIM_SESSION_FLASH_KEY', '_lim_flash_messages');
 if(function_exists('memory_get_usage'))
@@ -1837,8 +1837,8 @@ function end_content_for()
  */
 function benchmark()
 {
-	$res = array( 'execution_time' => (microtime() - LIM_START_MICROTIME) );
-  if(defined('LIM_START_MEMORY'))
+	$res = array( 'execution_time' => (microtime(true) - LIM_START_MICROTIME) );
+	if(defined('LIM_START_MEMORY'))
 	{
 		$current_mem_usage     = memory_get_usage();
 		$res['current_memory'] = $current_mem_usage;
