@@ -221,7 +221,7 @@ You can also define `autoload_controller` function to load controllers in your o
 
 Since version 0.4.1, Limonade supports url rewriting.
 
-With a `.htaccess` in your app folder
+If you use Apache, with a `.htaccess` in your app folder
 
     <IfModule mod_rewrite.c>
       Options +FollowSymlinks
@@ -241,8 +241,20 @@ With a `.htaccess` in your app folder
       # forces the rewrite engine to append a query string part of the
       # substitution string to the existing string, instead of replacing it.
     </IfModule>
+    
+If you use Nginx, add the following to your server declaration
 
-And setting explicitly the `option('base_uri')` in your configure() function:
+    server {
+        location / {
+            
+            try_files $uri $uri/ @rewrite;
+        }
+        location @rewrite {
+            rewrite ^/(.*)$ /index.php?u=$1&$args;
+        }
+    }
+
+Then remember to explicitly the `option('base_uri')` in your configure() function:
 
     option('base_uri', '/my_app'); # '/' or same as the RewriteBase in your .htaccess
 
