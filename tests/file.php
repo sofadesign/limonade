@@ -15,6 +15,7 @@ test_case("File");
       assert_true(is_array($mimes));
       assert_not_empty($mimes);
       assert_empty(mime_type(''));
+      assert_null(mime_type('unknown_extension'));
       assert_equal(mime_type('txt'), 'text/plain');
       assert_equal(mime_type('TXT'), 'text/plain');
       assert_equal(mime_type('jpg'), 'image/jpeg');

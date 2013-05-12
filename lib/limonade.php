@@ -2245,10 +2245,12 @@ function http_ua_accepts($type, $env = null)
 /**
  * Returns mime type for a given extension or if no extension is provided,
  * all mime types in an associative array, with extensions as keys. 
- * (extracted from Orbit source http://orbit.luaforge.net/)
+ * If extension is unknown, returns null.
+ * (extracted from Orbit source http://orbit.luaforge.net/).
+ *
  *
  * @param string $ext
- * @return string, array
+ * @return string, array, null
  */
 function mime_type($ext = null)
 {
@@ -2412,7 +2414,12 @@ function mime_type($ext = null)
     'xyz'     => 'chemical/x-xyz',
     'zip'     => 'application/zip'
   );
-  return is_null($ext) ? $types : $types[strtolower($ext)];
+
+  if (is_null($ext)) return $types;
+
+  $lower_ext = strtolower($ext);
+
+  return isset($types[$lower_ext]) ? $types[$lower_ext] : null;
 }
 
 /**
