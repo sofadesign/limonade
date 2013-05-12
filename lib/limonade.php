@@ -2412,7 +2412,12 @@ function mime_type($ext = null)
     'xyz'     => 'chemical/x-xyz',
     'zip'     => 'application/zip'
   );
-  return is_null($ext) ? $types : $types[strtolower($ext)];
+
+  if (is_null($ext)) return $types;
+
+  $lower_ext = strtolower($ext);
+
+  return isset($types[$lower_ext]) ? $types[$lower_ext] : null;
 }
 
 /**
