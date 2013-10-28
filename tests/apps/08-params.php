@@ -19,6 +19,14 @@ dispatch('/books/:lang', 'books');
     return $o;
   }
 
+dispatch_post('/books', 'create');
+  function create()
+  {
+    $o = '';
+    if(array_key_exists('title', $_POST)) $o = "title=" . $_POST['title'];
+    return $o;
+  }
+  
 
 
 run();

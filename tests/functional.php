@@ -126,6 +126,12 @@ test_case("Functional");
      $response =  test_request($path.'?uri=books/fr&sort=asc&page=2', 'GET');
      assert_match('/sort=asc/', $response);
      assert_match('/page=2/', $response);
+
+     $post = json_encode(array('title' => 'hello world'));
+     $headers = array('Content-Type: application/json',
+                      'Content-Length: ' . strlen($post));
+     $response =  test_request($path.'?uri=books', 'POST', false, $post, $headers);
+     assert_match('/title=hello world/', $response);
    }
    
    

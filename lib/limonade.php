@@ -515,9 +515,15 @@ function env($reset = null)
     }
 
     $method = request_method($env);
-    if($method == 'PUT' || $method == 'DELETE')
+
+    $varname = "_$method";
+    if (strpos($_SERVER['CONTENT_TYPE'], 'application/json') === 0)
     {
-      $varname = "_$method";
+      // handle PUT/POST requests which have JSON in request body
+      $GLOBALS[$varname] = json_decode(file_get_contents('php://input'), true);
+    }
+    elseif($method == 'PUT' || $method == 'DELETE')
+    {
       if(array_key_exists('_method', $_POST) && $_POST['_method'] == $method)
       {
         foreach($_POST as $k => $v)
