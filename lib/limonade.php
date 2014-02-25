@@ -517,7 +517,7 @@ function env($reset = null)
     $method = request_method($env);
 
     $varname = "_$method";
-    if (strpos($_SERVER['CONTENT_TYPE'], 'application/json') === 0)
+    if ((isset($_SERVER['CONTENT_TYPE'])) && (strpos($_SERVER['CONTENT_TYPE'], 'application/json') === 0))
     {
       // handle PUT/POST requests which have JSON in request body
       $GLOBALS[$varname] = json_decode(file_get_contents('php://input'), true);
