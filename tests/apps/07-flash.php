@@ -81,4 +81,4 @@ function html_default_layout($vars){ extract($vars);?>
   </nav>
 </body>
 </html>
-<?};
+<?php };
