@@ -260,7 +260,7 @@ If you use Nginx, add the following to your server declaration
         }
     }
 
-Then remember to explicitly the `option('base_uri')` in your configure() function:
+then remember to set explicitly the `option('base_uri')` in your configure() function:
 
     option('base_uri', '/my_app'); # '/' or same as the RewriteBase in your .htaccess
 
