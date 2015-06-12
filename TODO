@@ -1,5 +1,9 @@
 # TODO #
 
+- Optimize routing performances:
+  - build routes only when necessary
+  - reduce routes array to the current method request before trying to find the current route matching pattern
+- See if there are others easy performance improvments to do
 
 ## Goals for next releases ##
 
