@@ -1,2 +1,4 @@
 Limonade was designed and developed by Fabrice Luraine <http://www.asciiland.net/>.
 The limonade logo and other design stuffs were created by MiniMau <http://www.minimau.com>.
+
+All contributors: `git log --format='%aN' | sort -u`.
