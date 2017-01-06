@@ -89,6 +89,11 @@ When `PUT`,`DELETE` or `PATCH` methods are not supported (like in HTML form subm
         <p><input type="submit" value="Update"></p>
     </form>
 
+ - added by AngeloR
+When `DELETE` OR `POST` methods are not supported (ie: if you were using a standard anchor tag instead of a form), you can use `url_for('path','to','resource',array('_method','delete'))`: it will override the `GET` method.
+
+    <a href="<?=url_for('document',$document_id,array('_method','delete'));?>">Delete</a>
+
 ### Routing patterns and parameters ###
 
 Patterns may include named parameters. Associated values of those parameters are available with the `params()` function.
