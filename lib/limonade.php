@@ -426,7 +426,7 @@ function run($env = null)
         call_if_exists('before', $route);
 
         # 6.4 Call matching controller function and output result
-        $output = call_user_func_array($route['callback'], array_values($route['params']));
+        $output = call_user_func_array($route['callback'], array_values($route['options']));
         if(is_null($output)) $output = call_if_exists('autorender', $route);
         echo after(error_notices_render() . $output, $route);
       }
