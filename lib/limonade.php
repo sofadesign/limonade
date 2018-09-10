@@ -1585,7 +1585,7 @@ function txt($content_or_func, $layout = '', $locals = array())
  * On PHP 5 < PHP 5.2.0, you must provide your own implementation of the
  * <code>json_encode()</code> function beore using <code>json()</code>.
  *
- * @param string $data 
+ * @param mixed $data
  * @param int $json_option
  * @return string
  */
