@@ -9,7 +9,7 @@ Limonade provides functions that complete the PHP basic set, while keeping consi
 Limonade is easy to learn and provides everything that you can expect from a modern framework (MVC, REST, ...)
 
 
-
+```php
     require_once 'lib/limonade.php';
     dispatch('/', 'hello');
         function hello()
@@ -17,6 +17,7 @@ Limonade is easy to learn and provides everything that you can expect from a mod
             return 'Hello world!';
         }
     run();
+```
 
 ## About this document ##
 
@@ -40,6 +41,7 @@ Routes combine
 
 So they make the glue between an URL + a HTTP method, and the code provided in a callback controller.
 
+```php
     dispatch('/', 'my_get_function');
     # same as dispatch_get('my_get_function');
         function my_get_function()
@@ -71,7 +73,7 @@ So they make the glue between an URL + a HTTP method, and the code provided in a
         {
             // Patch something
         }
-
+```
 
 Routes are matched in the order they are declared.
 The search is performed with a path given through browser URL:
@@ -83,25 +85,30 @@ The search is performed with a path given through browser URL:
 
 When `PUT`,`DELETE` or `PATCH` methods are not supported (like in HTML form submision), you can use the `_method` parameter in `POST` requests: it will override the `POST` method.
 
+```php
     <form action="<?php echo url_for('profile_update'); ?>" method="post">
         <p><input type="hidden" name="_method" value="PUT" id="_method"></p>
         <p>... your form fields</p>
         <p><input type="submit" value="Update"></p>
     </form>
+```
 
 ### Routing patterns and parameters ###
 
 Patterns may include named parameters. Associated values of those parameters are available with the `params()` function.
 
+```php
     dispatch('/hello/:name', 'hello');
         function hello()
         {
             $name = params('name');
             return 'Hello $name';
         }
+```
 
 Patterns may also include wildcard parameters. Associated values are available through numeric indexes, in the same order as in the pattern.
 
+```php
     dispatch('/writing/*/to/*', 'my_letter');
         function my_letter()
         {
@@ -119,27 +126,33 @@ Patterns may also include wildcard parameters. Associated values are available t
             $filename = params(0).".".$ext;
             # ...
         }
+```
 
 Unlike the simple wildcard character `*`, the double wildcard character `**` specifies a string that may contain a `/`
 
+```php
     dispatch('/files/**', 'share_files')
         function share_files()
         {
             # Matches /files/my/own/file.txt
             $filename = params(0); # my/own/file.txt
         }
+```
 
 Pattern may also be a regular expression if it begins with a `^`
 
+```php
     dispatch('^/my/own/(\d+)/regexp', 'my_func');
         function my_func()
         {
             # matches /my/own/12/regexp
             $num = params(0);
         }
-        
+```
+
 Wildcard parameters and regular expressions may be named, too.
 
+```php
     dispatch(array('/say/*/to/**', array("what", "name")), 'my_func');
         function my_func()
         {
@@ -147,22 +160,25 @@ Wildcard parameters and regular expressions may be named, too.
             $what = params('what');
             $name = params('name');
         }
+```
 
 You can also provide default parameter values that are merged with and overriden by the pattern parameters.
 
+```php
     $options = array('params' => array('firstname'=>'bob'));
     dispatch('/hello/:name', 'hello', $options);
         function hello($firstname, $name) # default parameters first
         {
             return 'Hello $firstname $name';
         }
-
+```
 
 ### Callback controllers ###
 
 The callback can be a function, an object method, a static method or a closure.
 See [php documentation](http://php.net/manual/en/language.pseudo-types.php#language.types.callback) to learn more about the callback pseudo-type.
 
+```php
     # will call my_hello_function() function
     dispatch('/hello', 'my_hello_function');
 
@@ -179,11 +195,13 @@ See [php documentation](http://php.net/manual/en/language.pseudo-types.php#langu
     dispatch('/hello', function(){
       return 'Hello World!';
     });
+```
 
 Callback controllers return the rendered view output (see _Views and templates_).
 
 They can take the pattern parameters as arguments
 
+```
     dispatch('/hello/:firstname/:name', 'hello');
         function hello($firstname, $name)
         {
@@ -191,7 +209,7 @@ They can take the pattern parameters as arguments
             # and $name parameter equals params('name');
             return 'Hello $firstname $name';
         }
-  
+```  
 
 Callbacks called by routes can be written anywhere before the execution of the `run()` function. They can also be grouped in controller files stored in a `controllers/` folder.
 
@@ -206,11 +224,13 @@ Callbacks called by routes can be written anywhere before the execution of the `
 
 This folder location can be set with the `controllers_dir` option.
 
+```php
     option('controllers_dir', dirname(__FILE__).'/other/dir/for/controllers');
-    
+```
 
 You can also define `autoload_controller` function to load controllers in your own way:
 
+```php
     function autoload_controller($callback) 
     { 
        # If $callback, the callback function defined in matching route, 
@@ -222,6 +242,7 @@ You can also define `autoload_controller` function to load controllers in your o
        if(strpos($callback, "admin_") === 0) $path = file_path($path, 'admin'); 
        require_once_dir($path); 
     }
+```
 
 ### Url rewriting ###
 
@@ -262,7 +283,9 @@ If you use Nginx, add the following to your server declaration
 
 then remember to set explicitly the `option('base_uri')` in your configure() function:
 
+```php
     option('base_uri', '/my_app'); # '/' or same as the RewriteBase in your .htaccess
+```
 
 You can access your site with urls like `http://your.new-website.com/my/limonade/path` instead of `http://your.new-website.com/?/my/limonade/path`.
 
@@ -272,21 +295,27 @@ You can access your site with urls like `http://your.new-website.com/my/limonade
 Template files are located by default in `views/` folder.
 Views folder location can be set with the `views_dir` option.
 
+```php
     option('views_dir', dirname(__FILE__).'/other/dir/for/views');
+```
 
 To pass variables to templates, we use the function `set ()`
 
+```php
     set('name', 'John Doe');
     render('index.html.php');
-    
+```
+
 Variables may also be passed directly:
 
+```php
     render('index.html.php', null, array('name' => 'John Doe' ));
-    
+``` 
 
 
 `set_or_default` function allows passing a variable, and if it's empty, a default value. It is really useful for the assignment of optional parameters extracted from the url using the `params()` function.
 
+```php
     dispatch('/hello/:name', 'hello');
         function  hello()
         {
@@ -294,7 +323,8 @@ Variables may also be passed directly:
             set_or_default('name', params('name'),'John');
             return render('Hello %s!'); // returns 'Hello John!' because params('name') was empty. Else it would have returned params('name') value.
         }
-    
+```
+
 As you can notice, final output is returned by your controller. So remember to explicitly return your view in your controller with the `return` keyword! *(This remark will be particularly helpful for rubyists ;-) )*
     
     
@@ -305,27 +335,35 @@ Templates may be rendered inside another template: a layout.
 
 Layout may be set with the `layout` function:
 
+```php
     layout('default_layout.php');
+```
 
 or directly with the template rendering function    
 
+```php
     render('index.html.php', 'default_layout.php');
-
+```
 
 If layout value is `null`, rendering will be done without any layout.
 
+```php
     render('index.html.php', null);
+```
 
 ### Formatted strings and inline templates ###
 
 Formatted string can be used like with  [`sprintf`](http://php.net/manual/function.sprintf.php):
 
+```php
     set('num', 5);
     set('where', 'tree');
     return render('There are %d monkeys in the %s') // returns 'There are 5 monkeys in the tree'
+```
 
 It's also possible to provide a function name as a template. By this way, for example, we can produce a single file application.
 
+```php
     function html_message($vars){ extract($vars);?>
         <h1>Title: <?php echo h($title); ?></h1>
         <p>Message:<br>
@@ -336,55 +374,70 @@ It's also possible to provide a function name as a template. By this way, for ex
     set('title', 'Hello!');
     set('msg', 'There are 100 monkeys in the Chennai and bangalore');
     return render('html_message');
+```
 
 ### HTML Templates ###
 
 `html` function is used in the same way as `render`.
 A header specifies the proper HTTP `Content-type` (`text/html`) and encoding setting defined through options (utf8 by default).
 
+```php
     html('my_template.html.php');
+```
 
 ### Templates XML ###
 
 `xml` function is used in the same way as `render`.
 A header specifies the proper HTTP `Content-type` (`text/xml`) and encoding setting defined through options (utf8 by default).
 
+```php
     xml('my_template.xml.php');
+```
 
 ### Templates CSS ###
 
 `css` function is used in the same way as `render`.
 A header specifies the proper HTTP `Content-type` (`text/css`) and encoding setting defined through options (utf8 by default).
 
+```php
     css('screen.css.php');
+```
 
 ### Templates JS ###
 
 `js` function is used in the same way as `render`.
 A header specifies the proper HTTP `Content-type` (`application/javascript`) and encoding setting defined through options (utf8 by default).
 
+```php
     js('app.js.php');
+```
 
 ### Templates TXT ###
 
 `txt` function is used in the same way as `render`.
 A header specifies the proper HTTP `Content-type` (`text/plain`) and encoding setting defined through options (utf8 by default).
 
+```php
     txt('index.txt.php');
-    
+```
+
 ### Templates JSON ###
 
 `json` is used the same way as 
  [`json_encode`](http://php.net/manual/function.json-encode.php) function, and returns a string containing the JSON representation of a value.
 A header specifies the proper HTTP `Content-type` (`application/x-javascript`) and encoding setting defined through options (utf8 by default).
 
+```php
     json($my_data);
+```
 
 ### Serving files ###
 
 The `render_file` function can render a file directly to the ouptut buffer.
-    
+
+```php    
     render_file(option('public_dir').'foo.jpg');
+```
 
 A header specifies the proper HTTP `Content-type` depending on the file extension, and for text files, encoding setting defined through options (utf8 by default) .
 
@@ -396,11 +449,15 @@ The `partial` function is a shortcut to render with no layout. Useful for managi
 
 This code
 
+```php
     partial('my_posts.php', array('posts'=>$posts));
-    
+```
+
 is the same as
 
+```php
     render('my_posts.php', null, array('posts'=>$posts));
+```
 
 ### Captures ###
 
@@ -409,6 +466,7 @@ The `content_for` function allows you to capture a block of text in a view. Then
 
 For example with this layout:
 
+```php
     <div id="content">
       <div id="main">
         <?php echo $content; ?>
@@ -417,9 +475,11 @@ For example with this layout:
         <?php if (isset($side)) echo $side; ?>
       </div>
     </div>
-    
+```
+
 And in your view:
 
+```php
     <p>My main content</p>
     
     <?php content_for('side'); ?>
@@ -428,9 +488,11 @@ And in your view:
       <li><a href="<?php echo url_for('/pages/item2')?>">Item 2</a></li>
     </ul>
     <?php end_content_for(); ?>
+```
 
 Rendered result is:
 
+```html
     <div id="content">
       <div id="main">
         <p>My main content</p>
@@ -442,7 +504,7 @@ Rendered result is:
         </ul>
       </div>
     </div>
-
+```
 
 The above example is detailed in [this tutorial](http://blog.limonade-php.net/post/438674987/how-to-use-content-for-and-partial).
 
@@ -459,12 +521,13 @@ Some of those, like the `before` hook and the `after` filter are commonly used, 
 
 You can define a `before` function that will be executed before each request. This is very useful to define a default layout or for passing common variables to the templates.
 
+```php
     function before($route)
     {
         layout('default_layout.php');
         set('site_title', 'My Website');
     }
-
+```
 
 The current matching route is also passed to the before function, so you can test it. It's an array as returned by the internal `route_find` function, with these values: 
 
@@ -479,6 +542,7 @@ The current matching route is also passed to the before function, so you can tes
 
 An `after` output filter is also available. It's executed after each request and can apply a transformation to the output (except for `render_file` outputs  which are sent directly to the output buffer).
 
+```php
     function after($output){
       $config = array('indent' => TRUE,
                       'output-xhtml' => TRUE,
@@ -489,7 +553,8 @@ An `after` output filter is also available. It's executed after each request and
       $tidy->cleanRepair();
       return $tidy;
     }
-    
+```
+
 The current executed route is also available for `after` function.
 
 ### Before render ###
@@ -504,17 +569,20 @@ The first three parameters are the same as those passed to the `render` function
 
 Last parameter, `$view_path` is by default `file_path(option('views_dir'), $content_or_func);`
 
+```php
     function before_render($content_or_func, $layout, $locals, $view_path)
     {
       # Transform $content_or_func, $layout, $locals or $view_path.
       # Then return there new values
       return array($content_or_func, $layout, $locals, $view_path);
     }
+```
 
 ### Autorender ###
 
 You can define your own `autorender` function to make automatic rendering  depending on current matching route. It will be executed if your controller returns a null output.
 
+```php
     dispatch('/', 'hello');
     function hello()
     {
@@ -530,13 +598,15 @@ You can define your own `autorender` function to make automatic rendering  depen
         $view = $route['callback'] . ".html.php";
         return html($view);
     }
-    
+```
+
 In this example, when url `/` is called, `hello()` is executed and then `autorender()` renders the matching `hello.html.php` view.
 
 ### Before exit ###
 
 If you define a `before_exit`, it is called at the begining of the stop/exit process (`stop_and_exit` function called automatically at Limonade application termination).
 
+```php
     function before_exit($exit)
     {
         # $exit is the same parameter as the one passed to `stop_and_exit`.
@@ -544,11 +614,13 @@ If you define a `before_exit`, it is called at the begining of the stop/exit pro
         # only the stop instructions
         # by default it is true
     }
+```
 
 ### Before sending a header ###
 
 You can define a `before_sending_header` function that will be called before Limonade emits a header() call. This way you can add additional headers:
 
+```php
     dispatch('/style.css', 'css');
     function css()
     {
@@ -564,6 +636,7 @@ You can define a `before_sending_header` function that will be called before Lim
             send_header("Cache-Control: max-age=600, public");
         }
     }
+```
 
 __Caution__: Take care not to cause a loop by repeatedly calling `send_header()` from the `before_sending_header()` function!
 
@@ -573,6 +646,7 @@ __Caution__: Take care not to cause a loop by repeatedly calling `send_header()`
 You can define a `configure` that will be executed when application is launched (at the begining of the `run` execution).
 You can define options inside it, a connection to a database ...
 
+```php
     function configure()
     {
         $env = $_SERVER['HTTP_HOST'] == "localhost" ? ENV_DEVELOPMENT : ENV_PRODUCTION;
@@ -587,6 +661,7 @@ You can define options inside it, a connection to a database ...
     	}
         $GLOBALS['my_db_connexion'] = new PDO(option('dsn'));
     }
+```
 
 PHP files contained in the `option('lib_dir')` folder (`lib/` by default) are loaded with [`require_once`](http://php.net/manual/function.require-once.php) just after executing `configure`. So you can place in this folder all your PHP libraries and functions so that they will be loaded and available at application launch.
 
@@ -594,16 +669,19 @@ PHP files contained in the `option('lib_dir')` folder (`lib/` by default) are lo
 
 The `option` function allows you to define and access the options of the application.
 
+```php
     option('env', ENV_PRODUCTION);
     option('env'); // return ENV_PRODUCTION value
-    
+```
+
 If the name of option is not specified, it returns an array of all the options set.
 
 You can use it to manage Limonade options and your own custom options in your application.
 
 Default Limonade options have the following values:
 
-    option('root_dir',        $root_dir); // this folder contains your main application file
+```php
+    option('root_dir',           $root_dir); // this folder contains your main application file
     option('base_path',          $base_path);
     option('base_uri',           $base_uri); // set it manually if you use url_rewriting
     option('limonade_dir',       dirname(__FILE__).'/'); // this fiolder contains the limonade.php main file
@@ -621,6 +699,7 @@ Default Limonade options have the following values:
     option('x-sendfile',         0); // 0: disabled, 
                                      // X-SENDFILE: for Apache and Lighttpd v. >= 1.5,
                                      // X-LIGHTTPD-SEND-FILE: for Apache and Lighttpd v. < 1.5
+```
 
 ## Sessions ##
 
@@ -647,10 +726,11 @@ See sources or api for more about all available helpers.
 
 You can use the `url_for` function for rendering limonade urls. They will be well formed from whatever folder in the document root your application is installed on your web server.
 
+```php
     # with option('base_uri', '?')
     url_for('one', 'two', 'three'); # returns ?/one/two/three
     url_for('one', 'two', array('page' => 1)); # returns ?/one/two&amp;page=2
-    
+```    
 
 If you want to use url rewriting, you need to explicitly set the `base_uri` option ( default is `/your_file_path/?`)
 
@@ -661,18 +741,23 @@ If you want to use url rewriting, you need to explicitly set the `base_uri` opti
 
 You can stop immediately the execution of the application with the `halt` function. Errors will be handled by default Limonade error handlers or those you have defined.
 
+```php
     halt(NOT_FOUND);
     halt("En error occured in my app...");
+```
 
 ### Not Found ###
 
 By default, displays the `not_found` error output function and sends a _`404 NOT FOUND`_ HTTP header.
 
+```php
     halt(NOT_FOUND);
     halt(NOT_FOUND, "This product doesn't exists.");
-    
+```
+
 To define a new view for this error, you can simply declare a `not_found` function.
 
+```php
     function not_found($errno, $errstr, $errfile=null, $errline=null)
     {
         set('errno', $errno);
@@ -681,37 +766,45 @@ To define a new view for this error, you can simply declare a `not_found` functi
         set('errline', $errline);
         return html("show_not_found_errors.html.php");
     }
-    
+```
+
 ### Server Error ###
 
 By default, displays the `server_error` error output function and sends a _`500 INTERNAL SERVER ERROR`_ HTTP header.
 
+```php
     halt();
     halt('Breaking bad!');
     halt(SERVER_ERROR, "Not good...");
     trigger_error("Wrong parameter", E_USER_ERROR);
-    
+```
+
 PHP errors are also caught and sent to this error handler output.
 
 To define a new view for this error, you can simply declare a `server_error` function.
 
+```php
     function server_error($errno, $errstr, $errfile=null, $errline=null)
     {
         $args = compact('errno', 'errstr', 'errfile', 'errline');	
         return html("show_server_errors.html.php", error_layout(), $args);
     }
+```
 
 ### Error layout ###
 
 Allows you to define and access a layout dedicated to errors.
 
+```php
     error_layout('error_layout.php');
     error_layout(); // return 'error_layout.php'
+```
 
 ### Error handling ###
 
 In addition to the common `NOT_FOUND` and `SERVER_ERROR` error displays, Limonade can redirect precise errors to your own functions.
 
+```php
     error(E_USER_WARNING, 'my_notices')
         function my_notices($errno, $errstr, $errfile, $errline)
         {
@@ -720,16 +813,19 @@ In addition to the common `NOT_FOUND` and `SERVER_ERROR` error displays, Limonad
             status(SERVER_ERROR);
             return html('<h1>Server Error</h1>');
         }
-        
+```
+
 `E_LIM_HTTP` means all HTTP errors
 
+```php
     error(E_LIM_HTTP, 'my_http_errors')
         function my_http_errors($errno, $errstr, $errfile, $errline)
         {
             status($errno);
             return html('<h1>'.http_response_status_code($errno).'</h1>');
         }
-    
+```
+
 `E_LIM_PHP` means all PHP errors (sent by PHP or raised by the user through [`trigger_error`](http://php.net/manual/function.trigger-error.php) function).
 
 ## Other useful functions ##
