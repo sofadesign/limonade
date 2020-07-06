@@ -4,3 +4,7 @@ tests/config/config.php
 cookiefile
 **/cookiefile
 *.un~
+.idea
+vendor
+composer.lock
+
