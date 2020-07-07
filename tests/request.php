@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../lib/limonade/tests.php';
+require_once __DIR__ . '/../lib/limonade.php';
 
 test_case("Request");
    test_case_describe("Testing limonade request functions.");
@@ -28,7 +30,7 @@ test_case("Request");
    function test_request_method()
    {
      $env = env();
-     $env['SERVER']['REQUEST_METHOD'] = null;
+     $env['SERVER']['REQUEST_METHOD'] = 'UNKOWN';
      
      assert_trigger_error("request_method");
      
@@ -40,20 +42,17 @@ test_case("Request");
        assert_equal(request_method($env), $method);
      }
      
-     $env['SERVER']['REQUEST_METHOD'] = "POST";
-     
-     $env['POST']['_method'] = "PUT";
+     $env['SERVER']['REQUEST_METHOD'] = "PUT";
      assert_equal(request_method($env), "PUT");
-     
-     $env['POST']['_method'] = "DELETE";
+
+     $env['SERVER']['REQUEST_METHOD'] = "DELETE";
      assert_equal(request_method($env), "DELETE");
-     
-     $env['POST']['_method'] = "PATCH";
+
+     $env['SERVER']['REQUEST_METHOD'] = "PATCH";
      assert_equal(request_method($env), "PATCH");
 
-     $env['POST']['_method'] = "UNKOWN";
-     assert_trigger_error('request_method', array($env));
-     assert_false(request_method());
+     $env['SERVER']['REQUEST_METHOD'] = "UNKOWN";
+     assert_null(request_method());
    }
    
    function test_request_uri()

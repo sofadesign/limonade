@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../lib/limonade/tests.php';
 
 test_case("Test");
 
@@ -61,9 +62,9 @@ test_case("Test");
      assert_true(defined('TESTS_DOC_ROOT'), "Undefined 'TESTS_DOC_ROOT' constant");
      $response =  test_request(TESTS_DOC_ROOT.'00-empty.php', 'GET', true);
      assert_header($response, 'Content-type');
-     assert_header($response, 'Content-type', 'text/html');
+     assert_header($response, 'Content-type', 'text/html;charset=UTF-8');
      assert_header($response, 'Content-Type');
-     assert_header($response, 'Content-Type', 'text/html');
+     assert_header($response, 'Content-Type', 'text/html;charset=UTF-8');
    }
    
 end_test_case();

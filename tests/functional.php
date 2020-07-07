@@ -1,5 +1,6 @@
 <?php
-if(!defined('LIMONADE')){$h="HTTP/1.0 401 Unauthorized";header($h);die($h);}// Security check
+require_once __DIR__ . '/../lib/limonade/tests.php';
+require_once __DIR__ . '/../lib/limonade.php';
 
 test_case("Functional");
    test_case_describe("Functional tests");
@@ -13,7 +14,7 @@ test_case("Functional");
    {
      $response =  test_request(TESTS_DOC_ROOT.'01-hello_world.php', 'GET', true);
      //echo $response;
-     assert_header($response, 'Content-type', 'text/html');
+     assert_header($response, 'Content-type', 'text/html; charset=UTF-8');
      
      $response =  test_request(TESTS_DOC_ROOT.'03-routing.php/route0', 'GET', true);
      assert_header($response, 'X-Limonade', LIM_NAME);

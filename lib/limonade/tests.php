@@ -18,6 +18,7 @@ require_once dirname(__FILE__)."/assertions.php";
  * Constants and globals
  */
 if(!defined('DS')) define("DS", DIRECTORY_SEPARATOR);
+if(!defined('TESTS_DOC_ROOT')) define('TESTS_DOC_ROOT', 'http://localhost/');
 
 if(!array_key_exists("limonade", $GLOBALS))
    $GLOBALS["limonade"] = array();
@@ -82,6 +83,9 @@ function end_test_suite()
   echo " Passes ".$passed_tests."/".$tests.", ";
   echo " {$failures} failures for {$assertions} assertions.\n";
   echo test_cli_format("===========================================================\n", 'white');
+  if ($failures > 0) {
+  	exit(1);
+  }
 }
 
 /**
@@ -139,6 +143,10 @@ function end_test_case()
       echo " {$test['failures']} failures for {$test['assertions']} assertions.\n";
       
       echo "-----------------------------------------------------------\n";
+
+      if ($test['failures'] > 0) {
+         exit(1);
+      }
    }
    $GLOBALS["limonade"]["test_case_current"] = null;
 }
@@ -164,7 +172,7 @@ function test_case_describe($msg = NULL)
  * Returns all user test case functions
  *
  * @access private
- * @return void
+ * @return array
  */
 function test_case_all_func()
 {
@@ -195,6 +203,7 @@ function test_case_execute_current()
    while($func = array_shift($tests))
    {
       test_call_func(test_before_func_name());
+      echo '# ' . $func . PHP_EOL;
       call_user_func($func);
    }
 }
