@@ -905,13 +905,12 @@ function error_http_status($errno)
 function request_method($env = null)
 {
   if(is_null($env)) $env = env();
-  $m = array_key_exists('REQUEST_METHOD', $env['SERVER']) ? $env['SERVER']['REQUEST_METHOD'] : null;
-  if($m == "POST" && array_key_exists('_method', $env['POST'])) 
-    $m = strtoupper($env['POST']['_method']);
-  if(!in_array(strtoupper($m), request_methods()))
+  $m = isset($env['SERVER']['REQUEST_METHOD']) ? $env['SERVER']['REQUEST_METHOD'] : null;
+
+  if($m && !in_array(strtoupper($m), request_methods()))
   {
     trigger_error("'$m' request method is unknown or unavailable.", E_USER_WARNING);
-    $m = false;
+    $m = null;
   }
   return $m;
 }
@@ -2466,7 +2465,7 @@ function file_mime_content_type($filename)
   {
     if($finfo = finfo_open(FILEINFO_MIME))
     {
-      if($mime = finfo_file($finfo, $filename))
+      if($mime = @finfo_file($finfo, $filename))
       {
         finfo_close($finfo);
         return $mime;        

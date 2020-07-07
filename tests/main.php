@@ -1,5 +1,6 @@
 <?php
-if(!defined('LIMONADE')){$h="HTTP/1.0 401 Unauthorized";header($h);die($h);}// Security check
+require_once __DIR__ . '/../lib/limonade/tests.php';
+require_once __DIR__ . '/../lib/limonade.php';
 
 test_case("Main");
    test_case_describe("Testing limonade main functions.");
@@ -69,21 +70,20 @@ test_case("Main");
        assert_true(array_key_exists($var, $env));
        assert_true(is_array($env[$var]));
      }
-     
-     $_POST['_method'] = "PUT";
+     $_SERVER['REQUEST_METHOD'] = 'POST';
      $_POST['my_var1'] = "value1";
      $_POST['my_var2'] = "value2";
      
      $env = env(null);
-     assert_equal($env['PUT']['my_var1'], "value1");
-     assert_equal($env['PUT']['my_var2'], "value2");
+     assert_equal($env['POST']['my_var1'], "value1");
+     assert_equal($env['POST']['my_var2'], "value2");
    }
    
    function test_main_app_file()
    {
-     $app_file = strtolower(app_file());
-     $env = env();
-     assert_equal($app_file, strtolower($env['SERVER']['PWD'].'/'.$env['SERVER']['PHP_SELF']));
+	 $app_file = strtolower(app_file());
+	 $env = env();
+	 assert_equal($app_file, strtolower(file_path(getcwd().'/'.$env['SERVER']['PHP_SELF'])));
    }
    
    function test_main_call_if_exists()
