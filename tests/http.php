@@ -1,5 +1,6 @@
 <?php
-if(!defined('LIMONADE')){$h="HTTP/1.0 401 Unauthorized";header($h);die($h);}// Security check
+require_once __DIR__ . '/../lib/limonade/tests.php';
+require_once __DIR__ . '/../lib/limonade.php';
 
 test_case("HTTP");
    test_case_describe("Testing limonade HTTP utils functions.");

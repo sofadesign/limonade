@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../lib/limonade/tests.php';
+require_once __DIR__ . '/../lib/limonade.php';
 
 test_case("Output");
   test_case_describe("Testing limonade output functions.");
